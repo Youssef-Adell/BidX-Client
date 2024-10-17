@@ -13,14 +13,33 @@ apiClient.interceptors.request.use(
     if (requiresAuth) {
       const authStore = useAuthStore();
       const token = authStore.accessToken;
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
+      if (token) config.headers.Authorization = `Bearer ${token}`;
     }
 
     return config;
   },
   (error) => Promise.reject(error)
 );
+
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => Promise.reject(getUnifiedErrorResponse(error))
+);
+
+// Helper function to return a unified error object
+const getUnifiedErrorResponse = (error) => {
+  let errorResponse;
+
+  if (error.code === "ERR_NETWORK") {
+    errorResponse = {
+      errorCode: "CLIENT_ERROR",
+      errorMessages: ["Oops! Something went wrong!"],
+    };
+  } else {
+    errorResponse = error.response.data;
+  }
+
+  return errorResponse;
+};
 
 export default apiClient;

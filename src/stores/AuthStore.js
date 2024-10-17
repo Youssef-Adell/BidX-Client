@@ -23,8 +23,8 @@ export const useAuthStore = defineStore("auth", {
 
         this.user = response.data.user;
         this.accessToken = response.data.accessToken;
-      } catch (error) {
-        throw error.response.data;
+      } catch (errorResponse) {
+        throw errorResponse;
       }
     },
   },

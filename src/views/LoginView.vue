@@ -1,7 +1,7 @@
 <script setup>
 import { ErrorCode } from "@/api/errorCodes";
 import { useAuthStore } from "@/stores/AuthStore";
-import { computed, ref } from "vue";
+import { ref } from "vue";
 
 const authStore = useAuthStore();
 
@@ -35,12 +35,6 @@ const login = async (event) => {
     loading.value = false;
   }
 };
-
-const errorMessage = computed(() => {
-  return error.value.errorCode
-    ? error.value.errorMessages.toString()
-    : "Oops! Something went wrong!";
-});
 </script>
 
 <template>
@@ -54,7 +48,9 @@ const errorMessage = computed(() => {
 
       <!--Error Box-->
       <div v-if="error" class="bg-error py-2 pl-3 rounded text-caption">
-        {{ errorMessage }}
+        <span v-for="errorMessage in error.errorMessages">
+          {{ errorMessage }}
+        </span>
         <div v-if="error.errorCode === ErrorCode.AUTH_EMAIL_NOT_CONFIRMED">
           Didn't get a confirmation email?
           <RouterLink
