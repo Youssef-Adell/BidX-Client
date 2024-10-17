@@ -27,5 +27,16 @@ export const useAuthStore = defineStore("auth", {
         throw errorResponse;
       }
     },
+
+    async resendConfirmationEmail(email) {
+      try {
+        const response = await apiClient.post(
+          "/auth/resend-confirmation-email",
+          { email: email }
+        );
+      } catch (errorResponse) {
+        throw errorResponse;
+      }
+    },
   },
 });

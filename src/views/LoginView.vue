@@ -2,8 +2,10 @@
 import { ErrorCode } from "@/api/errorCodes";
 import { useAuthStore } from "@/stores/AuthStore";
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 
 const authStore = useAuthStore();
+const router = useRouter();
 
 const email = ref("");
 const password = ref("");
@@ -11,26 +13,35 @@ const passwordVisible = ref(false);
 const loading = ref(false);
 const error = ref(null);
 const inputRules = {
-  required: (value) => (value ? true : "Required."),
-  length: (value) =>
-    value.length >= 8 || "Password must be at least 8 characters.",
+  required: (value) => {
+    return value ? true : "Required.";
+  },
   email: (value) => {
     const pattern =
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return pattern.test(value) || "Invalid E-mail.";
   },
+  passwordLength: (value) => {
+    return value.length >= 8 || "Password must be at least 8 characters.";
+  },
 };
 
 const login = async (event) => {
+  // ensure that the input satisfies the rules
   const { valid } = await event;
   if (!valid) return;
 
   try {
-    error.value = false;
+    error.value = null;
     loading.value = true;
     await authStore.login(email.value, password.value);
+    router.replace({ path: "/" });
   } catch (errorResponse) {
-    error.value = errorResponse;
+    if (errorResponse.errorCode === ErrorCode.AUTH_EMAIL_NOT_CONFIRMED) {
+      router.push({ path: "verify-email", query: { email: email.value } });
+    } else {
+      error.value = errorResponse;
+    }
   } finally {
     loading.value = false;
   }
@@ -51,22 +62,13 @@ const login = async (event) => {
         <span v-for="errorMessage in error.errorMessages">
           {{ errorMessage }}
         </span>
-        <div v-if="error.errorCode === ErrorCode.AUTH_EMAIL_NOT_CONFIRMED">
-          Didn't get a confirmation email?
-          <RouterLink
-            to="/verify-email"
-            class="font-weight-medium text-decoration-none text-primary"
-          >
-            Resend
-          </RouterLink>
-        </div>
       </div>
 
       <!--Login Form-->
       <VForm @submit.prevent="login">
         <VTextField
           v-model="email"
-          placeholder="Email address"
+          placeholder="Email Address"
           prepend-inner-icon="mdi-email-outline"
           variant="underlined"
           :rules="[inputRules.required, inputRules.email]"
@@ -80,7 +82,7 @@ const login = async (event) => {
           @click:append-inner="passwordVisible = !passwordVisible"
           :append-inner-icon="passwordVisible ? 'mdi-eye-off' : 'mdi-eye'"
           :type="passwordVisible ? 'text' : 'password'"
-          :rules="[inputRules.required, inputRules.length]"
+          :rules="[inputRules.required, inputRules.passwordLength]"
         />
 
         <RouterLink
@@ -97,8 +99,8 @@ const login = async (event) => {
           size="large"
           variant="flat"
           type="submit"
-          block
           :loading="loading"
+          block
         />
       </VForm>
 
