@@ -4,13 +4,16 @@ import Footer from "./components/Footer.vue";
 import Navbar from "./components/Navbar.vue";
 
 const theme = useTheme();
-theme.global.name.value = localStorage.getItem("selectedTheme") ?? "dark";
+const selectedTheme = localStorage.getItem("selectedTheme");
+if (selectedTheme) theme.global.name.value = selectedTheme;
 </script>
 
 <template>
   <VApp>
     <Navbar />
-    <VMain min-height="1500"> </VMain>
+    <VMain>
+      <RouterView />
+    </VMain>
     <Footer />
   </VApp>
 </template>

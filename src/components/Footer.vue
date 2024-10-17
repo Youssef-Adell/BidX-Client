@@ -1,5 +1,5 @@
 <template>
-  <VFooter>
+  <VFooter class="flex-grow-0">
     <div class="w-100 text-center">
       <p class="text-caption text-sm-body-2">
         <strong>BidX</strong> All Rights Reserved &copy;
