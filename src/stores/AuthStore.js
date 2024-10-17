@@ -28,12 +28,19 @@ export const useAuthStore = defineStore("auth", {
       }
     },
 
+    async register(user) {
+      try {
+        await apiClient.post("/auth/register", user);
+      } catch (errorResponse) {
+        throw errorResponse;
+      }
+    },
+
     async resendConfirmationEmail(email) {
       try {
-        const response = await apiClient.post(
-          "/auth/resend-confirmation-email",
-          { email: email }
-        );
+        await apiClient.post("/auth/resend-confirmation-email", {
+          email: email,
+        });
       } catch (errorResponse) {
         throw errorResponse;
       }
