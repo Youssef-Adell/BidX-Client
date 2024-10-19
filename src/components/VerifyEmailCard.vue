@@ -6,20 +6,19 @@ const authStore = useAuthStore();
 
 const disabled = ref(false);
 const loading = ref(false);
+const error = ref(null);
 const countdown = ref(0);
 let interval = null;
 
 const resendConfirmationEmail = async () => {
   try {
+    error.value = null;
     loading.value = true;
     await authStore.resendConfirmationEmail(props.email);
-  } catch (errorResponse) {
-  } finally {
+
     // disable the button for 120 seconds
-    loading.value = false;
     disabled.value = true;
     countdown.value = 120;
-
     interval = setInterval(() => {
       if (countdown.value > 0) {
         countdown.value--;
@@ -28,6 +27,10 @@ const resendConfirmationEmail = async () => {
         disabled.value = false;
       }
     }, 1000);
+  } catch (errorResponse) {
+    error.value = errorResponse;
+  } finally {
+    loading.value = false;
   }
 };
 
@@ -36,6 +39,13 @@ const props = defineProps(["email"]);
 
 <template>
   <VSheet class="px-10 py-6 text-center" elevation="4" max-width="500" rounded>
+    <!--Error Box-->
+    <div v-if="error" class="bg-error py-1 rounded text-caption">
+      <span v-for="errorMessage in error.errorMessages">
+        {{ errorMessage }}
+      </span>
+    </div>
+
     <!--Title-->
     <VIcon icon="mdi-email-check-outline" size="100" color="primary" />
     <span class="d-block text-h5 mb-3 text-high-emphasis font-weight-bold">
