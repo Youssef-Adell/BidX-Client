@@ -1,5 +1,6 @@
 import apiClient from "@/api/apiClient";
 import { defineStore } from "pinia";
+import { errorMessages } from "vue/compiler-sfc";
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
@@ -39,6 +40,16 @@ export const useAuthStore = defineStore("auth", {
     async resendConfirmationEmail(email) {
       try {
         await apiClient.post("/auth/resend-confirmation-email", {
+          email: email,
+        });
+      } catch (errorResponse) {
+        throw errorResponse;
+      }
+    },
+
+    async forgotPassword(email) {
+      try {
+        await apiClient.post("/auth/forgot-password", {
           email: email,
         });
       } catch (errorResponse) {
