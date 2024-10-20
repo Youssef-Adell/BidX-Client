@@ -1,11 +1,11 @@
 import apiClient from "@/api/apiClient";
 import { defineStore } from "pinia";
-import { errorMessages } from "vue/compiler-sfc";
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
     user: null,
     accessToken: null,
+    loading: true,
   }),
 
   getters: {
@@ -54,6 +54,22 @@ export const useAuthStore = defineStore("auth", {
         });
       } catch (errorResponse) {
         throw errorResponse;
+      }
+    },
+
+    async refreshToken() {
+      try {
+        const response = await apiClient.post("/auth/refresh", null, {
+          withCredentials: true,
+        });
+
+        this.user = response.data.user;
+        this.accessToken = response.data.accessToken;
+      } catch (errorResponse) {
+        this.user = null;
+        this.accessToken = null;
+      } finally {
+        this.loading = false;
       }
     },
   },
