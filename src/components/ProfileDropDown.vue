@@ -54,7 +54,11 @@ const toggleTheme = () => {
         />
       </VListItem>
       <VListItem @click="" prepend-icon="mdi-cog" title="Settings" />
-      <VListItem @click="" prepend-icon="mdi-logout" title="Logout" />
+      <VListItem
+        @click="authStore.logout"
+        prepend-icon="mdi-logout"
+        title="Logout"
+      />
     </VList>
   </VMenu>
 </template>

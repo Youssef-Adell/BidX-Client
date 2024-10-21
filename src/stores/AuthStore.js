@@ -72,5 +72,20 @@ export const useAuthStore = defineStore("auth", {
         this.loading = false;
       }
     },
+
+    async logout() {
+      try {
+        this.loading = true;
+        await apiClient.post("/auth/logout", null, {
+          withCredentials: true,
+          requiresAuth: true,
+        });
+      } catch (errorResponse) {
+      } finally {
+        this.loading = false;
+        this.user = null;
+        this.accessToken = null;
+      }
+    },
   },
 });
