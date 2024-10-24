@@ -1,6 +1,6 @@
 <script setup>
 import { useAuthStore } from "@/stores/AuthStore";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { useDisplay, useTheme } from "vuetify";
 import defaultProfilePicture from "@/assets/default-profile-sm.png";
 
@@ -15,6 +15,10 @@ const toggleTheme = () => {
   isDarkThemeEnabled.value = theme.global.current.value.dark;
   localStorage.setItem("selectedTheme", theme.global.name.value);
 };
+
+const profilePicture = computed(() => {
+  return authStore.user.profilePictureUrl ?? defaultProfilePicture;
+});
 </script>
 
 <template>
@@ -22,7 +26,7 @@ const toggleTheme = () => {
     <template #activator="{ props }">
       <VBtn icon v-bind="props" :density="xs ? 'comfortable' : 'default'">
         <VAvatar
-          :image="authStore.user.profilePictureUrl ?? defaultProfilePicture"
+          :image="profilePicture"
           :density="xs ? 'comfortable' : 'default'"
         />
       </VBtn>
@@ -32,9 +36,7 @@ const toggleTheme = () => {
     <VList>
       <VListItem
         @click=""
-        :prepend-avatar="
-          authStore.user.profilePictureUrl ?? defaultProfilePicture
-        "
+        :prepend-avatar="profilePicture"
         :title="`${authStore.user.firstName} ${authStore.user.lastName}`"
         :subtitle="authStore.user.email"
         append-icon="mdi-open-in-new"

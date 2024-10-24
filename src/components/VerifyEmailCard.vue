@@ -1,6 +1,6 @@
 <script setup>
 import { useAuthStore } from "@/stores/AuthStore";
-import { onMounted, ref } from "vue";
+import { computed, ref } from "vue";
 
 const authStore = useAuthStore();
 
@@ -34,6 +34,10 @@ const resendConfirmationEmail = async () => {
   }
 };
 
+const buttonText = computed(() => {
+  return countdown.value > 0 ? `Resend again in ${countdown.value}s` : "Resend";
+});
+
 const props = defineProps(["email"]);
 </script>
 
@@ -60,7 +64,7 @@ const props = defineProps(["email"]);
 
     <!--Resend Button-->
     <VBtn
-      :text="countdown > 0 ? `Resend again in ${countdown}s` : 'Resend'"
+      :text="buttonText"
       @click="resendConfirmationEmail"
       variant="tonal"
       color="primary"
