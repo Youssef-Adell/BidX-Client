@@ -65,10 +65,12 @@ export const useAuthStore = defineStore("auth", {
 
         this.user = response.data.user;
         this.accessToken = response.data.accessToken;
+
         return true; // Needed for deciding to retry faild requests or not in axios response interceptor
       } catch (errorResponse) {
         this.user = null;
         this.accessToken = null;
+
         return false;
       } finally {
         this.loading = false;

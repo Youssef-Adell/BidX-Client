@@ -5,6 +5,7 @@ const apiClient = axios.create({
   baseURL: "https://bidx.runasp.net/api",
 });
 
+// ---Interceptors---
 // Optionally add the Authorization header based on whether the request requires authentication
 apiClient.interceptors.request.use(
   (config) => {
@@ -15,6 +16,7 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+// Refresh the access token if the response is faild with 401 code and retry the request only once
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -37,7 +39,7 @@ apiClient.interceptors.response.use(
   }
 );
 
-// Helper functions
+// ---Helper functions---
 const setAuthHeader = (config) => {
   const authStore = useAuthStore();
   const token = authStore.accessToken;
