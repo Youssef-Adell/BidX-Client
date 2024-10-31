@@ -2,8 +2,9 @@
 import { useAuthStore } from "@/stores/AuthStore";
 import { ref } from "vue";
 
-const authStore = useAuthStore();
+const emit = defineEmits(["registerDone"]);
 
+const authStore = useAuthStore();
 const user = ref({
   firstname: "",
   lastname: "",
@@ -47,8 +48,6 @@ const register = async (event) => {
     loading.value = false;
   }
 };
-
-const emit = defineEmits(["registerDone"]);
 </script>
 
 <template>

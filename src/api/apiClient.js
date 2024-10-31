@@ -1,16 +1,16 @@
 import { useAuthStore } from "@/stores/AuthStore";
+import { addAuthHeader, normalizeErrorResponse } from "@/utils/apiUtils";
 import axios from "axios";
 
 const apiClient = axios.create({
   baseURL: "https://bidx.runasp.net/api",
 });
 
-// ---Interceptors---
 // Optionally add the Authorization header based on whether the request requires authentication
 apiClient.interceptors.request.use(
   (config) => {
     const requiresAuth = config.requiresAuth; // Custom property to indicate if auth is required
-    if (requiresAuth) setAuthHeader(config);
+    if (requiresAuth) addAuthHeader(config);
     return config;
   },
   (error) => Promise.reject(error)
@@ -29,36 +29,14 @@ apiClient.interceptors.response.use(
       const tokenRefreshed = await authStore.refreshToken();
 
       if (tokenRefreshed) {
-        setAuthHeader(error.config);
+        addAuthHeader(error.config);
         error.config.__isRetryRequest = true; // Mark the request as a retry to avoid infinite loops
         return apiClient(error.config); // Retry the original request with new access token
       }
     }
 
-    return Promise.reject(getUnifiedErrorResponse(error));
+    return Promise.reject(normalizeErrorResponse(error));
   }
 );
-
-// ---Helper functions---
-const setAuthHeader = (config) => {
-  const authStore = useAuthStore();
-  const token = authStore.accessToken;
-  if (token) config.headers.Authorization = `Bearer ${token}`;
-};
-
-const getUnifiedErrorResponse = (error) => {
-  let errorResponse;
-
-  if (error.code === "ERR_NETWORK") {
-    errorResponse = {
-      errorCode: "CLIENT_ERROR",
-      errorMessages: ["Oops! Something went wrong!"],
-    };
-  } else {
-    errorResponse = error.response.data;
-  }
-
-  return errorResponse;
-};
 
 export default apiClient;

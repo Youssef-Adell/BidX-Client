@@ -1,3 +1,7 @@
+<script setup>
+import CreateAuctionButton from "@/components/CreateAuctionButton.vue";
+</script>
+
 <template>
-  <VContainer> Home </VContainer>
+  <CreateAuctionButton />
 </template>

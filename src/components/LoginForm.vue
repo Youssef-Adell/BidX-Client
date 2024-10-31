@@ -4,9 +4,10 @@ import { useAuthStore } from "@/stores/AuthStore";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 
+const emit = defineEmits(["emailNotConfirmed"]);
+
 const authStore = useAuthStore();
 const router = useRouter();
-
 const email = ref("");
 const password = ref("");
 const passwordVisible = ref(false);
@@ -46,8 +47,6 @@ const login = async (event) => {
     loading.value = false;
   }
 };
-
-const emit = defineEmits(["emailNotConfirmed"]);
 </script>
 
 <template>

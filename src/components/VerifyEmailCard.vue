@@ -2,13 +2,18 @@
 import { useAuthStore } from "@/stores/AuthStore";
 import { computed, ref } from "vue";
 
-const authStore = useAuthStore();
+const props = defineProps(["email"]);
 
+const authStore = useAuthStore();
 const disabled = ref(false);
 const loading = ref(false);
 const error = ref(null);
 const countdown = ref(0);
 let interval = null;
+
+const buttonText = computed(() => {
+  return countdown.value > 0 ? `Resend again in ${countdown.value}s` : "Resend";
+});
 
 const resendConfirmationEmail = async () => {
   try {
@@ -33,12 +38,6 @@ const resendConfirmationEmail = async () => {
     loading.value = false;
   }
 };
-
-const buttonText = computed(() => {
-  return countdown.value > 0 ? `Resend again in ${countdown.value}s` : "Resend";
-});
-
-const props = defineProps(["email"]);
 </script>
 
 <template>

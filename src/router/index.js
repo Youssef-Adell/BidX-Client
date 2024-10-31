@@ -25,6 +25,11 @@ const router = createRouter({
       component: () => import("../views/ForgotPasswordView.vue"),
       meta: { requiresUnAuth: true },
     },
+    {
+      path: "/auctions/create",
+      component: () => import("../views/CreateAuctionView.vue"),
+      meta: { requiresAuth: true },
+    },
   ],
 });
 

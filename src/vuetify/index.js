@@ -4,8 +4,12 @@ import "vuetify/styles";
 
 // Composables
 import { createVuetify } from "vuetify";
+import { VNumberInput } from "vuetify/labs/components";
 
 export default createVuetify({
+  components: {
+    VNumberInput, // Labs components should be explicitly imported here
+  },
   theme: {
     defaultTheme: "light",
     themes: {
