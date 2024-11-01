@@ -21,7 +21,7 @@ apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
     if (
-      error.response.status === 401 &&
+      error.response?.status === 401 &&
       error.config.requiresAuth && // To exclude /refresh endpoint because it shouldn't be retried because this will result into infinite loop
       !error.config.__isRetryRequest
     ) {
