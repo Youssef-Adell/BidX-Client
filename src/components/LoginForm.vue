@@ -3,6 +3,7 @@ import { ErrorCode } from "@/api/errorCodes";
 import { useAuthStore } from "@/stores/AuthStore";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import ErrorBox from "./ErrorBox.vue";
 
 const emit = defineEmits(["emailNotConfirmed"]);
 
@@ -63,11 +64,7 @@ const login = async (event) => {
     </div>
 
     <!--Error Box-->
-    <div v-if="error" class="bg-error py-2 pl-3 rounded text-caption">
-      <span v-for="errorMessage in error.errorMessages">
-        {{ errorMessage }}
-      </span>
-    </div>
+    <ErrorBox :error="error" />
 
     <!--Login Form-->
     <VForm @submit.prevent="login">

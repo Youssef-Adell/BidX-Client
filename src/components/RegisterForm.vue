@@ -1,6 +1,7 @@
 <script setup>
 import { useAuthStore } from "@/stores/AuthStore";
 import { ref } from "vue";
+import ErrorBox from "./ErrorBox.vue";
 
 const emit = defineEmits(["registerDone"]);
 
@@ -64,11 +65,7 @@ const register = async (event) => {
     </div>
 
     <!--Error Box-->
-    <div v-if="error" class="bg-error py-2 pl-3 rounded text-caption">
-      <span v-for="errorMessage in error.errorMessages">
-        {{ errorMessage }}
-      </span>
-    </div>
+    <ErrorBox :error="error" />
 
     <!--Register Form-->
     <VForm @submit.prevent="register">

@@ -1,6 +1,7 @@
 <script setup>
 import { useAuthStore } from "@/stores/AuthStore";
 import { computed, ref } from "vue";
+import ErrorBox from "./ErrorBox.vue";
 
 const props = defineProps(["email"]);
 
@@ -43,11 +44,7 @@ const resendConfirmationEmail = async () => {
 <template>
   <VSheet class="px-10 py-6 text-center" elevation="4" max-width="500" rounded>
     <!--Error Box-->
-    <div v-if="error" class="bg-error py-1 rounded text-caption">
-      <span v-for="errorMessage in error.errorMessages">
-        {{ errorMessage }}
-      </span>
-    </div>
+    <ErrorBox :error="error" centered="true" />
 
     <!--Title-->
     <VIcon icon="mdi-email-check-outline" size="100" color="primary" />

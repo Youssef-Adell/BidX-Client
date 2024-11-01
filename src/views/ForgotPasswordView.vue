@@ -1,4 +1,5 @@
 <script setup>
+import ErrorBox from "@/components/ErrorBox.vue";
 import { useAuthStore } from "@/stores/AuthStore";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
@@ -30,6 +31,7 @@ const forgotPassword = async (event) => {
     await authStore.forgotPassword(email.value);
     router.push("/login");
   } catch (errorResponse) {
+    console.log(errorResponse);
     error.value = errorResponse;
   } finally {
     loading.value = false;
@@ -52,11 +54,7 @@ const forgotPassword = async (event) => {
       </div>
 
       <!--Error Box-->
-      <div v-if="error" class="bg-error py-2 pl-3 rounded text-caption">
-        <span v-for="errorMessage in error.errorMessages">
-          {{ errorMessage }}
-        </span>
-      </div>
+      <ErrorBox :error="error" />
 
       <div class="py-2">
         Enter the email address associated with your account and we'll send you
