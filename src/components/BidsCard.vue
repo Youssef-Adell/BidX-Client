@@ -2,6 +2,7 @@
 import Bid from "./Bid.vue";
 import { fetchAuctionBids } from "@/api/services/bidsService";
 import { computed, onBeforeMount, ref } from "vue";
+import { useDisplay } from "vuetify";
 
 const props = defineProps({
   auctionId: {
@@ -22,6 +23,7 @@ const props = defineProps({
   },
 });
 
+const { smAndDown } = useDisplay();
 const bids = ref([]);
 const form = ref({
   bidAmount: props.currentPrice + props.minBidIncrement,
@@ -56,7 +58,9 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <div class="d-flex mt-4 justify-md-end">
+  <div
+    :class="['d-flex mt-4 justify-md-end', { 'mb-12 mb-md-0': !amIAuctioneer }]"
+  >
     <VSheet class="w-100 w-md-50 pa-5" elevation="4" rounded>
       <section>
         <h2 class="text-subtitle-2 text-high-emphasis mb-2">Bids</h2>
@@ -74,7 +78,14 @@ onBeforeMount(() => {
         </VInfiniteScroll>
 
         <!--Place Bid Form-->
-        <VForm v-if="!amIAuctioneer" @submit.prevent="placeBid">
+        <VForm
+          v-if="!amIAuctioneer"
+          @submit.prevent="placeBid"
+          :class="{
+            'position-fixed bottom-0 right-0 left-0 elevation-4': smAndDown,
+          }"
+          style="z-index: 9999"
+        >
           <VNumberInput
             v-model="form.bidAmount"
             control-variant="split"
@@ -88,6 +99,7 @@ onBeforeMount(() => {
             :min="minBidAmountAllowed"
             :step="minBidIncrement"
             :rules="[(value) => (value >= minBidAmountAllowed ? true : false)]"
+            :tile="smAndDown"
             hide-details
             inset
           />
