@@ -30,6 +30,10 @@ const router = createRouter({
       component: () => import("../views/CreateAuctionView.vue"),
       meta: { requiresAuth: true },
     },
+    {
+      path: "/auctions/:id",
+      component: () => import("../views/AuctionView.vue"),
+    },
   ],
 });
 

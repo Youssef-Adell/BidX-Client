@@ -4,10 +4,10 @@ import { computed } from "vue";
 import { useDisplay } from "vuetify";
 
 const authStore = useAuthStore();
-const { sm } = useDisplay();
+const { smAndDown } = useDisplay();
 
 const spaceFromRight = computed(() => {
-  return sm.value ? "20px" : "36px";
+  return smAndDown.value ? "20px" : "36px";
 });
 </script>
 

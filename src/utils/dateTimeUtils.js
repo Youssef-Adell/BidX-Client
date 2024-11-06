@@ -4,3 +4,14 @@ export function durationToSeconds(duration) {
   const minutesInSeconds = (duration.minutes || 0) * 60;
   return daysInSeconds + hoursInSeconds + minutesInSeconds;
 }
+
+export function formatDate(date) {
+  return new Date(date).toLocaleString("en-us", {
+    weekday: "long",
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+  });
+}
