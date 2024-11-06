@@ -1,5 +1,6 @@
 <script setup>
 import AuctionDetailsCard from "@/components/AuctionDetailsCard.vue";
+import BidsCard from "@/components/BidsCard.vue";
 import { useAuctionStore } from "@/stores/AuctionStore";
 import { onBeforeMount } from "vue";
 import { useRoute } from "vue-router";
@@ -22,6 +23,15 @@ onBeforeMount(async () => {
       indeterminate
     />
 
-    <AuctionDetailsCard v-else :auction="auctionStore.auction" />
+    <template v-else>
+      <AuctionDetailsCard :auction="auctionStore.auction" />
+      <BidsCard
+        v-if="auctionStore.isActive"
+        :auction-id="auctionStore.auction.id"
+        :current-price="auctionStore.auction.currentPrice"
+        :min-bid-increment="auctionStore.auction.minBidIncrement"
+        :am-i-auctioneer="auctionStore.amIAuctioneer"
+      />
+    </template>
   </VContainer>
 </template>
