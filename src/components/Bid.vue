@@ -10,15 +10,21 @@ defineProps({
     type: Boolean,
     default: false,
   },
+  winning: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const acceptTheBid = () => {};
 </script>
 
 <template>
-  <div class="d-flex flex-column border rounded mb-2">
+  <div
+    :class="['d-flex flex-column border rounded', { 'border-s-xl': winning }]"
+  >
     <!--Bid Info-->
-    <div class="d-flex justify-space-between align-center px-3">
+    <div class="d-flex justify-space-between align-center px-2 px-sm-3">
       <UserProfileSummary :profile="bid.bidder" />
 
       <div class="text-subtitle-2">

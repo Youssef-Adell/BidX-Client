@@ -19,7 +19,7 @@ const props = defineProps({
   },
   amIAuctioneer: {
     type: Boolean,
-    required: true,
+    default: false,
   },
 });
 
@@ -73,7 +73,7 @@ onBeforeMount(() => {
           @load="loadMoreBids"
         >
           <template v-for="bid in bids" :key="bid.id">
-            <Bid :bid="bid" :am-i-auctioneer="amIAuctioneer" />
+            <Bid :bid="bid" :am-i-auctioneer="amIAuctioneer" class="mb-2" />
           </template>
         </VInfiniteScroll>
 
