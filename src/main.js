@@ -10,15 +10,19 @@ import App from "./App.vue";
 import { createApp } from "vue";
 import { useAuthStore } from "./stores/AuthStore";
 
-const app = createApp(App);
+async function initializeApp() {
+  const app = createApp(App);
 
-app.use(vuetify);
+  app.use(vuetify);
+  app.use(pinia);
 
-app.use(pinia);
+  // Intialize the state of authStore before registering router plugin because navigation guards depends on it
+  const authStore = useAuthStore();
+  await authStore.refreshToken();
 
-// Intialize the state of authStore before registering router plugin because navigation guards depends on it
-await useAuthStore().refreshToken();
+  app.use(router);
 
-app.use(router);
+  app.mount("#app");
+}
 
-app.mount("#app");
+initializeApp();
