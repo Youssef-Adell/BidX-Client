@@ -3,13 +3,23 @@ import { defineStore } from "pinia";
 export const useAuctionStore = defineStore("auction", {
   state: () => ({
     auction: null,
+    acceptedBid: {
+      id: 0,
+      amount: 1200,
+      bidTime: "2024-11-03T22:36:43.003Z",
+      auctionId: 0,
+      bidder: {
+        id: 0,
+        name: "Abdelrhman Adel",
+        profilePictureUrl: "https://picsum.photos/250",
+      },
+    },
     loading: false,
   }),
 
   getters: {
     isActive() {
       const timeRemaning = Date.parse(this.auction.endTime) - Date.now();
-      console.log(timeRemaning);
       return timeRemaning > 0;
     },
     amIWinner() {
@@ -33,7 +43,7 @@ export const useAuctionStore = defineStore("auction", {
           currentPrice: 1600,
           minBidIncrement: 100,
           startTime: "2024-11-04T09:32:23.794Z",
-          endTime: "2024-11-07T20:48:00.000Z",
+          endTime: "2024-11-04T20:48:00.000Z",
           category: "Mobiles",
           city: "Cairo",
           auctioneer: {
