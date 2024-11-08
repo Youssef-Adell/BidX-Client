@@ -1,6 +1,7 @@
 <script setup>
 import AuctionDetailsCard from "@/components/AuctionDetailsCard.vue";
 import BidsCard from "@/components/BidsCard.vue";
+import ReviewCard from "@/components/ReviewCard.vue";
 import WinningBidCard from "@/components/WinningBidCard.vue";
 import { useAuctionStore } from "@/stores/AuctionStore";
 import { onBeforeMount } from "vue";
@@ -35,14 +36,26 @@ onBeforeMount(async () => {
         :am-i-auctioneer="auctionStore.amIAuctioneer"
       />
 
-      <WinningBidCard
-        v-else
-        :auction-id="auctionStore.auction.id"
-        :am-i-auctioneer="auctionStore.amIAuctioneer"
-        :am-i-winner="auctionStore.amIWinner"
-        :auctioneer-id="auctionStore.auction.auctioneer.id"
-        :accepted-bid="auctionStore.acceptedBid"
-      />
+      <template v-else>
+        <WinningBidCard
+          :auction-id="auctionStore.auction.id"
+          :am-i-auctioneer="auctionStore.amIAuctioneer"
+          :am-i-winner="auctionStore.amIWinner"
+          :auctioneer-id="auctionStore.auction.auctioneer.id"
+          :accepted-bid="auctionStore.acceptedBid"
+        />
+
+        <ReviewCard
+          v-if="
+            auctionStore.amIWinner ||
+            (auctionStore.amIAuctioneer && auctionStore.hasWinner)
+          "
+          :am-i-auctioneer="auctionStore.amIAuctioneer"
+          :am-i-winner="auctionStore.amIWinner"
+          :auctioneer-id="auctionStore.auction.auctioneer.id"
+          :winner-id="auctionStore.auction.winnerId"
+        />
+      </template>
     </template>
   </VContainer>
 </template>

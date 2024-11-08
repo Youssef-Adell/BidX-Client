@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { useAuthStore } from "./AuthStore";
 
 export const useAuctionStore = defineStore("auction", {
   state: () => ({
@@ -23,10 +24,13 @@ export const useAuctionStore = defineStore("auction", {
       return timeRemaning > 0;
     },
     amIWinner() {
-      return true;
+      return false;
     },
     amIAuctioneer() {
-      return false;
+      return true;
+    },
+    hasWinner() {
+      return this.auction.winnerId !== null;
     },
   },
   actions: {
@@ -47,7 +51,7 @@ export const useAuctionStore = defineStore("auction", {
           category: "Mobiles",
           city: "Cairo",
           auctioneer: {
-            id: 12,
+            id: 1,
             name: "Youssef Wahba",
             profilePictureUrl: "https://picsum.photos/250",
             rating: 3,
