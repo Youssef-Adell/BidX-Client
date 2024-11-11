@@ -4,21 +4,37 @@ import BidsCard from "@/components/BidsCard.vue";
 import ReviewCard from "@/components/ReviewCard.vue";
 import WinningBidCard from "@/components/WinningBidCard.vue";
 import { useAuctionStore } from "@/stores/AuctionStore";
-import { onBeforeMount } from "vue";
+import { onBeforeMount, ref } from "vue";
 import { useRoute } from "vue-router";
 
 const route = useRoute();
 const auctionStore = useAuctionStore();
+const loading = ref(true);
 
 onBeforeMount(async () => {
-  await auctionStore.loadAuction(route.params.id);
+  try {
+    await auctionStore.loadAuction(route.params.id);
+
+    if (auctionStore.isActive) {
+      await auctionStore.loadBids();
+    } else {
+      await Promise.all([
+        auctionStore.loadAcceptedBid(),
+        auctionStore.loadMyReview(),
+      ]);
+    }
+  } catch (errorResponse) {
+    console.log(errorResponse);
+  } finally {
+    loading.value = false;
+  }
 });
 </script>
 
 <template>
   <VContainer class="d-flex justify-center flex-column h-100">
     <VProgressCircular
-      v-if="auctionStore.loading"
+      v-if="loading"
       class="align-self-center"
       color="primary"
       size="40"
@@ -26,34 +42,16 @@ onBeforeMount(async () => {
     />
 
     <template v-else>
-      <AuctionDetailsCard :auction="auctionStore.auction" />
+      <AuctionDetailsCard />
 
-      <BidsCard
-        v-if="auctionStore.isActive"
-        :auction-id="auctionStore.auction.id"
-        :current-price="auctionStore.auction.currentPrice"
-        :min-bid-increment="auctionStore.auction.minBidIncrement"
-        :am-i-auctioneer="auctionStore.amIAuctioneer"
-      />
-
+      <BidsCard v-if="auctionStore.isActive" />
       <template v-else>
-        <WinningBidCard
-          :auction-id="auctionStore.auction.id"
-          :am-i-auctioneer="auctionStore.amIAuctioneer"
-          :am-i-winner="auctionStore.amIWinner"
-          :auctioneer-id="auctionStore.auction.auctioneer.id"
-          :accepted-bid="auctionStore.acceptedBid"
-        />
-
+        <WinningBidCard />
         <ReviewCard
           v-if="
             auctionStore.amIWinner ||
             (auctionStore.amIAuctioneer && auctionStore.hasWinner)
           "
-          :am-i-auctioneer="auctionStore.amIAuctioneer"
-          :am-i-winner="auctionStore.amIWinner"
-          :auctioneer-id="auctionStore.auction.auctioneer.id"
-          :winner-id="auctionStore.auction.winnerId"
         />
       </template>
     </template>

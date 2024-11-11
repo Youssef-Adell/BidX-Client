@@ -1,53 +1,20 @@
-export function fetchAuctionBids(auctionId) {
-  try {
-    const response = [
-      {
-        id: 0,
-        amount: 1200,
-        bidTime: "2024-11-03T22:36:43.003Z",
-        auctionId: 0,
-        bidder: {
-          id: 0,
-          name: "Abdelrhman Adel",
-          profilePictureUrl: "https://picsum.photos/250",
-        },
-      },
-      {
-        id: 0,
-        amount: 1200,
-        bidTime: "2024-11-03T22:36:43.003Z",
-        auctionId: 0,
-        bidder: {
-          id: 0,
-          name: "Abdelrhman Adel",
-          profilePictureUrl: "https://picsum.photos/250",
-        },
-      },
-      {
-        id: 0,
-        amount: 1200,
-        bidTime: "2024-11-03T22:36:43.003Z",
-        auctionId: 0,
-        bidder: {
-          id: 0,
-          name: "Abdelrhman Adel",
-          profilePictureUrl: "https://picsum.photos/250",
-        },
-      },
-      {
-        id: 0,
-        amount: 1200,
-        bidTime: "2024-11-03T22:36:43.003Z",
-        auctionId: 0,
-        bidder: {
-          id: 0,
-          name: "Abdelrhman Adel",
-          profilePictureUrl: "https://picsum.photos/250",
-        },
-      },
-    ];
+import apiClient from "../apiClient";
 
-    return response;
+export async function fetchAuctionBids(auctionId) {
+  try {
+    const response = await apiClient.get(`auctions/${auctionId}/bids`);
+    return response.data;
+  } catch (errorResponse) {
+    throw errorResponse;
+  }
+}
+
+export async function fetchAcceptedBid(auctionId) {
+  try {
+    const response = await apiClient.get(
+      `auctions/${auctionId}/bids/accepted-bid`
+    );
+    return response.data;
   } catch (errorResponse) {
     throw errorResponse;
   }

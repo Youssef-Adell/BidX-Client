@@ -14,3 +14,13 @@ export async function addAuction(auction) {
     throw errorResponse;
   }
 }
+
+export async function fetchAuction(auctionId) {
+  try {
+    const response = await apiClient.get(`/auctions/${auctionId}`);
+
+    return response.data;
+  } catch (errorResponse) {
+    throw errorResponse;
+  }
+}

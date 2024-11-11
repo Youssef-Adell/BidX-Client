@@ -1,30 +1,9 @@
 <script setup>
-import { addReview, deleteMyReview } from "@/api/services/reviewsService";
-import { computed, onBeforeMount, ref } from "vue";
+import { addReview } from "@/api/services/reviewsService";
+import { useAuctionStore } from "@/stores/AuctionStore";
+import { onBeforeMount, ref } from "vue";
 
-const props = defineProps({
-  amIAuctioneer: {
-    type: Boolean,
-    required: true,
-  },
-  amIWinner: {
-    type: Boolean,
-    required: true,
-  },
-  auctioneerId: {
-    type: Number,
-    required: true,
-  },
-  winnerId: {
-    type: Number,
-    required: true,
-  },
-});
-
-const review = ref({
-  rating: 1,
-  comment: "",
-});
+const auctionStore = useAuctionStore();
 
 const form = ref({
   loading: false,
@@ -32,31 +11,29 @@ const form = ref({
   isEditing: false,
 });
 
-const placeholder = props.amIAuctioneer
+const placeholder = auctionStore.amIAuctioneer
   ? "Share your experience with the winner: Did he finalize the purchase as expected?"
   : "Share your experience with the auctioneer: Did he complete the sale as expected?";
 
-const revieweeId = props.amIAuctioneer ? props.winnerId : props.auctioneerId;
+const revieweeId = auctionStore.amIAuctioneer
+  ? auctionStore.auction?.winnerId
+  : auctionStore.auction?.auctioneer.id;
 
 const handleSubmit = async () => {
   try {
     form.value.loading = true;
 
     if (form.value.isEditing) {
-      //   await updateMyReview(revieweeId, review.value);
+      await updateMyReview(revieweeId, auctionStore.myReview);
     } else {
-      //   review.value = await addReview(revieweeId, review.value);
+      await addReview(revieweeId, auctionStore.myReview);
     }
 
-    setTimeout(() => {
-      form.value.submitted = true;
-      form.value.isEditing = false;
-    }, 1000);
+    form.value.submitted = true;
+    form.value.isEditing = false;
   } catch {
   } finally {
-    setTimeout(() => {
-      form.value.loading = false;
-    }, 1000);
+    form.value.loading = false;
   }
 };
 
@@ -68,26 +45,16 @@ const editReview = () => {
 const deleteReview = async () => {
   try {
     form.value.loading = true;
-
-    // await deleteMyReview(revieweeId);
-
-    setTimeout(() => {
-      review.value.rating = 1;
-      review.value.comment = "";
-      form.value.submitted = false;
-    }, 1000);
+    await auctionStore.deleteMyReview();
+    form.value.submitted = false;
   } catch {
   } finally {
-    setTimeout(() => {
-      form.value.loading = false;
-    }, 1000);
+    form.value.loading = false;
   }
 };
 
-onBeforeMount(async () => {
-  try {
-    // review.value = await fetchMyReview(revieweeId);
-  } catch {}
+onBeforeMount(() => {
+  form.value.submitted = auctionStore.didIReview;
 });
 </script>
 
@@ -102,7 +69,7 @@ onBeforeMount(async () => {
           class="d-flex flex-column align-center"
         >
           <VRating
-            v-model="review.rating"
+            v-model="auctionStore.myReview.rating"
             length="5"
             color="yellow-darken-3"
             hover
@@ -110,7 +77,7 @@ onBeforeMount(async () => {
           />
 
           <VTextarea
-            v-model="review.comment"
+            v-model="auctionStore.myReview.comment"
             class="mt-2 w-100"
             density="compact"
             variant="outlined"
@@ -120,6 +87,7 @@ onBeforeMount(async () => {
             :disabled="form.submitted"
           />
 
+          <!--Buttons Shows If I Reviewed-->
           <div v-if="form.submitted" class="d-flex align-self-end mt-4">
             <VBtn
               text="Delete"
@@ -140,6 +108,7 @@ onBeforeMount(async () => {
             />
           </div>
 
+          <!--Button Shows If I didn't Reviewed or While Editing My Review-->
           <VBtn
             v-else
             :text="form.isEditing ? 'Update' : 'Submit'"

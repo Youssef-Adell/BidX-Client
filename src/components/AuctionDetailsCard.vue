@@ -1,17 +1,12 @@
 <script setup>
 import AuctionCountdown from "@/components/AuctionCountdown.vue";
 import UserProfileSummary from "@/components/UserProfileSummary.vue";
+import { useAuctionStore } from "@/stores/AuctionStore";
 import { formatDate } from "@/utils/dateTimeUtils";
 import { useDisplay } from "vuetify";
 
-defineProps({
-  auction: {
-    type: Object,
-    required: true,
-  },
-});
-
 const { smAndDown } = useDisplay();
+const auctionStore = useAuctionStore();
 </script>
 
 <template>
@@ -26,7 +21,7 @@ const { smAndDown } = useDisplay();
           hide-delimiter-background
         >
           <VCarouselItem
-            v-for="(image, i) in auction?.images"
+            v-for="(image, i) in auctionStore.auction?.images"
             :key="i"
             :src="image"
           />
@@ -37,16 +32,16 @@ const { smAndDown } = useDisplay();
       <VCol cols="12" md="6" class="pa-5">
         <section>
           <h1 class="text-h6 text-sm-h5 text-high-emphasis">
-            {{ auction?.productName }}
+            {{ auctionStore.auction?.productName }}
           </h1>
 
           <!--Creator & CurrentPrice-->
           <section class="d-flex justify-space-between align-center mt-2">
-            <UserProfileSummary :profile="auction?.auctioneer" />
+            <UserProfileSummary :profile="auctionStore.auction?.auctioneer" />
             <div
               class="px-2 py-1 rounded border bg-primary text-caption font-weight-bold"
             >
-              {{ `${auction?.currentPrice} EGP` }}
+              {{ `${auctionStore.auction?.currentPrice} EGP` }}
             </div>
           </section>
 
@@ -57,20 +52,20 @@ const { smAndDown } = useDisplay();
               <tbody>
                 <tr>
                   <td class="pl-0">Condition</td>
-                  <td>{{ auction?.productCondition }}</td>
+                  <td>{{ auctionStore.auction?.productCondition }}</td>
                 </tr>
                 <tr>
                   <td class="pl-0">Category</td>
-                  <td>{{ auction?.category }}</td>
+                  <td>{{ auctionStore.auction?.category }}</td>
                 </tr>
                 <tr>
                   <td class="pl-0">City</td>
-                  <td>{{ auction?.city }}</td>
+                  <td>{{ auctionStore.auction?.city }}</td>
                 </tr>
                 <tr>
                   <td class="pl-0">Posted at</td>
                   <td>
-                    {{ formatDate(auction?.startTime) }}
+                    {{ formatDate(auctionStore.auction?.startTime) }}
                   </td>
                 </tr>
               </tbody>
@@ -78,17 +73,20 @@ const { smAndDown } = useDisplay();
           </section>
 
           <!--Description-->
-          <section class="mt-4">
+          <section v-if="auctionStore.auction?.productDescription" class="mt-4">
             <h2 class="text-subtitle-2 text-high-emphasis">Description</h2>
             <p class="text-body-2">
-              {{ auction?.productDescription }}
+              {{ auctionStore.auction?.productDescription }}
             </p>
           </section>
 
           <!--Auction Ending-->
           <section class="mt-4">
             <h2 class="text-subtitle-2 text-high-emphasis">Auction Ends in</h2>
-            <AuctionCountdown class="mt-2" :endtime="auction?.endTime" />
+            <AuctionCountdown
+              class="mt-2"
+              :endtime="auctionStore.auction?.endTime"
+            />
           </section>
         </section>
       </VCol>
