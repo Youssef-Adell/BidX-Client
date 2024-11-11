@@ -8,6 +8,8 @@ export function objectToFormData(object) {
     if (object.hasOwnProperty(key)) {
       const value = object[key];
 
+      if (value === null) continue;
+
       if (Array.isArray(value)) {
         value.forEach((item) => formData.append(key, item)); // my backend expects arrays properties in this form
       } else {
