@@ -1,5 +1,5 @@
 <script setup>
-import { addReview } from "@/api/services/reviewsService";
+import { addReview, updateMyReview } from "@/api/services/reviewsService";
 import { useAuctionStore } from "@/stores/AuctionStore";
 import { onBeforeMount, ref } from "vue";
 
@@ -31,7 +31,8 @@ const handleSubmit = async () => {
 
     form.value.submitted = true;
     form.value.isEditing = false;
-  } catch {
+  } catch (error) {
+    console.log(error);
   } finally {
     form.value.loading = false;
   }
@@ -77,6 +78,10 @@ onBeforeMount(() => {
           />
 
           <VTextarea
+            v-if="
+              !form.submitted ||
+              (form.submitted && auctionStore.myReview.comment)
+            "
             v-model="auctionStore.myReview.comment"
             class="mt-2 w-100"
             density="compact"

@@ -1,3 +1,5 @@
+import apiClient from "../apiClient";
+
 export async function addReview(revieweeId, review) {
   try {
     const response = await apiClient.post(
@@ -16,7 +18,6 @@ export async function fetchMyReview(revieweeId) {
   try {
     const response = await apiClient.get(
       `/users/${revieweeId}/reviews/my-review`,
-      null,
       { requiresAuth: true }
     );
 
@@ -38,7 +39,7 @@ export async function updateMyReview(revieweeId, review) {
 
 export async function deleteMyReview(revieweeId) {
   try {
-    await apiClient.delete(`/users/${revieweeId}/reviews/my-review`, review, {
+    await apiClient.delete(`/users/${revieweeId}/reviews/my-review`, {
       requiresAuth: true,
     });
   } catch (errorResponse) {
