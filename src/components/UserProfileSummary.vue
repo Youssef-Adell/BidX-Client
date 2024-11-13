@@ -1,4 +1,6 @@
 <script setup>
+import defaultProfilePicture from "@/assets/default-profile-sm.png";
+
 defineProps({
   profile: {
     type: Object,
@@ -12,7 +14,7 @@ defineProps({
     <!--Profile Picture-->
     <div class="mr-2">
       <RouterLink :to="`profile/${profile?.id}`">
-        <VAvatar :image="profile?.profilePictureUrl" />
+        <VAvatar :image="profile?.profilePictureUrl ?? defaultProfilePicture" />
       </RouterLink>
     </div>
 
