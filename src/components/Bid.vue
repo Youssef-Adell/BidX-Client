@@ -1,7 +1,9 @@
 <script setup>
 import UserProfileSummary from "./UserProfileSummary.vue";
+import { useSignalRStore } from "@/stores/SignalRStore";
+import { ref } from "vue";
 
-defineProps({
+const props = defineProps({
   bid: {
     type: Object,
     required: true,
@@ -16,7 +18,19 @@ defineProps({
   },
 });
 
-const acceptTheBid = () => {};
+const loading = ref(false);
+
+const signalRStore = useSignalRStore();
+
+const acceptTheBid = async () => {
+  try {
+    loading.value = true;
+    await signalRStore.acceptBid(props.bid.id);
+  } catch {
+  } finally {
+    loading.value = false;
+  }
+};
 </script>
 
 <template>

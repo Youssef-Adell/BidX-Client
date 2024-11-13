@@ -9,6 +9,7 @@ import App from "./App.vue";
 // Composables
 import { createApp } from "vue";
 import { useAuthStore } from "./stores/AuthStore";
+import { useSignalRStore } from "./stores/SignalRStore";
 
 async function initializeApp() {
   const app = createApp(App);
@@ -16,12 +17,15 @@ async function initializeApp() {
   app.use(vuetify);
   app.use(pinia);
 
-  // Intialize the state of authStore before registering router plugin because navigation guards depends on it
+  // Intialize the state of authStore before registering router plugin because navigation guards & signalR depends on it
   const authStore = useAuthStore();
   await authStore.refreshToken();
 
-  app.use(router);
+  const signalRStore = useSignalRStore();
+  await signalRStore.startConnection();
+  app.onUnmount(() => signalRStore.stopConnection());
 
+  app.use(router);
   app.mount("#app");
 }
 

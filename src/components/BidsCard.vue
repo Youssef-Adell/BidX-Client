@@ -2,14 +2,16 @@
 import Bid from "./Bid.vue";
 import { useAuctionStore } from "@/stores/AuctionStore";
 import { useAuthStore } from "@/stores/AuthStore";
+import { useSignalRStore } from "@/stores/SignalRStore";
 import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useDisplay } from "vuetify";
 
 const { smAndDown } = useDisplay();
 const router = useRouter();
-const auctionStore = useAuctionStore();
 const authStore = useAuthStore();
+const auctionStore = useAuctionStore();
+const signalRStore = useSignalRStore();
 
 const form = ref({
   bidAmount:
@@ -37,13 +39,14 @@ const placeBid = async (event) => {
   const { valid } = await event;
   if (!valid) return;
 
-  form.value.loading = true;
-  console.log(form.value.bidAmount);
-
-  setTimeout(() => {
-    form.value.loading = false;
+  try {
+    form.value.loading = true;
+    await signalRStore.placeBid(auctionStore.auction.id, form.value.bidAmount);
     form.value.bidAmount = minBidAmountAllowed.value;
-  }, 1000);
+  } catch {
+  } finally {
+    form.value.loading = false;
+  }
 };
 </script>
 
