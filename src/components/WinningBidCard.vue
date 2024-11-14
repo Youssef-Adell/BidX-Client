@@ -15,7 +15,6 @@ const contact = async () => {
     : auctionStore.auction.auctioneer.id;
 
   const chat = await intiateChat(receiverId);
-  console.log(chat);
 };
 </script>
 
@@ -25,32 +24,23 @@ const contact = async () => {
       <section>
         <h2 class="text-subtitle-2 text-high-emphasis mb-2">Winning Bid</h2>
 
-        <!--There is no Winner-->
-        <div
-          v-if="!auctionStore.acceptedBid"
-          class="d-flex flex-column align-center"
-        >
-          <VIcon icon="mdi-emoticon-cry-outline" />
-          <div class="text-body-2 text-center">
-            Unfortunately<br />There’s No Winning Bid!
-          </div>
-        </div>
-
         <!--There is a winner-->
-        <template v-else>
+        <template v-if="auctionStore.hasWinner">
+          <!--I am the winner-->
           <div
             v-if="auctionStore.amIWinner"
             class="d-flex flex-column align-center"
           >
-            <VIcon icon="mdi-charity" color="primary" />
+            <VIcon icon="mdi-seal" color="primary" size="50" />
             <div class="text-body-2 text-center">
-              Congratulations!<br />You Won the Auction!
+              Congratulations!<br />You Won The Auction!
             </div>
           </div>
 
+          <!--Anybody else is the winner-->
           <Bid v-else :bid="auctionStore.acceptedBid" winning />
 
-          <!--Contact Button for the auctioner or the Winner-->
+          <!--Contact Button if i am an auctioneer or a Winner-->
           <VBtn
             v-if="auctionStore.amIAuctioneer || auctionStore.amIWinner"
             :text="contactButtonText"
@@ -62,6 +52,12 @@ const contact = async () => {
             block
           />
         </template>
+
+        <!--There is no Winner-->
+        <div v-else class="d-flex flex-column align-center pb-5">
+          <VIcon icon="mdi-emoticon-sad-outline" size="45" />
+          <div class="text-body-2 text-center">Nobody Won!</div>
+        </div>
       </section>
     </VSheet>
   </div>
