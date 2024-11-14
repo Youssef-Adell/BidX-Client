@@ -80,13 +80,10 @@ const auctionStore = useAuctionStore();
             </p>
           </section>
 
-          <!--Auction Ending-->
+          <!--Time Remaning-->
           <section class="mt-4">
-            <h2 class="text-subtitle-2 text-high-emphasis">Auction Ends in</h2>
-            <AuctionCountdown
-              class="mt-2"
-              :endtime="auctionStore.auction?.endTime"
-            />
+            <h2 class="text-subtitle-2 text-high-emphasis">Time Remaning</h2>
+            <AuctionCountdown class="mt-2" />
           </section>
         </section>
       </VCol>

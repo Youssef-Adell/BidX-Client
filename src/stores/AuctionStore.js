@@ -72,10 +72,10 @@ export const useAuctionStore = defineStore("auction", {
           });
 
           signalRStore.onBidAccepted((bid) => {
-            this.auction.endTime = new Date().toLocaleString();
             this.auction.winnerId = bid.bidder.id;
             this.auction.currentPrice = bid.amount;
             this.acceptedBid = bid;
+            this.endAuction();
           });
         } else {
           const loadAcceptedBid = async () => {
@@ -123,6 +123,12 @@ export const useAuctionStore = defineStore("auction", {
 
       this.myReview.rating = 1;
       this.myReview.comment = "";
+    },
+
+    endAuction() {
+      if (this.isActive) {
+        this.auction.endTime = new Date().toISOString(); // Convert it to ISO to be able to parse it in the countdown
+      }
     },
   },
 });

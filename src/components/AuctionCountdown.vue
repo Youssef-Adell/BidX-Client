@@ -1,51 +1,33 @@
 <script setup>
-import { ref } from "vue";
 import VueCountdown from "@chenfengyuan/vue-countdown";
+import { useAuctionStore } from "@/stores/AuctionStore";
+import { computed } from "vue";
 
-const props = defineProps({
-  endtime: {
-    type: String,
-    required: true,
-  },
+const auctionStore = useAuctionStore();
+
+const remainingTimeInMs = computed(() => {
+  return Date.parse(auctionStore.auction?.endTime) - Date.now();
 });
-
-const remainingInMilliseconds = Date.parse(props.endtime) - Date.now();
-
-const auctionEnded = ref(remainingInMilliseconds <= 0);
-
-const onAuctionEnded = () => {
-  auctionEnded.value = true;
-};
 
 const formatProps = (props) => {
   const formattedProps = {};
-
+  // Add 0 prefix for all numbers less than 10
   Object.entries(props).forEach(([key, value]) => {
     formattedProps[key] = value < 10 ? `0${value}` : `${value}`;
   });
-
   return formattedProps;
 };
 </script>
 
 <template>
   <div>
-    <!--Auction Has Ended-->
-    <div
-      v-if="auctionEnded"
-      class="d-flex flex-column justify-center align-center text-caption font-weight-bold text-error"
-    >
-      <VIcon icon="mdi-timer-alert" size="20" />
-      <span>The Auction Has Ended</span>
-    </div>
-
-    <!--Auction Countdown-->
+    <!--Auction is active-->
     <VueCountdown
-      v-else
-      :time="remainingInMilliseconds"
+      v-if="auctionStore.isActive"
+      :time="remainingTimeInMs"
       :transform="formatProps"
-      @end="onAuctionEnded"
       #default="{ days, hours, minutes, seconds }"
+      @end="auctionStore.endAuction()"
     >
       <div
         class="d-flex justify-center align-center ga-1 text-caption font-weight-bold"
@@ -85,5 +67,14 @@ const formatProps = (props) => {
         </div>
       </div>
     </VueCountdown>
+
+    <!--Auction has ended-->
+    <div
+      v-else
+      class="d-flex flex-column justify-center align-center text-caption font-weight-bold text-error"
+    >
+      <VIcon icon="mdi-timer-alert" size="20" />
+      <span>The Auction Has Ended</span>
+    </div>
   </div>
 </template>
