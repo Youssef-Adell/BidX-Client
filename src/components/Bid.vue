@@ -53,8 +53,9 @@ const acceptTheBid = async () => {
       color="primary"
       variant="flat"
       class="rounded-b"
-      density="comfortable"
+      size="small"
       @click="acceptTheBid"
+      :disabled="!signalRStore.isConnected"
       tile
     />
   </div>

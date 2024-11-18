@@ -100,6 +100,7 @@ const placeBid = async (event) => {
             :step="auctionStore.auction?.minBidIncrement"
             :rules="[(value) => (value >= minBidAmountAllowed ? true : false)]"
             :tile="smAndDown"
+            :readonly="!signalRStore.isConnected"
             hide-details
             inset
           />
@@ -112,6 +113,7 @@ const placeBid = async (event) => {
             type="submit"
             class="rounded-b"
             :loading="form.loading"
+            :disabled="!signalRStore.isConnected"
             block
             tile
           />
