@@ -1,8 +1,9 @@
 <script setup>
+import signalrClient from "@/api/signalrClient";
 import Bid from "./Bid.vue";
 import { useAuctionStore } from "@/stores/AuctionStore";
 import { useAuthStore } from "@/stores/AuthStore";
-import { useSignalRStore } from "@/stores/SignalRStore";
+import { useSignalrStateStore } from "@/stores/SignalrStateStore";
 import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useDisplay } from "vuetify";
@@ -11,7 +12,7 @@ const { smAndDown } = useDisplay();
 const router = useRouter();
 const authStore = useAuthStore();
 const auctionStore = useAuctionStore();
-const signalRStore = useSignalRStore();
+const signalrStateStore = useSignalrStateStore();
 
 const form = ref({
   bidAmount:
@@ -41,9 +42,10 @@ const placeBid = async (event) => {
 
   try {
     form.value.loading = true;
-    await signalRStore.placeBid(auctionStore.auction.id, form.value.bidAmount);
+    await signalrClient.placeBid(auctionStore.auction.id, form.value.bidAmount);
     form.value.bidAmount = minBidAmountAllowed.value;
   } catch {
+    // Supress the error
   } finally {
     form.value.loading = false;
   }
@@ -100,7 +102,7 @@ const placeBid = async (event) => {
             :step="auctionStore.auction?.minBidIncrement"
             :rules="[(value) => (value >= minBidAmountAllowed ? true : false)]"
             :tile="smAndDown"
-            :readonly="!signalRStore.isConnected"
+            :readonly="!signalrStateStore.isConnected"
             hide-details
             inset
           />
@@ -113,7 +115,7 @@ const placeBid = async (event) => {
             type="submit"
             class="rounded-b"
             :loading="form.loading"
-            :disabled="!signalRStore.isConnected"
+            :disabled="!signalrStateStore.isConnected"
             block
             tile
           />

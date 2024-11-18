@@ -3,8 +3,7 @@ import { useAuthStore } from "./AuthStore";
 import { fetchAuction } from "@/api/services/auctionsService";
 import { fetchAcceptedBid, fetchAuctionBids } from "@/api/services/bidsService";
 import { deleteMyReview, fetchMyReview } from "@/api/services/reviewsService";
-import { useSignalRStore } from "./SignalRStore";
-import signalRConnection from "@/api/signalRConnection";
+import signalrClient from "@/api/signalrClient";
 
 export const useAuctionStore = defineStore("auction", {
   state: () => ({
@@ -58,25 +57,9 @@ export const useAuctionStore = defineStore("auction", {
         this.auction = await fetchAuction(auctionId);
 
         if (this.isActive) {
-          // Fetch the bids
           this.bids = await fetchAuctionBids(this.auction.id);
           this.bids.data.reverse(); //to make the latest bid at the end
-
-          // Listen for the real-time events
-          const signalRStore = useSignalRStore();
-          signalRStore.joinAuctionRoom(this.auction.id);
-
-          signalRStore.onBidPlaced((bid) => {
-            this.bids.data.push(bid);
-            this.auction.currentPrice = bid.amount;
-          });
-
-          signalRStore.onBidAccepted((bid) => {
-            this.auction.winnerId = bid.bidder.id;
-            this.auction.currentPrice = bid.amount;
-            this.acceptedBid = bid;
-            this.endAuction();
-          });
+          await signalrClient.joinAuctionRoom(this.auction.id);
         } else {
           const loadAcceptedBid = async () => {
             if (this.hasWinner)
@@ -97,19 +80,45 @@ export const useAuctionStore = defineStore("auction", {
         }
       } finally {
         this.loading = false;
-        console.log(signalRConnection);
+      }
+    },
+
+    async reload() {
+      if (this.auction?.id) {
+        try {
+          await this.load(this.auction?.id);
+        } catch {
+          // Supress the error
+        }
       }
     },
 
     async unload() {
       try {
-        const signalRStore = useSignalRStore();
-        await signalRStore.leaveAuctionRoom(this.auction.id);
-      } catch (error) {
-        console.log(error);
+        await signalrClient.leaveAuctionRoom(this.auction.id);
+      } catch {
+        // Supress the error
       } finally {
         this.$reset();
       }
+    },
+
+    endAuction() {
+      if (this.isActive) {
+        this.auction.endTime = new Date().toISOString(); // Convert it to ISO to be able to parse it in the countdown
+      }
+    },
+
+    bidPlacedHandler(bid) {
+      this.bids.data.push(bid);
+      this.auction.currentPrice = bid.amount;
+    },
+
+    bidAcceptedHandler(bid) {
+      this.auction.winnerId = bid.bidder.id;
+      this.auction.currentPrice = bid.amount;
+      this.acceptedBid = bid;
+      this.endAuction();
     },
 
     async deleteMyReview() {
@@ -123,12 +132,6 @@ export const useAuctionStore = defineStore("auction", {
 
       this.myReview.rating = 1;
       this.myReview.comment = "";
-    },
-
-    endAuction() {
-      if (this.isActive) {
-        this.auction.endTime = new Date().toISOString(); // Convert it to ISO to be able to parse it in the countdown
-      }
     },
   },
 });

@@ -1,9 +1,9 @@
 <script setup>
-import { ErrorCode } from "@/api/errorCodes";
 import AuctionDetailsCard from "@/components/AuctionDetailsCard.vue";
 import BidsCard from "@/components/BidsCard.vue";
 import ReviewCard from "@/components/ReviewCard.vue";
 import WinningBidCard from "@/components/WinningBidCard.vue";
+import { ErrorCode } from "@/api/errorCodes";
 import { useAuctionStore } from "@/stores/AuctionStore";
 import { onBeforeMount, onBeforeUnmount } from "vue";
 import { useRoute } from "vue-router";
@@ -20,8 +20,8 @@ onBeforeMount(async () => {
   }
 });
 
-onBeforeUnmount(async () => {
-  await auctionStore.unload();
+onBeforeUnmount(() => {
+  auctionStore.unload();
 });
 </script>
 

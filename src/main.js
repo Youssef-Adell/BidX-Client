@@ -9,7 +9,7 @@ import App from "./App.vue";
 // Composables
 import { createApp } from "vue";
 import { useAuthStore } from "./stores/AuthStore";
-import { useSignalRStore } from "./stores/SignalRStore";
+import signalrClient from "./api/signalrClient";
 
 async function initializeApp() {
   const app = createApp(App);
@@ -21,9 +21,8 @@ async function initializeApp() {
   const authStore = useAuthStore();
   await authStore.refreshToken();
 
-  const signalRStore = useSignalRStore();
-  await signalRStore.startConnection();
-  app.onUnmount(() => signalRStore.stopConnection());
+  await signalrClient.startConnection();
+  app.onUnmount(() => signalrClient.stopConnection());
 
   app.use(router);
   app.mount("#app");

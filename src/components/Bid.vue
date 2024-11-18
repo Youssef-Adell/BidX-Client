@@ -1,6 +1,7 @@
 <script setup>
+import signalrClient from "@/api/signalrClient";
 import UserProfileSummary from "./UserProfileSummary.vue";
-import { useSignalRStore } from "@/stores/SignalRStore";
+import { useSignalrStateStore } from "@/stores/SignalrStateStore";
 import { ref } from "vue";
 
 const props = defineProps({
@@ -20,13 +21,14 @@ const props = defineProps({
 
 const loading = ref(false);
 
-const signalRStore = useSignalRStore();
+const signalrStateStore = useSignalrStateStore();
 
 const acceptTheBid = async () => {
   try {
     loading.value = true;
-    await signalRStore.acceptBid(props.bid.id);
+    await signalrClient.acceptBid(props.bid.id);
   } catch {
+    // Supress the error
   } finally {
     loading.value = false;
   }
@@ -55,7 +57,7 @@ const acceptTheBid = async () => {
       class="rounded-b"
       size="small"
       @click="acceptTheBid"
-      :disabled="!signalRStore.isConnected"
+      :disabled="!signalrStateStore.isConnected"
       tile
     />
   </div>
