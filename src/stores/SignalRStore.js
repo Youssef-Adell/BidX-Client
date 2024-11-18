@@ -4,12 +4,20 @@ import signalRConnection from "@/api/signalRConnection";
 
 export const useSignalRStore = defineStore("signalR", {
   state: () => ({
-    connectionStatus: "connecting", // 'connecting', 'connected', 'reconnecting', 'disconnected'
+    connectionStatus: connectionStatus.disconnected, // 'connected', 'reconnecting', 'disconnected'
   }),
 
   getters: {
     isConnected() {
-      return this.connectionStatus === "connected";
+      return this.connectionStatus === connectionStatus.connected;
+    },
+
+    isReconnecting() {
+      return this.connectionStatus === connectionStatus.reconnecting;
+    },
+
+    isDisconnected() {
+      return this.connectionStatus === connectionStatus.disconnected;
     },
   },
 
@@ -17,21 +25,21 @@ export const useSignalRStore = defineStore("signalR", {
     async startConnection() {
       // Handle reconnection events
       signalRConnection.onreconnecting(() => {
-        this.connectionStatus = "reconnecting";
+        this.connectionStatus = connectionStatus.reconnecting;
       });
 
       signalRConnection.onreconnected(() => {
-        this.connectionStatus = "connected";
+        this.connectionStatus = connectionStatus.connected;
       });
 
       signalRConnection.onclose(() => {
-        this.connectionStatus = "disconnected";
+        this.connectionStatus = connectionStatus.disconnected;
       });
 
       // Start the connection
       try {
         await signalRConnection.start();
-        this.connectionStatus = "connected";
+        this.connectionStatus = connectionStatus.connected;
       } catch {
         setTimeout(() => this.startConnection(), 3000);
       }
@@ -40,7 +48,7 @@ export const useSignalRStore = defineStore("signalR", {
     async stopConnection() {
       try {
         await signalRConnection.stop();
-        this.connectionStatus = "disconnected";
+        this.connectionStatus = connectionStatus.disconnected;
       } catch {}
     },
 
@@ -77,4 +85,10 @@ export const useSignalRStore = defineStore("signalR", {
       signalRConnection?.on("BidAccepted", callback);
     },
   },
+});
+
+const connectionStatus = Object.freeze({
+  disconnected: "disconnected",
+  connected: "connected",
+  reconnecting: "reconnecting",
 });

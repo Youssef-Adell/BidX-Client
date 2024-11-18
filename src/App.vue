@@ -1,4 +1,5 @@
 <script setup>
+import ConnectionStatusBar from "./components/ConnectionStatusBar.vue";
 import Footer from "./components/Footer.vue";
 import Navbar from "./components/Navbar.vue";
 import { useTheme } from "vuetify";
@@ -10,6 +11,7 @@ if (selectedTheme) theme.global.name.value = selectedTheme;
 
 <template>
   <VApp>
+    <ConnectionStatusBar />
     <Navbar />
     <VMain>
       <RouterView />
