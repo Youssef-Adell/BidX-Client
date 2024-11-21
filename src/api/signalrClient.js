@@ -5,6 +5,7 @@ import { useAuctionStore } from "@/stores/AuctionStore";
 import { singalrStates } from "./signalrStates";
 
 let connection = null;
+let isRestarting = false;
 
 export default {
   async startConnection() {
@@ -25,16 +26,17 @@ export default {
     const signalrStateStore = useSignalrStateStore();
     const auctionStore = useAuctionStore();
 
-    connection.onreconnecting(() =>
-      signalrStateStore.setState(singalrStates.reconnecting)
-    );
+    connection.onreconnecting(() => {
+      signalrStateStore.setState(singalrStates.reconnecting);
+    });
     connection.onreconnected(async () => {
       signalrStateStore.setState(singalrStates.connected);
       auctionStore.reload();
     });
-    connection.onclose(() =>
-      signalrStateStore.setState(singalrStates.disconnected)
-    );
+    connection.onclose(() => {
+      // Prevent setting 'disconnected' state during an intentional restart at login/logout
+      if (!isRestarting) signalrStateStore.setState(singalrStates.disconnected);
+    });
     connection?.on("BidCreated", auctionStore.bidPlacedHandler);
     connection?.on("BidAccepted", auctionStore.bidAcceptedHandler);
 
@@ -53,6 +55,15 @@ export default {
     } catch {
       // Suppress the error
     }
+  },
+
+  async restartConnection() {
+    isRestarting = true;
+
+    await this.stopConnection();
+    await this.startConnection();
+
+    isRestarting = false;
   },
 
   // Server Functions to Invoke

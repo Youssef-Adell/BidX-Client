@@ -1,4 +1,5 @@
 import apiClient from "@/api/apiClient";
+import signalrClient from "@/api/signalrClient";
 import { defineStore } from "pinia";
 
 export const useAuthStore = defineStore("auth", {
@@ -24,6 +25,7 @@ export const useAuthStore = defineStore("auth", {
 
         this.user = response.data.user;
         this.accessToken = response.data.accessToken;
+        signalrClient.restartConnection();
       } catch (errorResponse) {
         throw errorResponse;
       }
@@ -89,6 +91,7 @@ export const useAuthStore = defineStore("auth", {
         this.loading = false;
         this.user = null;
         this.accessToken = null;
+        signalrClient.restartConnection();
       }
     },
   },
