@@ -5,7 +5,7 @@ import { useAuctionStore } from "@/stores/AuctionStore";
 import { formatDate } from "@/utils/dateTimeUtils";
 import { useDisplay } from "vuetify";
 
-const { smAndDown } = useDisplay();
+const { smAndDown, xs } = useDisplay();
 const auctionStore = useAuctionStore();
 </script>
 
@@ -16,7 +16,7 @@ const auctionStore = useAuctionStore();
       <VCol cols="12" md="6">
         <VCarousel
           show-arrows="hover"
-          height="auto"
+          :height="xs ? 300 : 600"
           :class="['rounded', smAndDown ? 'rounded-b-0' : 'rounded-e-0']"
           hide-delimiter-background
         >
@@ -29,7 +29,7 @@ const auctionStore = useAuctionStore();
       </VCol>
 
       <!--Auction Details-->
-      <VCol cols="12" md="6" class="pa-5">
+      <VCol cols="12" md="6" class="pa-5 overflow-hidden">
         <section>
           <h1 class="text-h6 text-sm-h5 text-high-emphasis">
             {{ auctionStore.auction?.productName }}
