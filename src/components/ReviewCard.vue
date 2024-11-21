@@ -1,12 +1,23 @@
 <script setup>
-import { addReview, updateMyReview } from "@/api/services/reviewsService";
+import {
+  addReview,
+  fetchMyReview,
+  updateMyReview,
+  deleteMyReview,
+} from "@/api/services/reviewsService";
 import { useAuctionStore } from "@/stores/AuctionStore";
 import { onBeforeMount, ref } from "vue";
 
 const auctionStore = useAuctionStore();
 
+const review = ref({
+  rating: 1,
+  comment: "",
+});
+
 const form = ref({
   loading: false,
+  btnLoading: false,
   submitted: false,
   isEditing: false,
 });
@@ -21,20 +32,20 @@ const revieweeId = auctionStore.amIAuctioneer
 
 const handleSubmit = async () => {
   try {
-    form.value.loading = true;
+    form.value.btnLoading = true;
 
     if (form.value.isEditing) {
-      await updateMyReview(revieweeId, auctionStore.myReview);
+      await updateMyReview(revieweeId, review.value);
     } else {
-      await addReview(revieweeId, auctionStore.myReview);
+      await addReview(revieweeId, review.value);
     }
 
     form.value.submitted = true;
     form.value.isEditing = false;
-  } catch (error) {
-    console.log(error);
+  } catch {
+    // Supress the error
   } finally {
-    form.value.loading = false;
+    form.value.btnLoading = false;
   }
 };
 
@@ -45,17 +56,28 @@ const editReview = () => {
 
 const deleteReview = async () => {
   try {
-    form.value.loading = true;
-    await auctionStore.deleteMyReview();
+    form.value.btnLoading = true;
+    await deleteMyReview(revieweeId);
+    review.value.comment = "";
+    review.value.rating = 1;
     form.value.submitted = false;
   } catch {
+    // Supress the error
   } finally {
-    form.value.loading = false;
+    form.value.btnLoading = false;
   }
 };
 
-onBeforeMount(() => {
-  form.value.submitted = auctionStore.didIReview;
+onBeforeMount(async () => {
+  try {
+    form.value.loading = true;
+    review.value = await fetchMyReview(revieweeId);
+    form.value.submitted = true;
+  } catch {
+    // Supress the error
+  } finally {
+    form.value.loading = false;
+  }
 });
 </script>
 
@@ -65,12 +87,17 @@ onBeforeMount(() => {
       <section>
         <h2 class="text-subtitle-2 text-high-emphasis mb-2">Your Review</h2>
 
+        <div v-if="form.loading" class="d-flex align-center justify-center">
+          <VProgressCircular color="primary" indeterminate />
+        </div>
+
         <VForm
+          v-else
           @submit.prevent="handleSubmit"
           class="d-flex flex-column align-center"
         >
           <VRating
-            v-model="auctionStore.myReview.rating"
+            v-model="review.rating"
             length="5"
             color="yellow-darken-3"
             hover
@@ -78,11 +105,8 @@ onBeforeMount(() => {
           />
 
           <VTextarea
-            v-if="
-              !form.submitted ||
-              (form.submitted && auctionStore.myReview.comment)
-            "
-            v-model="auctionStore.myReview.comment"
+            v-if="!form.submitted || (form.submitted && review.comment)"
+            v-model="review.comment"
             class="mt-2 w-100"
             density="compact"
             variant="outlined"
@@ -97,7 +121,7 @@ onBeforeMount(() => {
             <VBtn
               text="Delete"
               @click="deleteReview"
-              :loading="form.loading"
+              :loading="form.btnLoading"
               color="error"
               size="small"
               variant="outlined"
@@ -117,7 +141,7 @@ onBeforeMount(() => {
           <VBtn
             v-else
             :text="form.isEditing ? 'Update' : 'Submit'"
-            :loading="form.loading"
+            :loading="form.btnLoading"
             type="submit"
             class="mt-4 align-self-end"
             color="primary"
