@@ -84,7 +84,7 @@ onMounted(async () => {
       class="align-center justify-center"
       persistent
     >
-      <VProgressCircular color="primary" size="60" indeterminate />
+      <VProgressCircular color="primary" size="40" indeterminate />
     </VOverlay>
 
     <VForm @submit.prevent="createAuction" class="w-100">
