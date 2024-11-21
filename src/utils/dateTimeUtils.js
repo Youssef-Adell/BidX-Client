@@ -7,7 +7,6 @@ export function durationToSeconds(duration) {
 
 export function formatDate(date) {
   return new Date(date).toLocaleString("en-us", {
-    weekday: "long",
     year: "numeric",
     month: "short",
     day: "numeric",
