@@ -4,12 +4,13 @@ import Bid from "./Bid.vue";
 import { useAuctionStore } from "@/stores/AuctionStore";
 import { useAuthStore } from "@/stores/AuthStore";
 import { useSignalrStateStore } from "@/stores/SignalrStateStore";
-import { computed, ref } from "vue";
+import { computed, nextTick, ref, watch } from "vue";
 import { useRouter } from "vue-router";
-import { useDisplay } from "vuetify";
+import { useDisplay, useGoTo } from "vuetify";
 
 const { smAndDown } = useDisplay();
 const router = useRouter();
+const goTo = useGoTo();
 const authStore = useAuthStore();
 const auctionStore = useAuctionStore();
 const signalrStateStore = useSignalrStateStore();
@@ -25,6 +26,16 @@ const minBidAmountAllowed = computed(() => {
     auctionStore.auction?.currentPrice + auctionStore.auction?.minBidIncrement
   );
 });
+
+// Scroll to the end of the bids list when a new bid placed
+watch(
+  () => auctionStore.bids.data,
+  async (newValue, oldValue) => {
+    await nextTick(); // Ensure DOM updates first and last bid is already added
+    goTo("#last-bid", { container: "#bids-list", duration: 300 });
+  },
+  { deep: 1 } // max traversal depth to watch
+);
 
 const loadMoreBids = ({ done }) => {
   done("empty");
@@ -56,7 +67,7 @@ const placeBid = async (event) => {
   <div
     :class="[
       'd-flex mt-4 justify-md-end',
-      { 'mb-12 mb-md-0': !auctionStore.amIAuctioneer },
+      { 'mb-12 mb-md-0': !auctionStore.amIAuctioneer }, // To leave a space for the fixed PLACE-BID button in small screens
     ]"
   >
     <VSheet class="w-100 w-md-50 pa-5" elevation="4" rounded>
@@ -65,17 +76,27 @@ const placeBid = async (event) => {
 
         <!--Bids List-->
         <VInfiniteScroll
+          id="bids-list"
           :height="auctionStore.amIAuctioneer ? 210 : 215"
-          empty-text="No Bids Found"
           side="start"
           @load="loadMoreBids"
         >
-          <template v-for="bid in auctionStore.bids.data" :key="bid.id">
+          <template v-for="(bid, idx) in auctionStore.bids.data" :key="bid.id">
             <Bid
+              :id="idx === auctionStore.bids.data.length - 1 ? 'last-bid' : ''"
               :bid="bid"
               :am-i-auctioneer="auctionStore.amIAuctioneer"
               class="mb-2"
             />
+          </template>
+
+          <template #empty>
+            <span
+              v-if="auctionStore.bids.data.length === 0"
+              class="text-body-2"
+            >
+              No Bids Placed Yet
+            </span>
           </template>
         </VInfiniteScroll>
 
