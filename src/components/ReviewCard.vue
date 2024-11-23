@@ -1,10 +1,5 @@
 <script setup>
-import {
-  addReview,
-  fetchMyReview,
-  updateMyReview,
-  deleteMyReview,
-} from "@/api/services/reviewsService";
+import reviewsService from "@/api/services/reviewsService";
 import { useAuctionStore } from "@/stores/AuctionStore";
 import { onBeforeMount, ref } from "vue";
 
@@ -35,9 +30,9 @@ const handleSubmit = async () => {
     form.value.btnLoading = true;
 
     if (form.value.isEditing) {
-      await updateMyReview(revieweeId, review.value);
+      await reviewsService.updateMyReview(revieweeId, review.value);
     } else {
-      await addReview(revieweeId, review.value);
+      await reviewsService.addReview(revieweeId, review.value);
     }
 
     form.value.submitted = true;
@@ -57,7 +52,7 @@ const editReview = () => {
 const deleteReview = async () => {
   try {
     form.value.btnLoading = true;
-    await deleteMyReview(revieweeId);
+    await reviewsService.deleteMyReview(revieweeId);
     review.value.comment = "";
     review.value.rating = 1;
     form.value.submitted = false;
@@ -71,7 +66,7 @@ const deleteReview = async () => {
 onBeforeMount(async () => {
   try {
     form.value.loading = true;
-    review.value = await fetchMyReview(revieweeId);
+    review.value = await reviewsService.fetchMyReview(revieweeId);
     form.value.submitted = true;
   } catch {
     // Supress the error

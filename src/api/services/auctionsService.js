@@ -1,18 +1,20 @@
 import { objectToFormData } from "@/utils/apiUtils";
 import httpClient from "../httpClient";
 
-export async function addAuction(auction) {
-  const formData = objectToFormData(auction);
+export default {
+  async addAuction(auction) {
+    const formData = objectToFormData(auction);
 
-  const response = await httpClient.post("/auctions", formData, {
-    requiresAuth: true,
-  });
+    const response = await httpClient.post("/auctions", formData, {
+      requiresAuth: true,
+    });
 
-  return response.data;
-}
+    return response.data;
+  },
 
-export async function fetchAuction(auctionId) {
-  const response = await httpClient.get(`/auctions/${auctionId}`);
+  async fetchAuction(auctionId) {
+    const response = await httpClient.get(`/auctions/${auctionId}`);
 
-  return response.data;
-}
+    return response.data;
+  },
+};

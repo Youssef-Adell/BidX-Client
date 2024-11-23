@@ -1,13 +1,13 @@
 <script setup>
 import ErrorBox from "@/components/ErrorBox.vue";
 import ImagePicker from "@/components/ImagePicker.vue";
-import { fetchCategories } from "@/api/services/categoriesService";
-import { fetchCities } from "@/api/services/citiesService";
+import categoriesService from "@/api/services/categoriesService";
+import citiesService from "@/api/services/citiesService";
+import auctionsService from "@/api/services/auctionsService";
 import { durationToSeconds } from "@/utils/dateTimeUtils";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useDisplay } from "vuetify";
-import { addAuction } from "@/api/services/auctionsService";
 
 const router = useRouter();
 const { smAndDown, mdAndUp } = useDisplay();
@@ -60,7 +60,7 @@ const createAuction = async (event) => {
     form.value.loading = true;
 
     auction.value.durationInSeconds = durationToSeconds(duration.value);
-    const res = await addAuction(auction.value);
+    const res = await auctionsService.addAuction(auction.value);
     console.log(res);
   } catch (errorResponse) {
     form.value.error = errorResponse;
@@ -71,8 +71,8 @@ const createAuction = async (event) => {
 };
 
 onMounted(async () => {
-  form.value.categories = await fetchCategories();
-  form.value.cities = await fetchCities();
+  form.value.categories = await categoriesService.fetchCategories();
+  form.value.cities = await citiesService.fetchCities();
 });
 </script>
 
