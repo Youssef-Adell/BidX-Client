@@ -1,42 +1,30 @@
 <script setup>
 import { useAuthStore } from "@/stores/AuthStore";
-import { computed, ref } from "vue";
+import { ref } from "vue";
 import ErrorBox from "./ErrorBox.vue";
+import VueCountdown from "@chenfengyuan/vue-countdown";
 
 const props = defineProps(["email"]);
 
 const authStore = useAuthStore();
-const disabled = ref(false);
-const loading = ref(false);
-const error = ref(null);
-const countdown = ref(0);
-let interval = null;
-
-const buttonText = computed(() => {
-  return countdown.value > 0 ? `Resend again in ${countdown.value}s` : "Resend";
+const form = ref({
+  error: null,
+  loading: false,
+  disabled: false,
 });
 
 const resendConfirmationEmail = async () => {
   try {
-    error.value = null;
-    loading.value = true;
+    form.value.loading = true;
+    form.value.error = null;
+
     await authStore.resendConfirmationEmail(props.email);
 
-    // disable the button for 120 seconds
-    disabled.value = true;
-    countdown.value = 120;
-    interval = setInterval(() => {
-      if (countdown.value > 0) {
-        countdown.value--;
-      } else {
-        clearInterval(interval);
-        disabled.value = false;
-      }
-    }, 1000);
+    form.value.disabled = true;
   } catch (errorResponse) {
-    error.value = errorResponse;
+    form.value.error = errorResponse;
   } finally {
-    loading.value = false;
+    form.value.loading = false;
   }
 };
 </script>
@@ -44,7 +32,7 @@ const resendConfirmationEmail = async () => {
 <template>
   <VSheet class="px-10 py-6 text-center" elevation="4" max-width="500" rounded>
     <!--Error Box-->
-    <ErrorBox :error="error" centered="true" />
+    <ErrorBox :error="form.error" centered="true" />
 
     <!--Title-->
     <VIcon icon="mdi-email-check-outline" size="100" color="primary" />
@@ -60,16 +48,26 @@ const resendConfirmationEmail = async () => {
 
     <!--Resend Button-->
     <VBtn
-      :text="buttonText"
       @click="resendConfirmationEmail"
       variant="tonal"
       color="primary"
       size="small"
       class="mt-5"
-      :disabled="disabled"
-      :loading="loading"
+      :disabled="form.disabled"
+      :loading="form.loading"
       block
-    />
+    >
+      <VueCountdown
+        v-if="form.disabled"
+        :time="120000"
+        @end="form.disabled = false"
+        #default="{ totalSeconds }"
+      >
+        Resend again in {{ totalSeconds }}s
+      </VueCountdown>
+
+      <span v-else>Resend</span>
+    </VBtn>
 
     <span class="d-block mt-1 text-caption">
       Didn't get an email? click the button above

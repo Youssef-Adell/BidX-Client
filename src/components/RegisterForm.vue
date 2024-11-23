@@ -6,6 +6,7 @@ import ErrorBox from "./ErrorBox.vue";
 const emit = defineEmits(["registerDone"]);
 
 const authStore = useAuthStore();
+
 const user = ref({
   firstname: "",
   lastname: "",
@@ -13,9 +14,13 @@ const user = ref({
   password: "",
   confirmPassword: "",
 });
-const passwordVisible = ref(false);
-const loading = ref(false);
-const error = ref(null);
+
+const form = ref({
+  error: null,
+  loading: false,
+  passwordVisible: false,
+});
+
 const inputRules = {
   required: (value) => {
     return value ? true : "Required.";
@@ -26,10 +31,9 @@ const inputRules = {
     return pattern.test(value) || "Invalid E-mail.";
   },
   password: (value) => {
-    return value.length >= 8 || "Password must be at least 8 characters.";
-  },
-  passwordMatch: (value) => {
-    return value === user.value.password || "Passwords don't match.";
+    if (value.length < 8) return "Password must be at least 8 characters.";
+    else if (value !== user.value.password) return "Passwords don't match.";
+    else return true;
   },
 };
 
@@ -39,14 +43,14 @@ const register = async (event) => {
   if (!valid) return;
 
   try {
-    error.value = null;
-    loading.value = true;
+    form.value.loading = true;
+    form.value.error = null;
     await authStore.register(user.value);
     emit("registerDone", user.value.email);
   } catch (errorResponse) {
-    error.value = errorResponse;
+    form.value.error = errorResponse;
   } finally {
-    loading.value = false;
+    form.value.loading = false;
   }
 };
 </script>
@@ -65,7 +69,7 @@ const register = async (event) => {
     </div>
 
     <!--Error Box-->
-    <ErrorBox :error="error" />
+    <ErrorBox :error="form.error" />
 
     <!--Register Form-->
     <VForm @submit.prevent="register">
@@ -98,10 +102,10 @@ const register = async (event) => {
         placeholder="Password"
         prepend-inner-icon="mdi-lock-outline"
         variant="underlined"
-        @click:append-inner="passwordVisible = !passwordVisible"
-        :append-inner-icon="passwordVisible ? 'mdi-eye-off' : 'mdi-eye'"
-        :type="passwordVisible ? 'text' : 'password'"
-        :rules="[inputRules.required, inputRules.passwordLength]"
+        @click:append-inner="form.passwordVisible = !form.passwordVisible"
+        :append-inner-icon="form.passwordVisible ? 'mdi-eye-off' : 'mdi-eye'"
+        :type="form.passwordVisible ? 'text' : 'password'"
+        :rules="[inputRules.required, inputRules.password]"
       />
 
       <VTextField
@@ -109,14 +113,10 @@ const register = async (event) => {
         placeholder="Confirm Password"
         prepend-inner-icon="mdi-lock-outline"
         variant="underlined"
-        @click:append-inner="passwordVisible = !passwordVisible"
-        :append-inner-icon="passwordVisible ? 'mdi-eye-off' : 'mdi-eye'"
-        :type="passwordVisible ? 'text' : 'password'"
-        :rules="[
-          inputRules.required,
-          inputRules.passwordLength,
-          inputRules.passwordMatch,
-        ]"
+        @click:append-inner="form.passwordVisible = !form.passwordVisible"
+        :append-inner-icon="form.passwordVisible ? 'mdi-eye-off' : 'mdi-eye'"
+        :type="form.passwordVisible ? 'text' : 'password'"
+        :rules="[inputRules.required, inputRules.password]"
       />
 
       <VBtn
@@ -126,7 +126,7 @@ const register = async (event) => {
         size="large"
         variant="flat"
         type="submit"
-        :loading="loading"
+        :loading="form.loading"
         block
       />
     </VForm>

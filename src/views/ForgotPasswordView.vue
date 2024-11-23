@@ -2,14 +2,15 @@
 import ErrorBox from "@/components/ErrorBox.vue";
 import { useAuthStore } from "@/stores/AuthStore";
 import { ref } from "vue";
-import { useRouter } from "vue-router";
 
 const authStore = useAuthStore();
-const router = useRouter();
 
 const email = ref("");
-const loading = ref(false);
-const error = ref(null);
+const form = ref({
+  error: null,
+  loading: false,
+  disabled: false,
+});
 const inputRules = {
   required: (value) => {
     return value ? true : "Required.";
@@ -27,14 +28,14 @@ const forgotPassword = async (event) => {
   if (!valid) return;
 
   try {
-    loading.value = true;
+    form.value.loading = true;
+    form.value.error = null;
     await authStore.forgotPassword(email.value);
-    router.push("/login");
+    form.value.disabled = true;
   } catch (errorResponse) {
-    console.log(errorResponse);
-    error.value = errorResponse;
+    form.value.error = errorResponse;
   } finally {
-    loading.value = false;
+    form.value.loading = false;
   }
 };
 </script>
@@ -54,7 +55,7 @@ const forgotPassword = async (event) => {
       </div>
 
       <!--Error Box-->
-      <ErrorBox :error="error" />
+      <ErrorBox :error="form.error" />
 
       <div class="py-2">
         Enter the email address associated with your account and we'll send you
@@ -72,13 +73,14 @@ const forgotPassword = async (event) => {
         />
 
         <VBtn
-          text="Submit"
+          :text="form.disabled ? 'Done' : 'Send'"
           class="mt-8 mb-6"
           color="primary"
           size="large"
           variant="flat"
           type="submit"
-          :loading="loading"
+          :loading="form.loading"
+          :disabled="form.disabled"
           block
         />
       </VForm>
