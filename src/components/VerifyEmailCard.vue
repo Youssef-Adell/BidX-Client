@@ -6,9 +6,13 @@ import ErrorBox from "./ErrorBox.vue";
 const props = defineProps(["email"]);
 
 const authStore = useAuthStore();
-const disabled = ref(false);
-const loading = ref(false);
-const error = ref(null);
+
+const form = ref({
+  error: null,
+  loading: false,
+  disabled: false,
+});
+
 const countdown = ref(0);
 let interval = null;
 
@@ -18,25 +22,26 @@ const buttonText = computed(() => {
 
 const resendConfirmationEmail = async () => {
   try {
-    error.value = null;
-    loading.value = true;
+    form.value.loading = true;
+    form.value.error = null;
+
     await authStore.resendConfirmationEmail(props.email);
 
     // disable the button for 120 seconds
-    disabled.value = true;
+    form.value.disabled = true;
     countdown.value = 120;
     interval = setInterval(() => {
       if (countdown.value > 0) {
         countdown.value--;
       } else {
         clearInterval(interval);
-        disabled.value = false;
+        form.value.disabled = false;
       }
     }, 1000);
   } catch (errorResponse) {
-    error.value = errorResponse;
+    form.value.error = errorResponse;
   } finally {
-    loading.value = false;
+    form.value.loading = false;
   }
 };
 </script>
@@ -44,7 +49,7 @@ const resendConfirmationEmail = async () => {
 <template>
   <VSheet class="px-10 py-6 text-center" elevation="4" max-width="500" rounded>
     <!--Error Box-->
-    <ErrorBox :error="error" centered="true" />
+    <ErrorBox :error="form.error" centered="true" />
 
     <!--Title-->
     <VIcon icon="mdi-email-check-outline" size="100" color="primary" />
@@ -66,8 +71,8 @@ const resendConfirmationEmail = async () => {
       color="primary"
       size="small"
       class="mt-5"
-      :disabled="disabled"
-      :loading="loading"
+      :disabled="form.disabled"
+      :loading="form.loading"
       block
     />
 

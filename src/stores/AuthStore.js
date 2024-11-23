@@ -1,4 +1,3 @@
-import httpClient from "@/api/httpClient";
 import authService from "@/api/services/authService";
 import signalrClient from "@/api/signalrClient";
 import { defineStore } from "pinia";
@@ -7,7 +6,7 @@ export const useAuthStore = defineStore("auth", {
   state: () => ({
     user: null,
     accessToken: null,
-    loading: true,
+    loading: false,
   }),
 
   getters: {
@@ -40,8 +39,9 @@ export const useAuthStore = defineStore("auth", {
 
     async refreshToken() {
       try {
-        const { user, accessToken } = await authService.refreshToken();
+        this.loading = true;
 
+        const { user, accessToken } = await authService.refreshToken();
         this.user = user;
         this.accessToken = accessToken;
 
@@ -49,7 +49,6 @@ export const useAuthStore = defineStore("auth", {
       } catch (errorResponse) {
         this.user = null;
         this.accessToken = null;
-
         return false;
       } finally {
         this.loading = false;

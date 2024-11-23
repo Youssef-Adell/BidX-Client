@@ -1,19 +1,26 @@
 <script setup>
+import ErrorBox from "./ErrorBox.vue";
 import { ErrorCode } from "@/api/errorCodes";
 import { useAuthStore } from "@/stores/AuthStore";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import ErrorBox from "./ErrorBox.vue";
 
 const emit = defineEmits(["emailNotConfirmed"]);
 
 const authStore = useAuthStore();
 const router = useRouter();
-const email = ref("");
-const password = ref("");
-const passwordVisible = ref(false);
-const loading = ref(false);
-const error = ref(null);
+
+const credentials = ref({
+  email: "",
+  password: "",
+});
+
+const form = ref({
+  error: null,
+  loading: false,
+  passwordVisible: false,
+});
+
 const inputRules = {
   required: (value) => {
     return value ? true : "Required.";
@@ -34,18 +41,16 @@ const login = async (event) => {
   if (!valid) return;
 
   try {
-    error.value = null;
-    loading.value = true;
-    await authStore.login(email.value, password.value);
+    form.value.loading = true;
+    form.value.error = null;
+    await authStore.login(credentials.value.email, credentials.value.password);
     router.replace({ path: "/" });
   } catch (errorResponse) {
-    if (errorResponse.errorCode === ErrorCode.AUTH_EMAIL_NOT_CONFIRMED) {
-      emit("emailNotConfirmed", email.value);
-    } else {
-      error.value = errorResponse;
-    }
+    errorResponse.errorCode === ErrorCode.AUTH_EMAIL_NOT_CONFIRMED
+      ? emit("emailNotConfirmed", credentials.value.email)
+      : (form.value.error = errorResponse);
   } finally {
-    loading.value = false;
+    form.value.loading = false;
   }
 };
 </script>
@@ -64,12 +69,12 @@ const login = async (event) => {
     </div>
 
     <!--Error Box-->
-    <ErrorBox :error="error" />
+    <ErrorBox :error="form.error" />
 
     <!--Login Form-->
     <VForm @submit.prevent="login">
       <VTextField
-        v-model="email"
+        v-model="credentials.email"
         placeholder="Email Address"
         prepend-inner-icon="mdi-email-outline"
         variant="underlined"
@@ -77,13 +82,13 @@ const login = async (event) => {
       />
 
       <VTextField
-        v-model="password"
+        v-model="credentials.password"
         placeholder="Password"
         prepend-inner-icon="mdi-lock-outline"
         variant="underlined"
-        @click:append-inner="passwordVisible = !passwordVisible"
-        :append-inner-icon="passwordVisible ? 'mdi-eye-off' : 'mdi-eye'"
-        :type="passwordVisible ? 'text' : 'password'"
+        @click:append-inner="form.passwordVisible = !form.passwordVisible"
+        :append-inner-icon="form.passwordVisible ? 'mdi-eye-off' : 'mdi-eye'"
+        :type="form.passwordVisible ? 'text' : 'password'"
         :rules="[inputRules.required, inputRules.passwordLength]"
       />
 
@@ -101,7 +106,7 @@ const login = async (event) => {
         size="large"
         variant="flat"
         type="submit"
-        :loading="loading"
+        :loading="form.loading"
         block
       />
     </VForm>
