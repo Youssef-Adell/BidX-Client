@@ -2,12 +2,12 @@ import { useAuthStore } from "@/stores/AuthStore";
 import { addAuthHeader, normalizeErrorResponse } from "@/utils/apiUtils";
 import axios from "axios";
 
-const apiClient = axios.create({
+const httpClient = axios.create({
   baseURL: "https://bidx.runasp.net/api",
 });
 
 // Optionally add the Authorization header based on whether the request requires authentication
-apiClient.interceptors.request.use(
+httpClient.interceptors.request.use(
   (config) => {
     const requiresAuth = config.requiresAuth; // Custom property to indicate if auth is required
     if (requiresAuth) addAuthHeader(config);
@@ -17,7 +17,7 @@ apiClient.interceptors.request.use(
 );
 
 // Refresh the access token if the response is faild with 401 code and retry the request only once
-apiClient.interceptors.response.use(
+httpClient.interceptors.response.use(
   (response) => response,
   async (error) => {
     if (
@@ -31,7 +31,7 @@ apiClient.interceptors.response.use(
       if (tokenRefreshed) {
         addAuthHeader(error.config);
         error.config.__isRetryRequest = true; // Mark the request as a retry to avoid infinite loops
-        return apiClient(error.config); // Retry the original request with new access token
+        return httpClient(error.config); // Retry the original request with new access token
       }
     }
 
@@ -39,4 +39,4 @@ apiClient.interceptors.response.use(
   }
 );
 
-export default apiClient;
+export default httpClient;

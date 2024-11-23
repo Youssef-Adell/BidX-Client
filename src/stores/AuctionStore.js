@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { useAuthStore } from "./AuthStore";
-import { fetchAuction } from "@/api/services/auctionsService";
-import { fetchAcceptedBid, fetchAuctionBids } from "@/api/services/bidsService";
+import auctionsService from "@/api/services/auctionsService";
+import bidsService from "@/api/services/bidsService";
 import signalrClient from "@/api/signalrClient";
 
 export const useAuctionStore = defineStore("auction", {
@@ -47,17 +47,19 @@ export const useAuctionStore = defineStore("auction", {
     async load(auctionId) {
       try {
         this.loading = true;
-        this.auction = await fetchAuction(auctionId);
+        this.auction = await auctionsService.fetchAuction(auctionId);
 
         if (this.isActive) {
           [this.bids] = await Promise.all([
-            fetchAuctionBids(this.auction.id),
+            bidsService.fetchAuctionBids(this.auction.id),
             signalrClient.joinAuctionRoom(this.auction.id),
           ]);
 
           this.bids.data.reverse(); //to make the latest bid at the end
         } else if (!this.isActive && this.hasWinner) {
-          this.acceptedBid = await fetchAcceptedBid(this.auction.id);
+          this.acceptedBid = await bidsService.fetchAcceptedBid(
+            this.auction.id
+          );
         }
       } finally {
         this.loading = false;
@@ -86,7 +88,7 @@ export const useAuctionStore = defineStore("auction", {
 
     async loadMoreBids() {
       if (this.bids.metadata?.hasNext) {
-        const response = await fetchAuctionBids(
+        const response = await bidsService.fetchAuctionBids(
           this.auction.id,
           ++this.bids.metadata.page, // Next page
           this.bids.metadata.pageSize

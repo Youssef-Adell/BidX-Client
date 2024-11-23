@@ -37,8 +37,12 @@ watch(
 );
 
 const loadMoreBids = async ({ done }) => {
-  const isLoaded = await auctionStore.loadMoreBids();
-  done(isLoaded ? "ok" : "empty");
+  try {
+    const isLoaded = await auctionStore.loadMoreBids();
+    done(isLoaded ? "ok" : "empty");
+  } catch {
+    done("error");
+  }
 };
 
 const placeBid = async (event) => {

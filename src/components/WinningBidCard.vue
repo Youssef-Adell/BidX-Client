@@ -1,6 +1,6 @@
 <script setup>
 import Bid from "./Bid.vue";
-import { intiateChat } from "@/api/services/chatsService";
+import chatsService from "@/api/services/chatsService";
 import { useAuctionStore } from "@/stores/AuctionStore";
 
 const auctionStore = useAuctionStore();
@@ -14,7 +14,7 @@ const contact = async () => {
     ? auctionStore.auction.winnerId
     : auctionStore.auction.auctioneer.id;
 
-  const chat = await intiateChat(receiverId);
+  const chat = await chatsService.intiateChat(receiverId);
 };
 </script>
 

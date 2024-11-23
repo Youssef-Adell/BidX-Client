@@ -1,4 +1,4 @@
-import apiClient from "@/api/apiClient";
+import httpClient from "@/api/httpClient";
 import signalrClient from "@/api/signalrClient";
 import { defineStore } from "pinia";
 
@@ -17,7 +17,7 @@ export const useAuthStore = defineStore("auth", {
   actions: {
     async login(email, password) {
       try {
-        const response = await apiClient.post(
+        const response = await httpClient.post(
           "/auth/login",
           { email: email, password: password },
           { withCredentials: true }
@@ -33,7 +33,7 @@ export const useAuthStore = defineStore("auth", {
 
     async register(user) {
       try {
-        await apiClient.post("/auth/register", user);
+        await httpClient.post("/auth/register", user);
       } catch (errorResponse) {
         throw errorResponse;
       }
@@ -41,7 +41,7 @@ export const useAuthStore = defineStore("auth", {
 
     async resendConfirmationEmail(email) {
       try {
-        await apiClient.post("/auth/resend-confirmation-email", {
+        await httpClient.post("/auth/resend-confirmation-email", {
           email: email,
         });
       } catch (errorResponse) {
@@ -51,7 +51,7 @@ export const useAuthStore = defineStore("auth", {
 
     async forgotPassword(email) {
       try {
-        await apiClient.post("/auth/forgot-password", {
+        await httpClient.post("/auth/forgot-password", {
           email: email,
         });
       } catch (errorResponse) {
@@ -61,7 +61,7 @@ export const useAuthStore = defineStore("auth", {
 
     async refreshToken() {
       try {
-        const response = await apiClient.post("/auth/refresh", null, {
+        const response = await httpClient.post("/auth/refresh", null, {
           withCredentials: true,
         });
 
@@ -82,7 +82,7 @@ export const useAuthStore = defineStore("auth", {
     async logout() {
       try {
         this.loading = true;
-        await apiClient.post("/auth/logout", null, {
+        await httpClient.post("/auth/logout", null, {
           withCredentials: true,
           requiresAuth: true,
         });

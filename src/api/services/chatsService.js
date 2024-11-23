@@ -1,11 +1,15 @@
-export async function intiateChat(receiverId) {
-  try {
-    const response = await apiClient.post("/auctions", null, {
-      requiresAuth: true,
-    });
+import httpClient from "../httpClient";
+
+export default {
+  async intiateChat(receiverId) {
+    const response = await httpClient.post(
+      `/chats/initiate/${receiverId}`,
+      null,
+      {
+        requiresAuth: true,
+      }
+    );
 
     return response.data;
-  } catch (errorResponse) {
-    throw errorResponse;
-  }
-}
+  },
+};
