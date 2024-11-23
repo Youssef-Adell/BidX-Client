@@ -1,10 +1,6 @@
-import apiClient from "../apiClient";
+import httpClient from "../httpClient";
 
-export async function getCategories() {
-  try {
-    const response = await apiClient.get("/categories");
-    return response.data;
-  } catch (errorResponse) {
-    throw errorResponse;
-  }
+export async function fetchCategories() {
+  const response = await httpClient.get("/categories");
+  return response.data;
 }

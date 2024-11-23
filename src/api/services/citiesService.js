@@ -1,10 +1,6 @@
-import apiClient from "../apiClient";
+import httpClient from "../httpClient";
 
-export async function getCities() {
-  try {
-    const response = await apiClient.get("/cities");
-    return response.data;
-  } catch (errorResponse) {
-    throw errorResponse;
-  }
+export async function fetchCities() {
+  const response = await httpClient.get("/cities");
+  return response.data;
 }

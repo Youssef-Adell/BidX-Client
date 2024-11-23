@@ -1,8 +1,8 @@
 <script setup>
 import ErrorBox from "@/components/ErrorBox.vue";
 import ImagePicker from "@/components/ImagePicker.vue";
-import { getCategories } from "@/api/services/categoriesService";
-import { getCities } from "@/api/services/citiesService";
+import { fetchCategories } from "@/api/services/categoriesService";
+import { fetchCities } from "@/api/services/citiesService";
 import { durationToSeconds } from "@/utils/dateTimeUtils";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
@@ -71,8 +71,8 @@ const createAuction = async (event) => {
 };
 
 onMounted(async () => {
-  form.value.categories = await getCategories();
-  form.value.cities = await getCities();
+  form.value.categories = await fetchCategories();
+  form.value.cities = await fetchCities();
 });
 </script>
 

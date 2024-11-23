@@ -1,48 +1,32 @@
-import apiClient from "../apiClient";
+import httpClient from "../httpClient";
 
 export async function addReview(revieweeId, review) {
-  try {
-    const response = await apiClient.post(
-      `/users/${revieweeId}/reviews`,
-      review,
-      { requiresAuth: true }
-    );
+  const response = await httpClient.post(
+    `/users/${revieweeId}/reviews`,
+    review,
+    { requiresAuth: true }
+  );
 
-    return response.data;
-  } catch (errorResponse) {
-    throw errorResponse;
-  }
+  return response.data;
 }
 
 export async function fetchMyReview(revieweeId) {
-  try {
-    const response = await apiClient.get(
-      `/users/${revieweeId}/reviews/my-review`,
-      { requiresAuth: true }
-    );
+  const response = await httpClient.get(
+    `/users/${revieweeId}/reviews/my-review`,
+    { requiresAuth: true }
+  );
 
-    return response.data;
-  } catch (errorResponse) {
-    throw errorResponse;
-  }
+  return response.data;
 }
 
 export async function updateMyReview(revieweeId, review) {
-  try {
-    await apiClient.put(`/users/${revieweeId}/reviews/my-review`, review, {
-      requiresAuth: true,
-    });
-  } catch (errorResponse) {
-    throw errorResponse;
-  }
+  await httpClient.put(`/users/${revieweeId}/reviews/my-review`, review, {
+    requiresAuth: true,
+  });
 }
 
 export async function deleteMyReview(revieweeId) {
-  try {
-    await apiClient.delete(`/users/${revieweeId}/reviews/my-review`, {
-      requiresAuth: true,
-    });
-  } catch (errorResponse) {
-    throw errorResponse;
-  }
+  await httpClient.delete(`/users/${revieweeId}/reviews/my-review`, {
+    requiresAuth: true,
+  });
 }
