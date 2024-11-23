@@ -1,4 +1,5 @@
 import httpClient from "@/api/httpClient";
+import authService from "@/api/services/authService";
 import signalrClient from "@/api/signalrClient";
 import { defineStore } from "pinia";
 
@@ -14,59 +15,35 @@ export const useAuthStore = defineStore("auth", {
       return this.user !== null;
     },
   },
+
   actions: {
     async login(email, password) {
-      try {
-        const response = await httpClient.post(
-          "/auth/login",
-          { email: email, password: password },
-          { withCredentials: true }
-        );
+      const { user, accessToken } = await authService.login(email, password);
 
-        this.user = response.data.user;
-        this.accessToken = response.data.accessToken;
-        signalrClient.restartConnection();
-      } catch (errorResponse) {
-        throw errorResponse;
-      }
+      this.user = user;
+      this.accessToken = accessToken;
+
+      signalrClient.restartConnection();
     },
 
     async register(user) {
-      try {
-        await httpClient.post("/auth/register", user);
-      } catch (errorResponse) {
-        throw errorResponse;
-      }
+      await authService.register(user);
     },
 
     async resendConfirmationEmail(email) {
-      try {
-        await httpClient.post("/auth/resend-confirmation-email", {
-          email: email,
-        });
-      } catch (errorResponse) {
-        throw errorResponse;
-      }
+      await authService.resendConfirmationEmail(email);
     },
 
     async forgotPassword(email) {
-      try {
-        await httpClient.post("/auth/forgot-password", {
-          email: email,
-        });
-      } catch (errorResponse) {
-        throw errorResponse;
-      }
+      await authService.forgotPassword(email);
     },
 
     async refreshToken() {
       try {
-        const response = await httpClient.post("/auth/refresh", null, {
-          withCredentials: true,
-        });
+        const { user, accessToken } = await authService.refreshToken();
 
-        this.user = response.data.user;
-        this.accessToken = response.data.accessToken;
+        this.user = user;
+        this.accessToken = accessToken;
 
         return true; // Needed for deciding to retry faild requests or not in axios response interceptor
       } catch (errorResponse) {
@@ -82,11 +59,9 @@ export const useAuthStore = defineStore("auth", {
     async logout() {
       try {
         this.loading = true;
-        await httpClient.post("/auth/logout", null, {
-          withCredentials: true,
-          requiresAuth: true,
-        });
-      } catch (errorResponse) {
+        await authService.logout();
+      } catch {
+        // Supress the error
       } finally {
         this.loading = false;
         this.user = null;
