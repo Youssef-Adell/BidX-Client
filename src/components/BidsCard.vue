@@ -27,14 +27,13 @@ const minBidAmountAllowed = computed(() => {
   );
 });
 
-// Scroll to the end of the bids list when a new bid placed
+// Scroll to the bottom of the bids list when a new bid placed
 watch(
-  () => auctionStore.bids.data,
+  () => auctionStore.auction.currentPrice, // when currentPrice changes this means a new bid is placed so we can watch it instead
   async (newValue, oldValue) => {
     await nextTick(); // Ensure DOM updates first and last bid is already added
     goTo("#last-bid", { container: "#bids-list", duration: 300 });
-  },
-  { deep: 1 } // max traversal depth to watch
+  }
 );
 
 const loadMoreBids = async ({ done }) => {
