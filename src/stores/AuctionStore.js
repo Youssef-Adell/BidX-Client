@@ -81,6 +81,23 @@ export const useAuctionStore = defineStore("auction", {
       }
     },
 
+    async loadMoreBids() {
+      if (this.bids.metadata.hasNext) {
+        const response = await fetchAuctionBids(
+          this.auction.id,
+          ++this.bids.metadata.page, // Next page
+          this.bids.metadata.pageSize
+        );
+
+        response.data.reverse(); // to make the newer bid at the end
+        this.bids.data.unshift(...response.data);
+        this.bids.metadata = response.metadata;
+        return true;
+      }
+
+      return false;
+    },
+
     endAuction() {
       if (this.isActive) {
         this.auction.endTime = new Date().toISOString(); // Convert it to ISO to be able to parse it in the countdown
@@ -89,6 +106,7 @@ export const useAuctionStore = defineStore("auction", {
 
     bidPlacedHandler(bid) {
       this.bids.data.push(bid);
+      ++this.bids.metadata.pageSize; //to avoid refetching it when fetching more bids in loadMoreBids()
       this.auction.currentPrice = bid.amount;
     },
 

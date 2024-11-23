@@ -37,8 +37,9 @@ watch(
   { deep: 1 } // max traversal depth to watch
 );
 
-const loadMoreBids = ({ done }) => {
-  done("empty");
+const loadMoreBids = async ({ done }) => {
+  const isLoaded = await auctionStore.loadMoreBids();
+  done(isLoaded ? "ok" : "empty");
 };
 
 const placeBid = async (event) => {
