@@ -1,23 +1,16 @@
 <script setup>
 import { useAuthStore } from "@/stores/AuthStore";
-import { computed, ref } from "vue";
+import { ref } from "vue";
 import ErrorBox from "./ErrorBox.vue";
+import VueCountdown from "@chenfengyuan/vue-countdown";
 
 const props = defineProps(["email"]);
 
 const authStore = useAuthStore();
-
 const form = ref({
   error: null,
   loading: false,
   disabled: false,
-});
-
-const countdown = ref(0);
-let interval = null;
-
-const buttonText = computed(() => {
-  return countdown.value > 0 ? `Resend again in ${countdown.value}s` : "Resend";
 });
 
 const resendConfirmationEmail = async () => {
@@ -27,17 +20,7 @@ const resendConfirmationEmail = async () => {
 
     await authStore.resendConfirmationEmail(props.email);
 
-    // disable the button for 120 seconds
     form.value.disabled = true;
-    countdown.value = 120;
-    interval = setInterval(() => {
-      if (countdown.value > 0) {
-        countdown.value--;
-      } else {
-        clearInterval(interval);
-        form.value.disabled = false;
-      }
-    }, 1000);
   } catch (errorResponse) {
     form.value.error = errorResponse;
   } finally {
@@ -65,7 +48,6 @@ const resendConfirmationEmail = async () => {
 
     <!--Resend Button-->
     <VBtn
-      :text="buttonText"
       @click="resendConfirmationEmail"
       variant="tonal"
       color="primary"
@@ -74,7 +56,18 @@ const resendConfirmationEmail = async () => {
       :disabled="form.disabled"
       :loading="form.loading"
       block
-    />
+    >
+      <VueCountdown
+        v-if="form.disabled"
+        :time="120000"
+        @end="form.disabled = false"
+        #default="{ totalSeconds }"
+      >
+        Resend again in {{ totalSeconds }}s
+      </VueCountdown>
+
+      <span v-else>Resend</span>
+    </VBtn>
 
     <span class="d-block mt-1 text-caption">
       Didn't get an email? click the button above
