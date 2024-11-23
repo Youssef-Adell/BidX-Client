@@ -50,9 +50,12 @@ export const useAuctionStore = defineStore("auction", {
         this.auction = await fetchAuction(auctionId);
 
         if (this.isActive) {
-          this.bids = await fetchAuctionBids(this.auction.id);
+          [this.bids] = await Promise.all([
+            fetchAuctionBids(this.auction.id),
+            signalrClient.joinAuctionRoom(this.auction.id),
+          ]);
+
           this.bids.data.reverse(); //to make the latest bid at the end
-          await signalrClient.joinAuctionRoom(this.auction.id);
         } else if (!this.isActive && this.hasWinner) {
           this.acceptedBid = await fetchAcceptedBid(this.auction.id);
         }
@@ -82,7 +85,7 @@ export const useAuctionStore = defineStore("auction", {
     },
 
     async loadMoreBids() {
-      if (this.bids.metadata.hasNext) {
+      if (this.bids.metadata?.hasNext) {
         const response = await fetchAuctionBids(
           this.auction.id,
           ++this.bids.metadata.page, // Next page
