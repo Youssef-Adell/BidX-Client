@@ -50,9 +50,12 @@ export const useAuctionStore = defineStore("auction", {
         this.auction = await fetchAuction(auctionId);
 
         if (this.isActive) {
-          this.bids = await fetchAuctionBids(this.auction.id);
+          [this.bids] = await Promise.all([
+            fetchAuctionBids(this.auction.id),
+            signalrClient.joinAuctionRoom(this.auction.id),
+          ]);
+
           this.bids.data.reverse(); //to make the latest bid at the end
-          await signalrClient.joinAuctionRoom(this.auction.id);
         } else if (!this.isActive && this.hasWinner) {
           this.acceptedBid = await fetchAcceptedBid(this.auction.id);
         }
@@ -81,6 +84,23 @@ export const useAuctionStore = defineStore("auction", {
       }
     },
 
+    async loadMoreBids() {
+      if (this.bids.metadata?.hasNext) {
+        const response = await fetchAuctionBids(
+          this.auction.id,
+          ++this.bids.metadata.page, // Next page
+          this.bids.metadata.pageSize
+        );
+
+        response.data.reverse(); // to make the newer bid at the end
+        this.bids.data.unshift(...response.data);
+        this.bids.metadata = response.metadata;
+        return true;
+      }
+
+      return false;
+    },
+
     endAuction() {
       if (this.isActive) {
         this.auction.endTime = new Date().toISOString(); // Convert it to ISO to be able to parse it in the countdown
@@ -89,6 +109,7 @@ export const useAuctionStore = defineStore("auction", {
 
     bidPlacedHandler(bid) {
       this.bids.data.push(bid);
+      ++this.bids.metadata.pageSize; //to avoid refetching it when fetching more bids in loadMoreBids()
       this.auction.currentPrice = bid.amount;
     },
 
