@@ -37,21 +37,26 @@ const router = createRouter({
   ],
 });
 
-router.beforeEach((to) => {
+router.beforeEach((to, from) => {
   const isLoggedIn = useAuthStore().isLoggedIn;
 
   // Prevent unauthenticated users from navigating to views that requires auth
   if (to.meta.requiresAuth && !isLoggedIn) {
     return { path: "/login" };
   }
+
   // Prevent authenticated users from navigating to login, register and forgot-password views
-  else if (to.meta.requiresUnAuth && isLoggedIn) {
+  if (to.meta.requiresUnAuth && isLoggedIn) {
     return { path: "/" };
   }
-  // Navigate normally
-  else {
-    return true;
+
+  // Add query param to redirect back to after login
+  if (to.path === "/login" && !to.query.redirect) {
+    return { path: "/login", query: { redirect: from.path } }; // if there is no previous page the form.path defaults to "/"
   }
+
+  // Navigate normally
+  return true;
 });
 
 export default router;
