@@ -3,12 +3,13 @@ import ErrorBox from "./ErrorBox.vue";
 import { ErrorCode } from "@/api/errorCodes";
 import { useAuthStore } from "@/stores/AuthStore";
 import { ref } from "vue";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 const emit = defineEmits(["emailNotConfirmed"]);
 
 const authStore = useAuthStore();
 const router = useRouter();
+const route = useRoute();
 
 const credentials = ref({
   email: "",
@@ -43,8 +44,10 @@ const login = async (event) => {
   try {
     form.value.loading = true;
     form.value.error = null;
+
     await authStore.login(credentials.value.email, credentials.value.password);
-    router.replace({ path: "/" });
+
+    router.replace(route.query.redirect);
   } catch (errorResponse) {
     errorResponse.errorCode === ErrorCode.AUTH_EMAIL_NOT_CONFIRMED
       ? emit("emailNotConfirmed", credentials.value.email)
