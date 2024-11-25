@@ -68,9 +68,9 @@ export const useAuthStore = defineStore("auth", {
       } finally {
         localStorage.removeItem("hasLoggedIn");
 
-        this.accessToken = null;
+        this.accessToken = null; // must be setted here because restartConnection() depends on it.
         await signalrClient.restartConnection();
-        this.user = null;
+        this.user = null; // must be setted here to avoid flashy DOM changes in the current page just before redirecting to home page
 
         this.loading = false;
       }

@@ -1,24 +1,32 @@
 <script setup>
-import { useAuthStore } from "@/stores/AuthStore";
-import { computed, ref } from "vue";
-import { useDisplay, useTheme } from "vuetify";
 import defaultProfilePicture from "@/assets/default-profile-sm.png";
+import { useAuthStore } from "@/stores/AuthStore";
+import { computed } from "vue";
+import { useRouter } from "vue-router";
+import { useDisplay, useTheme } from "vuetify";
 
 const authStore = useAuthStore();
+const router = useRouter();
 const { xs } = useDisplay();
 const theme = useTheme();
-
-const isDarkThemeEnabled = ref(theme.global.current.value.dark);
-
-const toggleTheme = () => {
-  theme.global.name.value = theme.global.current.value.dark ? "light" : "dark";
-  isDarkThemeEnabled.value = theme.global.current.value.dark;
-  localStorage.setItem("selectedTheme", theme.global.name.value);
-};
 
 const profilePicture = computed(() => {
   return authStore.user.profilePictureUrl ?? defaultProfilePicture;
 });
+
+const isDarkThemeEnabled = computed(() => {
+  return theme.global.current.value.dark;
+});
+
+const toggleTheme = () => {
+  theme.global.name.value = isDarkThemeEnabled.value ? "light" : "dark";
+  localStorage.setItem("selectedTheme", theme.global.name.value);
+};
+
+const logout = async () => {
+  await authStore.logout();
+  router.push("/");
+};
 </script>
 
 <template>
@@ -56,11 +64,7 @@ const profilePicture = computed(() => {
         />
       </VListItem>
       <VListItem @click="" prepend-icon="mdi-cog" title="Settings" />
-      <VListItem
-        @click="authStore.logout"
-        prepend-icon="mdi-logout"
-        title="Logout"
-      />
+      <VListItem @click="logout" prepend-icon="mdi-logout" title="Logout" />
     </VList>
   </VMenu>
 </template>
