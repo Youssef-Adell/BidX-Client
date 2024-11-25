@@ -19,11 +19,11 @@ export const useAuthStore = defineStore("auth", {
     async login(email, password) {
       const { user, accessToken } = await authService.login(email, password);
 
-      this.user = user;
-      this.accessToken = accessToken;
-      localStorage.setItem("hasLoggedIn", true); // Needed to decicde whether to refresh or not in refreshToken()
+      localStorage.setItem("hasLoggedIn", true); // needed for deciding to refresh or not in refreshToken()
 
-      signalrClient.restartConnection();
+      this.accessToken = accessToken; // must be setted here because restartConnection() depends on it.
+      await signalrClient.restartConnection();
+      this.user = user; // must be setted here to avoid showing the profile picture in the navbar before restarting the connection
     },
 
     async register(user) {
@@ -66,11 +66,12 @@ export const useAuthStore = defineStore("auth", {
       } catch {
         // Supress the error
       } finally {
-        this.user = null;
-        this.accessToken = null;
         localStorage.removeItem("hasLoggedIn");
 
-        signalrClient.restartConnection();
+        this.accessToken = null;
+        await signalrClient.restartConnection();
+        this.user = null;
+
         this.loading = false;
       }
     },

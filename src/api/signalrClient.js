@@ -19,7 +19,6 @@ export default {
       .configureLogging(signalR.LogLevel.Information)
       .withServerTimeout(10000) // 2X the KeepAliveInterval value configured by the server
       .withAutomaticReconnect()
-      .withStatefulReconnect()
       .build();
 
     // Register handlers
