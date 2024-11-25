@@ -21,6 +21,7 @@ export const useAuthStore = defineStore("auth", {
 
       this.user = user;
       this.accessToken = accessToken;
+      localStorage.setItem("hasLoggedIn", true); // Needed to decicde whether to refresh or not in refreshToken()
 
       signalrClient.restartConnection();
     },
@@ -38,6 +39,8 @@ export const useAuthStore = defineStore("auth", {
     },
 
     async refreshToken() {
+      if (!localStorage.getItem("hasLoggedIn")) return false;
+
       try {
         this.loading = true;
 
@@ -46,9 +49,10 @@ export const useAuthStore = defineStore("auth", {
         this.accessToken = accessToken;
 
         return true; // Needed for deciding to retry faild requests or not in axios response interceptor
-      } catch (errorResponse) {
+      } catch {
         this.user = null;
         this.accessToken = null;
+        localStorage.removeItem("hasLoggedIn");
         return false;
       } finally {
         this.loading = false;
@@ -62,10 +66,12 @@ export const useAuthStore = defineStore("auth", {
       } catch {
         // Supress the error
       } finally {
-        this.loading = false;
         this.user = null;
         this.accessToken = null;
+        localStorage.removeItem("hasLoggedIn");
+
         signalrClient.restartConnection();
+        this.loading = false;
       }
     },
   },
