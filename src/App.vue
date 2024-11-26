@@ -1,7 +1,8 @@
 <script setup>
 import ConnectionStateBar from "./components/ConnectionStateBar.vue";
-import Footer from "./components/Footer.vue";
 import Navbar from "./components/Navbar.vue";
+import LoadingScreen from "./components/LoadingScreen.vue";
+import Footer from "./components/Footer.vue";
 import signalrClient from "./api/signalrClient";
 import { useTheme } from "vuetify";
 import { useAuthStore } from "./stores/AuthStore";
@@ -10,20 +11,29 @@ import { onBeforeMount, onBeforeUnmount, ref } from "vue";
 const authStore = useAuthStore();
 const theme = useTheme();
 
-const isAppInitialized = ref(false);
-const isAppInitializationFailed = ref(false);
+const appInitializing = ref(true);
+const appInitializationFailed = ref(false);
 
-onBeforeMount(async () => {
-  const selectedTheme = localStorage.getItem("selectedTheme");
-  if (selectedTheme) theme.global.name.value = selectedTheme;
-
+const initializeApp = async () => {
   try {
+    appInitializing.value = true;
+    appInitializationFailed.value = false;
+
     await authStore.refreshToken();
     await signalrClient.startConnection();
-    isAppInitialized.value = true;
+    appInitializing.value = false;
   } catch {
-    isAppInitializationFailed.value = true;
+    appInitializationFailed.value = true;
   }
+};
+
+onBeforeMount(async () => {
+  const savedTheme = localStorage.getItem("selectedTheme");
+  if (savedTheme) {
+    theme.global.name.value = savedTheme;
+  }
+
+  await initializeApp();
 });
 
 onBeforeUnmount(() => {
@@ -33,15 +43,12 @@ onBeforeUnmount(() => {
 
 <template>
   <VApp>
-    <template v-if="!isAppInitialized">
-      <div class="d-flex align-center justify-center text-center h-100">
-        <div v-if="isAppInitializationFailed">
-          Connection failed!<br />Please reload the page.
-        </div>
-        <div v-else>Loading...</div>
-      </div>
+    <!-- Loading screen while initializing -->
+    <template v-if="appInitializing">
+      <LoadingScreen :failed="appInitializationFailed" @retry="initializeApp" />
     </template>
 
+    <!-- Main application UI -->
     <template v-else>
       <ConnectionStateBar />
       <Navbar />
