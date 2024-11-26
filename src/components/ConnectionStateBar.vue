@@ -3,19 +3,19 @@ import { useSignalrStateStore } from "@/stores/SignalrStateStore";
 import { computed, ref, watch } from "vue";
 
 const signalrStateStore = useSignalrStateStore();
-const isReconnected = ref(false);
+const hasReconnected = ref(false);
 
 const shouldDisplayStatusBar = computed(
   () =>
     signalrStateStore.isReconnecting ||
     signalrStateStore.isDisconnected ||
-    isReconnected.value
+    hasReconnected.value
 );
 
 const bgColor = computed(() => {
   if (signalrStateStore.isReconnecting) return "bg-warning";
   if (signalrStateStore.isDisconnected) return "bg-error";
-  if (isReconnected.value) return "bg-primary";
+  if (hasReconnected.value) return "bg-primary";
   return "";
 });
 
@@ -24,9 +24,9 @@ watch(
   () => signalrStateStore.isReconnecting,
   (isReconnecting, wasReconnecting) => {
     if (wasReconnecting && signalrStateStore.isConnected) {
-      isReconnected.value = true;
+      hasReconnected.value = true;
       setTimeout(() => {
-        isReconnected.value = false;
+        hasReconnected.value = false;
       }, 3000);
     }
   }
@@ -47,13 +47,19 @@ watch(
     </template>
 
     <!-- Reconnected -->
-    <template v-else-if="isReconnected">
-      <span>Reconnected</span>
+    <template v-else-if="hasReconnected">
+      <div class="d-flex align-center ga-1">
+        <VIcon icon="mdi-cloud-check-variant-outline" size="14" />
+        <span>Reconnected</span>
+      </div>
     </template>
 
     <!-- Disconnected -->
     <template v-else-if="signalrStateStore.isDisconnected">
-      <span>Disconnected - Please reload the page </span>
+      <div class="d-flex align-center ga-1">
+        <VIcon icon="mdi-cloud-off-outline" size="14" />
+        <span>Disconnected - Please reload the page </span>
+      </div>
     </template>
   </VSystemBar>
 </template>
