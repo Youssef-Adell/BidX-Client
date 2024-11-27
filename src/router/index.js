@@ -56,7 +56,8 @@ router.beforeEach(async (to, from) => {
 
   // Add query param to redirect back to after login
   if (to.path === "/login" && !to.query.redirect) {
-    return { path: "/login", query: { redirect: from.path } }; // If there is no previous page, from.path defaults to "/"
+    const redirectPath = from.path !== "/login" ? from.fullPath : "/"; // If there is no previous page, from.fullPath defaults to "/"
+    return { path: "/login", query: { redirect: redirectPath } };
   }
 
   // Navigate normally
