@@ -1,12 +1,14 @@
 import authService from "@/api/services/authService";
 import signalrClient from "@/api/signalrClient";
 import { defineStore } from "pinia";
+import { watch } from "vue";
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
     user: null,
     accessToken: null,
     loading: false,
+    ready: false,
   }),
 
   getters: {
@@ -16,14 +18,30 @@ export const useAuthStore = defineStore("auth", {
   },
 
   actions: {
+    async waitUntilReady() {
+      if (this.ready) {
+        return; // If already ready, resolve immediately
+      }
+      await new Promise((resolve) => {
+        const unwatch = watch(
+          () => this.ready,
+          (ready) => {
+            if (ready) {
+              unwatch(); // Stop watching once the condition is met
+              resolve();
+            }
+          }
+        );
+      });
+    },
+
     async login(email, password) {
       const { user, accessToken } = await authService.login(email, password);
+      localStorage.setItem("hasLoggedIn", true); // Needed for deciding to refresh or not in refreshToken()
 
-      localStorage.setItem("hasLoggedIn", true); // needed for deciding to refresh or not in refreshToken()
-
-      this.accessToken = accessToken; // must be setted here because restartConnection() depends on it.
+      this.accessToken = accessToken; // Must be set here because restartConnection() depends on it
       await signalrClient.restartConnection();
-      this.user = user; // must be setted here to avoid showing the profile picture in the navbar before restarting the connection
+      this.user = user; // Must be set here to avoid showing the profile picture in the navbar before restarting the connection
     },
 
     async register(user) {
@@ -39,7 +57,10 @@ export const useAuthStore = defineStore("auth", {
     },
 
     async refreshToken() {
-      if (!localStorage.getItem("hasLoggedIn")) return false;
+      if (!localStorage.getItem("hasLoggedIn")) {
+        this.ready = true;
+        return false;
+      }
 
       try {
         this.loading = true;
@@ -48,13 +69,14 @@ export const useAuthStore = defineStore("auth", {
         this.user = user;
         this.accessToken = accessToken;
 
-        return true; // Needed for deciding to retry faild requests or not in axios response interceptor
+        return true; // Needed for deciding to retry failed requests or not in axios response interceptor
       } catch {
         this.user = null;
         this.accessToken = null;
         localStorage.removeItem("hasLoggedIn");
         return false;
       } finally {
+        this.ready = true;
         this.loading = false;
       }
     },
@@ -64,13 +86,13 @@ export const useAuthStore = defineStore("auth", {
         this.loading = true;
         await authService.logout();
       } catch {
-        // Supress the error
+        // Suppress the error
       } finally {
         localStorage.removeItem("hasLoggedIn");
 
-        this.accessToken = null; // must be setted here because restartConnection() depends on it.
+        this.accessToken = null; // Must be set here because restartConnection() depends on it
         await signalrClient.restartConnection();
-        this.user = null; // must be setted here to avoid flashy DOM changes in the current page just before redirecting to home page
+        this.user = null; // Must be set here to avoid flashy DOM changes in the current page just before redirecting to the home page
 
         this.loading = false;
       }
