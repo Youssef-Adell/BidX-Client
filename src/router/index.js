@@ -46,7 +46,7 @@ router.beforeEach(async (to, from) => {
 
   // Prevent unauthenticated users from navigating to views that require auth
   if (to.meta.requiresAuth && !authStore.isLoggedIn) {
-    return { path: "/login" };
+    return { path: "/login", query: { redirect: to.fullPath } }; // Preserve the intended destination to redirect to it after login
   }
 
   // Prevent authenticated users from navigating to login, register, and forgot-password views
