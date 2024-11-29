@@ -43,7 +43,7 @@ const retryInitialization = () => {
     </template>
 
     <template v-else>
-      <img :src="logo" :width="120" alt="logo" />
+      <img :src="logo" :width="120" alt="logo" draggable="false" />
       <PulseLoader :color="loaderColor" size="8px" />
     </template>
   </div>
