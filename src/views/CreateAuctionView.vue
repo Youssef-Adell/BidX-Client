@@ -44,6 +44,9 @@ const inputRules = {
       ? true
       : "Required.";
   },
+  minLength: (value) => {
+    return value.length < 5 ? "Min length is 5 characters" : true;
+  },
 };
 
 const updateProductImages = (pickedImages) => {
@@ -117,7 +120,9 @@ onBeforeMount(async () => {
               density="comfortable"
               variant="outlined"
               class="mb-1"
-              :rules="[inputRules.required]"
+              maxlength="50"
+              counter
+              :rules="[inputRules.required, inputRules.minLength]"
             />
 
             <div class="text-caption text-medium-emphasis">Description</div>
@@ -127,6 +132,8 @@ onBeforeMount(async () => {
               density="comfortable"
               variant="outlined"
               class="mb-1"
+              maxlength="400"
+              counter
             />
 
             <div class="text-caption text-medium-emphasis">Condition</div>
