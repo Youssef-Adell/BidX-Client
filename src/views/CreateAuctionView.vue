@@ -5,7 +5,7 @@ import categoriesService from "@/api/services/categoriesService";
 import citiesService from "@/api/services/citiesService";
 import auctionsService from "@/api/services/auctionsService";
 import { durationToSeconds } from "@/utils/dateTimeUtils";
-import { onMounted, ref } from "vue";
+import { onBeforeMount, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useDisplay } from "vuetify";
 
@@ -70,9 +70,11 @@ const createAuction = async (event) => {
   }
 };
 
-onMounted(async () => {
-  form.value.categories = await categoriesService.fetchCategories();
-  form.value.cities = await citiesService.fetchCities();
+onBeforeMount(async () => {
+  [form.value.categories, form.value.cities] = await Promise.all([
+    categoriesService.fetchCategories(),
+    citiesService.fetchCities(),
+  ]);
 });
 </script>
 
