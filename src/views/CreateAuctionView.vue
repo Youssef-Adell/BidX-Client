@@ -102,7 +102,7 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <VContainer class="d-flex justify-center align-center h-100">
+  <VContainer class="d-flex flex-column justify-center align-center h-100">
     <!--Loader-->
     <VOverlay
       :model-value="form.loading"
@@ -114,6 +114,19 @@ onBeforeMount(async () => {
 
     <VForm @submit.prevent="createAuction" class="w-100">
       <VSheet class="pa-4 pb-3 pa-md-8 pb-md-6" elevation="4" rounded>
+        <!--Title-->
+        <div class="d-flex flex-column align-center align-md-start mb-4">
+          <h1 class="text-h6 text-sm-h5 text-high-emphasis font-weight-bold">
+            Create Auction
+          </h1>
+          <VDivider
+            thickness="3"
+            :length="smAndDown ? '6rem' : '3rem'"
+            color="primary"
+            opacity="0.5"
+          />
+        </div>
+
         <!--Error Box-->
         <ErrorBox v-if="form.error" :error="form.error" class="mb-3" />
 
@@ -121,9 +134,7 @@ onBeforeMount(async () => {
         <VRow justify="space-between">
           <!--Product details fields-->
           <VCol cols="12" md="6" class="pr-md-8">
-            <span
-              class="d-block text-subtitle-1 mb-3 text-high-emphasis font-weight-bold"
-            >
+            <span class="d-block text-subtitle-2 mb-3 text-high-emphasis">
               Product details
             </span>
 
@@ -171,9 +182,7 @@ onBeforeMount(async () => {
 
           <!--Auction details fields-->
           <VCol cols="12" md="6" class="pl-md-8">
-            <span
-              class="d-block text-subtitle-1 mb-3 text-high-emphasis font-weight-bold"
-            >
+            <span class="d-block text-subtitle-2 mb-3 text-high-emphasis">
               Auction details
             </span>
 
