@@ -69,7 +69,7 @@ const register = async (event) => {
     </div>
 
     <!--Error Box-->
-    <ErrorBox :error="form.error" />
+    <ErrorBox v-if="form.error" :error="form.error" />
 
     <!--Register Form-->
     <VForm @submit.prevent="register">

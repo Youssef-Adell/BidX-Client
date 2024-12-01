@@ -53,13 +53,33 @@ const updateProductImages = (pickedImages) => {
   auction.value.productImages = pickedImages;
 };
 
+const validateImagesCount = () => {
+  const imagesCount = auction.value.productImages.length;
+
+  if (imagesCount < 1) {
+    form.value.error = {
+      errorMessages: ["You have to upload 1 image at least."],
+    };
+    return false;
+  } else if (imagesCount > 10) {
+    form.value.error = {
+      errorMessages: ["You have to upload 10 image at max."],
+    };
+    return false;
+  }
+
+  return true;
+};
+
 const createAuction = async (event) => {
+  form.value.error = null;
+
   // ensure that the input satisfies the rules
   const { valid } = await event;
-  if (!valid) return;
+  const validImagesCount = validateImagesCount();
+  if (!valid || !validImagesCount) return;
 
   try {
-    form.value.error = null;
     form.value.loading = true;
 
     auction.value.durationInSeconds = durationToSeconds(duration.value);
@@ -95,7 +115,7 @@ onBeforeMount(async () => {
     <VForm @submit.prevent="createAuction" class="w-100">
       <VSheet class="pa-4 pb-3 pa-md-8 pb-md-6" elevation="4" rounded>
         <!--Error Box-->
-        <ErrorBox :error="form.error" class="mb-3" />
+        <ErrorBox v-if="form.error" :error="form.error" class="mb-3" />
 
         <!--Details fields-->
         <VRow justify="space-between">

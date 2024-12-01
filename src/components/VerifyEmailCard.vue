@@ -32,7 +32,7 @@ const resendConfirmationEmail = async () => {
 <template>
   <VSheet class="px-10 py-6 text-center" elevation="4" max-width="500" rounded>
     <!--Error Box-->
-    <ErrorBox :error="form.error" centered="true" />
+    <ErrorBox v-if="form.error" :error="form.error" centered="true" />
 
     <!--Title-->
     <VIcon icon="mdi-email-check-outline" size="100" color="primary" />
