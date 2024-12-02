@@ -5,7 +5,7 @@ import categoriesService from "@/api/services/categoriesService";
 import citiesService from "@/api/services/citiesService";
 import auctionsService from "@/api/services/auctionsService";
 import { durationToSeconds } from "@/utils/dateTimeUtils";
-import { onMounted, ref } from "vue";
+import { onBeforeMount, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useDisplay } from "vuetify";
 
@@ -44,19 +44,42 @@ const inputRules = {
       ? true
       : "Required.";
   },
+  minLength: (value) => {
+    return value.length < 5 ? "Min length is 5 characters" : true;
+  },
 };
 
 const updateProductImages = (pickedImages) => {
   auction.value.productImages = pickedImages;
 };
 
+const validateImagesCount = () => {
+  const imagesCount = auction.value.productImages.length;
+
+  if (imagesCount < 1) {
+    form.value.error = {
+      errorMessages: ["You have to upload 1 image at least."],
+    };
+    return false;
+  } else if (imagesCount > 10) {
+    form.value.error = {
+      errorMessages: ["You have to upload 10 image at max."],
+    };
+    return false;
+  }
+
+  return true;
+};
+
 const createAuction = async (event) => {
+  form.value.error = null;
+
   // ensure that the input satisfies the rules
   const { valid } = await event;
-  if (!valid) return;
+  const validImagesCount = validateImagesCount();
+  if (!valid || !validImagesCount) return;
 
   try {
-    form.value.error = null;
     form.value.loading = true;
 
     auction.value.durationInSeconds = durationToSeconds(duration.value);
@@ -70,14 +93,16 @@ const createAuction = async (event) => {
   }
 };
 
-onMounted(async () => {
-  form.value.categories = await categoriesService.fetchCategories();
-  form.value.cities = await citiesService.fetchCities();
+onBeforeMount(async () => {
+  [form.value.categories, form.value.cities] = await Promise.all([
+    categoriesService.fetchCategories(),
+    citiesService.fetchCities(),
+  ]);
 });
 </script>
 
 <template>
-  <VContainer class="d-flex justify-center align-center h-100">
+  <VContainer class="d-flex flex-column justify-center align-center h-100">
     <!--Loader-->
     <VOverlay
       :model-value="form.loading"
@@ -89,16 +114,27 @@ onMounted(async () => {
 
     <VForm @submit.prevent="createAuction" class="w-100">
       <VSheet class="pa-4 pb-3 pa-md-8 pb-md-6" elevation="4" rounded>
+        <!--Title-->
+        <div class="d-flex flex-column align-center align-md-start mb-4">
+          <h1 class="text-h6 text-sm-h5 text-high-emphasis font-weight-bold">
+            Create Auction
+          </h1>
+          <VDivider
+            thickness="3"
+            :length="smAndDown ? '6rem' : '3rem'"
+            color="primary"
+            opacity="0.5"
+          />
+        </div>
+
         <!--Error Box-->
-        <ErrorBox :error="form.error" class="mb-3" />
+        <ErrorBox v-if="form.error" :error="form.error" class="mb-3" />
 
         <!--Details fields-->
         <VRow justify="space-between">
           <!--Product details fields-->
           <VCol cols="12" md="6" class="pr-md-8">
-            <span
-              class="d-block text-subtitle-1 mb-3 text-high-emphasis font-weight-bold"
-            >
+            <span class="d-block text-subtitle-2 mb-3 text-high-emphasis">
               Product details
             </span>
 
@@ -115,7 +151,9 @@ onMounted(async () => {
               density="comfortable"
               variant="outlined"
               class="mb-1"
-              :rules="[inputRules.required]"
+              maxlength="50"
+              counter
+              :rules="[inputRules.required, inputRules.minLength]"
             />
 
             <div class="text-caption text-medium-emphasis">Description</div>
@@ -125,6 +163,8 @@ onMounted(async () => {
               density="comfortable"
               variant="outlined"
               class="mb-1"
+              maxlength="400"
+              counter
             />
 
             <div class="text-caption text-medium-emphasis">Condition</div>
@@ -142,9 +182,7 @@ onMounted(async () => {
 
           <!--Auction details fields-->
           <VCol cols="12" md="6" class="pl-md-8">
-            <span
-              class="d-block text-subtitle-1 mb-3 text-high-emphasis font-weight-bold"
-            >
+            <span class="d-block text-subtitle-2 mb-3 text-high-emphasis">
               Auction details
             </span>
 

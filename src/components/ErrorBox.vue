@@ -1,10 +1,19 @@
 <script setup>
-defineProps(["error", "centered"]);
+defineProps({
+  error: {
+    required: true,
+    type: Object,
+  },
+
+  centered: {
+    type: Boolean,
+    default: false,
+  },
+});
 </script>
 
 <template>
   <ul
-    v-if="error"
     :class="[
       centered ? 'py-1 list-style-none text-center' : 'py-2 pl-6',
       'bg-error rounded text-caption',

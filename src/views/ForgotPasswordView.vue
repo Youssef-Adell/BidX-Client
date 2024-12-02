@@ -55,7 +55,7 @@ const forgotPassword = async (event) => {
       </div>
 
       <!--Error Box-->
-      <ErrorBox :error="form.error" />
+      <ErrorBox v-if="form.error" :error="form.error" />
 
       <div class="py-2">
         Enter the email address associated with your account and we'll send you
