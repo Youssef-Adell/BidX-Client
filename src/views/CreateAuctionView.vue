@@ -3,14 +3,15 @@ import ErrorBox from "@/components/ErrorBox.vue";
 import ImagePicker from "@/components/ImagePicker.vue";
 import categoriesService from "@/api/services/categoriesService";
 import citiesService from "@/api/services/citiesService";
-import auctionsService from "@/api/services/auctionsService";
 import { durationToSeconds } from "@/utils/dateTimeUtils";
 import { onBeforeMount, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useDisplay } from "vuetify";
+import { useAuctionStore } from "@/stores/AuctionStore";
 
-const router = useRouter();
 const { smAndDown, mdAndUp } = useDisplay();
+const router = useRouter();
+const auctionStore = useAuctionStore();
 
 const auction = ref({
   productImages: [],
@@ -31,7 +32,6 @@ const duration = ref({
 });
 
 const form = ref({
-  loading: false,
   error: null,
   productConditions: ["New", "Used"],
   categories: [],
@@ -80,16 +80,11 @@ const createAuction = async (event) => {
   if (!valid || !validImagesCount) return;
 
   try {
-    form.value.loading = true;
-
     auction.value.durationInSeconds = durationToSeconds(duration.value);
-    const res = await auctionsService.addAuction(auction.value);
-    console.log(res);
+    const auctionId = await auctionStore.create(auction.value);
+    router.push(`/auctions/${auctionId}`);
   } catch (errorResponse) {
     form.value.error = errorResponse;
-  } finally {
-    form.value.loading = false;
-    auction.value = null;
   }
 };
 
@@ -105,7 +100,7 @@ onBeforeMount(async () => {
   <VContainer class="d-flex flex-column justify-center align-center h-100">
     <!--Loader-->
     <VOverlay
-      :model-value="form.loading"
+      :model-value="auctionStore.loading"
       class="align-center justify-center"
       persistent
     >
