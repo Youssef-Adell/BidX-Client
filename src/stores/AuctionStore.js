@@ -11,6 +11,7 @@ export const useAuctionStore = defineStore("auction", {
     acceptedBid: null,
     loading: false,
     justCreatedAuction: null, // Temporarily stores the just-created auction to optimize data loading in the load() function.
+    uploadProgress: 0,
   }),
 
   getters: {
@@ -48,9 +49,18 @@ export const useAuctionStore = defineStore("auction", {
     async create(auction) {
       try {
         this.loading = true;
-        this.justCreatedAuction = await auctionsService.addAuction(auction);
+
+        this.justCreatedAuction = await auctionsService.addAuction(
+          auction,
+          (progressEvent) => {
+            this.uploadProgress = Math.round(
+              (progressEvent.loaded / progressEvent.total) * 100
+            );
+          }
+        );
         return this.justCreatedAuction.id;
       } finally {
+        this.uploadProgress = 0;
         this.loading = false;
       }
     },

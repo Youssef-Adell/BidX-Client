@@ -3,6 +3,7 @@ import ErrorBox from "@/components/ErrorBox.vue";
 import ImagePicker from "@/components/ImagePicker.vue";
 import categoriesService from "@/api/services/categoriesService";
 import citiesService from "@/api/services/citiesService";
+import UploadProgressOverlay from "@/components/UploadProgressOverlay.vue";
 import { durationToSeconds } from "@/utils/dateTimeUtils";
 import { onBeforeMount, ref } from "vue";
 import { useRouter } from "vue-router";
@@ -98,15 +99,13 @@ onBeforeMount(async () => {
 
 <template>
   <VContainer class="d-flex flex-column justify-center align-center h-100">
-    <!--Loader-->
-    <VOverlay
-      :model-value="auctionStore.loading"
-      class="align-center justify-center"
-      persistent
-    >
-      <VProgressCircular color="primary" size="40" indeterminate />
-    </VOverlay>
+    <!--Upload Progress-->
+    <UploadProgressOverlay
+      v-if="auctionStore.loading"
+      :percentage="auctionStore.uploadProgress"
+    />
 
+    <!--Form-->
     <VForm @submit.prevent="createAuction" class="w-100">
       <VSheet class="pa-4 pb-3 pa-md-8 pb-md-6" elevation="4" rounded>
         <!--Title-->
