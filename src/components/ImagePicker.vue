@@ -1,38 +1,49 @@
 <script setup>
+import { compressImage, convertToBase64 } from "@/utils/imageUtils";
 import { ref, useTemplateRef } from "vue";
 
 const emit = defineEmits(["pickedImagesChanged"]);
 
 const fileInput = useTemplateRef("fileInput");
-const imagesInBase64 = ref([]);
-const images = ref([]);
+const imagesToPreview = ref([]); // Base64 previews for <img> src
+const imagesToEmit = []; // Images to emit to parent
 
 const openFilePicker = () => {
-  fileInput.value.click();
+  fileInput.value?.click();
 };
 
-const loadPickedImages = (event) => {
-  const files = Array.from(event.target.files);
+const generateBase64Previews = async (Images) => {
+  return Promise.all(Images.map((img) => convertToBase64(img)));
+};
 
-  // Load and encode files into base64 format to use it as a value for src attribute in <img/>
-  files.forEach((file) => {
-    const reader = new FileReader();
+const compressImages = async (Images) => {
+  return Promise.all(Images.map((img) => compressImage(img)));
+};
 
-    reader.onload = (event) => {
-      imagesInBase64.value.push(event.target.result);
-      images.value.push(file);
-    };
+const loadPickedImages = async (event) => {
+  try {
+    const pickedImages = Array.from(event.target.files);
+    if (!pickedImages.length) return;
 
-    reader.readAsDataURL(file);
-  });
+    // Preview the picked images
+    const previews = await generateBase64Previews(pickedImages);
+    imagesToPreview.value.push(...previews);
 
-  emit("pickedImagesChanged", images.value);
+    // Compress the picked images
+    const compressedImages = await compressImages(pickedImages);
+    imagesToEmit.push(...compressedImages);
+
+    emit("pickedImagesChanged", imagesToEmit);
+  } catch {
+    // Supress the error
+  }
 };
 
 const removeImage = (index) => {
-  imagesInBase64.value.splice(index, 1);
-  images.value.splice(index, 1);
-  emit("pickedImagesChanged", images.value);
+  imagesToPreview.value.splice(index, 1);
+  imagesToEmit.splice(index, 1);
+
+  emit("pickedImagesChanged", imagesToEmit);
 };
 </script>
 
@@ -46,8 +57,8 @@ const removeImage = (index) => {
 
       <!--Picked Images Preview-->
       <VImg
-        v-for="(image, index) in imagesInBase64"
-        :src="image"
+        v-for="(img, index) in imagesToPreview"
+        :src="img"
         :key="index"
         width="110"
         height="100"
@@ -68,7 +79,7 @@ const removeImage = (index) => {
       </VImg>
     </div>
 
-    <!--hidden file input used to open file picker by clicking on the Upload button above-->
+    <!--hidden img input used to open img picker by clicking on the Upload button above-->
     <input
       type="file"
       accept="image/*"

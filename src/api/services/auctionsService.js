@@ -2,11 +2,12 @@ import { objectToFormData } from "@/utils/apiUtils";
 import httpClient from "../httpClient";
 
 export default {
-  async addAuction(auction) {
+  async addAuction(auction, uploadProgressCallback) {
     const formData = objectToFormData(auction);
 
     const response = await httpClient.post("/auctions", formData, {
       requiresAuth: true,
+      onUploadProgress: uploadProgressCallback,
     });
 
     return response.data;

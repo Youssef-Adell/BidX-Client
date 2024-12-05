@@ -10,6 +10,8 @@ export const useAuctionStore = defineStore("auction", {
     bids: { data: [], metadata: null },
     acceptedBid: null,
     loading: false,
+    justCreatedAuction: null, // Temporarily stores the just-created auction to optimize data loading in the load() function.
+    uploadProgress: 0,
   }),
 
   getters: {
@@ -44,7 +46,34 @@ export const useAuctionStore = defineStore("auction", {
   },
 
   actions: {
+    async create(auction) {
+      try {
+        this.loading = true;
+
+        this.justCreatedAuction = await auctionsService.addAuction(
+          auction,
+          (progressEvent) => {
+            this.uploadProgress = Math.round(
+              (progressEvent.loaded / progressEvent.total) * 100
+            );
+          }
+        );
+        return this.justCreatedAuction.id;
+      } finally {
+        this.uploadProgress = 0;
+        this.loading = false;
+      }
+    },
+
     async load(auctionId) {
+      // If navigating to the just-created auction, use it directly to skip unnecessary API calls.
+      // This is useful when redirecting from 'CreateAuctionView' to 'AuctionView' after creation.
+      if (this.justCreatedAuction?.id == auctionId) {
+        this.auction = this.justCreatedAuction;
+        this.justCreatedAuction = null; // Clear it to ensure it's not reused during normal navigation.
+        return;
+      }
+
       try {
         this.loading = true;
         this.auction = await auctionsService.fetchAuction(auctionId);
