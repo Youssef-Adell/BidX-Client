@@ -71,6 +71,7 @@ export const useAuctionStore = defineStore("auction", {
       if (this.justCreatedAuction?.id == auctionId) {
         this.auction = this.justCreatedAuction;
         this.justCreatedAuction = null; // Clear it to ensure it's not reused during normal navigation.
+        await signalrClient.joinAuctionRoom(this.auction.id);
         return;
       }
 
@@ -84,7 +85,7 @@ export const useAuctionStore = defineStore("auction", {
             signalrClient.joinAuctionRoom(this.auction.id),
           ]);
 
-          this.bids.data.reverse(); //to make the latest bid at the end
+          this.bids.data.reverse(); // to make the latest bid at the end
         } else if (!this.isActive && this.hasWinner) {
           this.acceptedBid = await bidsService.fetchAcceptedBid(
             this.auction.id
@@ -139,9 +140,11 @@ export const useAuctionStore = defineStore("auction", {
     },
 
     bidPlacedHandler(bid) {
-      this.bids.data.push(bid);
-      ++this.bids.metadata.pageSize; //to avoid refetching it when fetching more bids in loadMoreBids()
       this.auction.currentPrice = bid.amount;
+      this.bids.data.push(bid);
+      if (this.bids.metadata) {
+        ++this.bids.metadata.pageSize; // To avoid refetching it when fetching more bids in loadMoreBids()
+      }
     },
 
     bidAcceptedHandler(bid) {
