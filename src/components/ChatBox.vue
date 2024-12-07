@@ -6,10 +6,11 @@ import { useChatStore } from "@/stores/ChatStore";
 import signalrClient from "@/api/signalrClient";
 import defaultProfilePicture from "@/assets/default-profile-sm.png";
 
-const goTo = useGoTo();
 const { smAndDown } = useDisplay();
+const goTo = useGoTo();
 const chatStore = useChatStore();
 const inputMessage = ref("");
+let isLoadingMoreMessages = false; // Flag to indicate when older messages are being loaded (needed in watcher below)
 
 const receiverProfilePicture = computed(() => {
   return chatStore.chat?.participantProfilePictureUrl ?? defaultProfilePicture;
@@ -22,19 +23,25 @@ const isReceiverOnline = computed(() => {
 // Scroll to the bottom of the chat when a new message added
 watch(
   () => chatStore.messages.data,
-  async (newValue, oldValue) => {
-    await nextTick(); // Ensure DOM updates first
-    goTo("#last-message", { container: "#messages-container" });
+  async (newData, oldData) => {
+    // Scroll to the bottom only if new messages are added (not loading more)
+    if (!isLoadingMoreMessages) {
+      await nextTick(); // Ensure DOM updates first
+      goTo("#last-message", { container: "#messages-container" });
+    }
   },
   { deep: 1 }
 );
 
 const loadMoreMessages = async ({ done }) => {
   try {
+    isLoadingMoreMessages = true;
     const isLoaded = await chatStore.loadMoreMessages();
     done(isLoaded ? "ok" : "empty");
   } catch {
     done("error");
+  } finally {
+    isLoadingMoreMessages = false;
   }
 };
 
