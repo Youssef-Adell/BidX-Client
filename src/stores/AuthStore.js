@@ -2,6 +2,7 @@ import authService from "@/api/services/authService";
 import signalrClient from "@/api/signalrClient";
 import { defineStore } from "pinia";
 import { watch } from "vue";
+import { useChatStore } from "./ChatStore";
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
@@ -84,16 +85,18 @@ export const useAuthStore = defineStore("auth", {
     async logout() {
       try {
         this.loading = true;
-        await authService.logout();
+        this.accessToken = null; // Must be setted here because restartConnection() depends on it
+
+        await Promise.all([
+          authService.logout(),
+          signalrClient.restartConnection(),
+        ]);
       } catch {
         // Suppress the error
       } finally {
         localStorage.removeItem("hasLoggedIn");
-
-        this.accessToken = null; // Must be set here because restartConnection() depends on it
-        await signalrClient.restartConnection();
-        this.user = null; // Must be set here to avoid flashy DOM changes in the current page just before redirecting to the home page
-
+        useChatStore().$reset();
+        this.user = null; // Must be setted here to avoid flashy DOM changes in the current page just before redirecting to the home page
         this.loading = false;
       }
     },

@@ -51,9 +51,11 @@ export const useChatStore = defineStore("chatStore", {
 
     async unload() {
       try {
-        const chatId = this.chat.id;
-        this.$reset();
-        await signalrClient.leaveChatRoom(chatId);
+        if (this.chat?.id) {
+          const chatId = this.chat.id;
+          this.$reset();
+          await signalrClient.leaveChatRoom(chatId);
+        }
       } catch {
         // Supress the error
       }
