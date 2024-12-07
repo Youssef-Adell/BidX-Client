@@ -33,6 +33,7 @@ function registerHandlers() {
   connection?.onreconnected(async () => {
     signalrStateStore.setState(singalrStates.connected);
     auctionStore.reload();
+    chatStore.reload();
   });
 
   connection?.onclose(() => {

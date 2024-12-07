@@ -12,7 +12,7 @@ export const useChatStore = defineStore("chatStore", {
 
   getters: {
     chatOpened() {
-      return this.chat !== null && !this.loading;
+      return this.chat !== null;
     },
   },
 
@@ -36,16 +36,16 @@ export const useChatStore = defineStore("chatStore", {
 
     async reload() {
       try {
-        this.loading = true;
-
         if (this.chat?.id) {
           [this.messages] = await Promise.all([
-            chatsService.fetchChatMessages(chat.id),
-            signalrClient.joinChatRoom(chat.id),
+            chatsService.fetchChatMessages(this.chat.id, 1, 20),
+            signalrClient.joinChatRoom(this.chat.id),
           ]);
+
+          this.messages.data.reverse(); // to make the latest message at the end
         }
-      } finally {
-        this.loading = false;
+      } catch {
+        // Supress the error
       }
     },
 
