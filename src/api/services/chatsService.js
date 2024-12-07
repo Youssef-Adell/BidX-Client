@@ -12,4 +12,16 @@ export default {
 
     return response.data;
   },
+
+  async fetchChatMessages(chatId, page, pageSize) {
+    const response = await httpClient.get(`/chats/${chatId}/messages`, {
+      requiresAuth: true,
+      params: {
+        page,
+        pageSize,
+      },
+    });
+
+    return response.data;
+  },
 };

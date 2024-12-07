@@ -1,9 +1,10 @@
 <script setup>
 import Bid from "./Bid.vue";
-import chatsService from "@/api/services/chatsService";
 import { useAuctionStore } from "@/stores/AuctionStore";
+import { useChatStore } from "@/stores/ChatStore";
 
 const auctionStore = useAuctionStore();
+const chatStore = useChatStore();
 
 const contactButtonText = auctionStore.amIAuctioneer
   ? "Contact the winner"
@@ -14,7 +15,7 @@ const contact = async () => {
     ? auctionStore.auction.winnerId
     : auctionStore.auction.auctioneer.id;
 
-  const chat = await chatsService.intiateChat(receiverId);
+  await chatStore.load(receiverId);
 };
 </script>
 
@@ -43,8 +44,9 @@ const contact = async () => {
           <!--Contact Button if i am an auctioneer or a Winner-->
           <VBtn
             v-if="auctionStore.amIAuctioneer || auctionStore.amIWinner"
-            :text="contactButtonText"
             @click="contact"
+            :text="contactButtonText"
+            :loading="chatStore.loading"
             color="primary"
             variant="flat"
             size="small"
