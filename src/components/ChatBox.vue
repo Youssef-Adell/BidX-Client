@@ -110,17 +110,17 @@ const send = async () => {
         empty-text=""
         @load="loadMoreMessages"
       >
-        <template
+        <div v-if="chatStore.loading" class="d-flex justify-center">
+          <VProgressCircular color="primary" indeterminate />
+        </div>
+
+        <Message
+          v-else
           v-for="(message, idx) in chatStore.messages.data"
           :key="message.id"
-        >
-          <Message
-            :id="
-              idx === chatStore.messages.data.length - 1 ? 'last-message' : ''
-            "
-            :message="message"
-          />
-        </template>
+          :id="idx === chatStore.messages.data.length - 1 ? 'last-message' : ''"
+          :message="message"
+        />
       </VInfiniteScroll>
     </div>
 

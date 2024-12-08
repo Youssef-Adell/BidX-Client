@@ -2,20 +2,30 @@
 import Bid from "./Bid.vue";
 import { useAuctionStore } from "@/stores/AuctionStore";
 import { useChatStore } from "@/stores/ChatStore";
+import { ref } from "vue";
 
 const auctionStore = useAuctionStore();
 const chatStore = useChatStore();
+const loading = ref(false);
 
 const contactButtonText = auctionStore.amIAuctioneer
   ? "Contact the winner"
   : "Contact the auctioneer";
 
 const contact = async () => {
-  const receiverId = auctionStore.amIAuctioneer
-    ? auctionStore.auction.winnerId
-    : auctionStore.auction.auctioneer.id;
+  try {
+    loading.value = true;
 
-  await chatStore.load(receiverId);
+    const receiverId = auctionStore.amIAuctioneer
+      ? auctionStore.auction.winnerId
+      : auctionStore.auction.auctioneer.id;
+
+    await chatStore.create(receiverId);
+  } catch {
+    // Supress the error
+  } finally {
+    loading.value = false;
+  }
 };
 </script>
 
@@ -46,7 +56,7 @@ const contact = async () => {
             v-if="auctionStore.amIAuctioneer || auctionStore.amIWinner"
             @click="contact"
             :text="contactButtonText"
-            :loading="chatStore.loading"
+            :loading="loading"
             color="primary"
             variant="flat"
             size="small"

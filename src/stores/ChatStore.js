@@ -17,12 +17,17 @@ export const useChatStore = defineStore("chatStore", {
   },
 
   actions: {
-    async load(receiverId) {
+    async create(receiverId) {
+      this.chat = await chatsService.intiateChat(receiverId);
+      await this.load(this.chat);
+    },
+
+    async load(chat) {
       try {
         this.loading = true;
+        await this.unload(); // Unload the currently opened chat if exist to stop receiving messages from it
 
-        this.chat = await chatsService.intiateChat(receiverId);
-
+        this.chat = chat;
         [this.messages] = await Promise.all([
           chatsService.fetchChatMessages(this.chat.id, 1, 20),
           signalrClient.joinChatRoom(this.chat.id),
@@ -36,13 +41,8 @@ export const useChatStore = defineStore("chatStore", {
 
     async reload() {
       try {
-        if (this.chat?.id) {
-          [this.messages] = await Promise.all([
-            chatsService.fetchChatMessages(this.chat.id, 1, 20),
-            signalrClient.joinChatRoom(this.chat.id),
-          ]);
-
-          this.messages.data.reverse(); // to make the latest message at the end
+        if (this.chat) {
+          this.load(this.chat);
         }
       } catch {
         // Supress the error

@@ -4,6 +4,7 @@ import { useSignalrStateStore } from "@/stores/SignalrStateStore";
 import { useAuctionStore } from "@/stores/AuctionStore";
 import { singalrStates } from "./signalrStates";
 import { useChatStore } from "@/stores/ChatStore";
+import { useChatsStore } from "@/stores/ChatsStore";
 
 let connection = null;
 let isRestarting = false; // To track intentional restarts
@@ -25,6 +26,7 @@ function registerHandlers() {
   const signalrStateStore = useSignalrStateStore();
   const auctionStore = useAuctionStore();
   const chatStore = useChatStore();
+  const chatsStore = useChatsStore();
 
   connection?.onreconnecting(() => {
     signalrStateStore.setState(singalrStates.reconnecting);
@@ -47,6 +49,11 @@ function registerHandlers() {
   connection?.on("MessageReceived", chatStore.messageReceivedHandler);
   connection?.on("MessagesSeen", chatStore.messagesSeenHandler);
   connection?.on("UserStatusChanged", chatStore.UserStatusChangedHandler);
+
+  connection?.on(
+    "MessageReceivedNotification",
+    chatsStore.newMessageAlertHandler
+  );
 }
 
 export default {
