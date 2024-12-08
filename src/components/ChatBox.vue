@@ -5,10 +5,12 @@ import { useDisplay, useGoTo } from "vuetify";
 import { useChatStore } from "@/stores/ChatStore";
 import signalrClient from "@/api/signalrClient";
 import defaultProfilePicture from "@/assets/default-profile-sm.png";
+import { useSignalrStateStore } from "@/stores/SignalrStateStore";
 
 const { smAndDown } = useDisplay();
 const goTo = useGoTo();
 const chatStore = useChatStore();
+const SignalrStateStore = useSignalrStateStore();
 const inputMessage = ref("");
 let isLoadingMoreMessages = false; // Flag to indicate when older messages are being loaded (needed in watcher below)
 
@@ -129,13 +131,16 @@ const send = async () => {
         type="text"
         placeholder="Type your message here.."
         class="w-100 h-100 outline-none"
+        :disabled="!SignalrStateStore.isConnected"
       />
       <VBtn
         icon="mdi-send"
         type="submit"
-        variant="plain"
+        variant="text"
         density="comfortable"
+        color="primary"
         :ripple="false"
+        :disabled="!SignalrStateStore.isConnected"
       />
     </VForm>
   </VSheet>
