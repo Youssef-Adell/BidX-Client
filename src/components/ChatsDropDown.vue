@@ -1,10 +1,8 @@
 <script setup>
 import ChatItem from "./ChatItem.vue";
 import { onBeforeMount } from "vue";
-import { useDisplay } from "vuetify";
 import { useChatsStore } from "@/stores/ChatsStore";
 
-const { xs } = useDisplay();
 const chatsStore = useChatsStore();
 
 const loadMoreChats = async ({ done }) => {
@@ -34,12 +32,16 @@ onBeforeMount(async () => {
   >
     <!--Activator-->
     <template #activator="{ props }">
-      <VBtn
-        v-bind="props"
-        icon="mdi-forum-outline"
-        class="ml-1 mr-4"
-        :density="xs ? 'comfortable' : 'default'"
-      />
+      <VBadge
+        :model-value="chatsStore.gotNewMessage"
+        class="mr-4"
+        color="error"
+        offset-x="5"
+        offset-y="6"
+        dot
+      >
+        <VBtn v-bind="props" icon="mdi-forum-outline" density="comfortable" />
+      </VBadge>
     </template>
 
     <!--Content-->
