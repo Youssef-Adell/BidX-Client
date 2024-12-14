@@ -9,23 +9,26 @@ const loadMoreNotifications = async ({ done }) => {
 </script>
 
 <template>
-  <VMenu width="300">
+  <VMenu min-width="300" :width="xs ? '100%' : '350'" min-height="300">
     <!--Activator-->
     <template #activator="{ props }">
-      <VBtn
-        v-bind="props"
-        icon="mdi-bell-outline"
-        :density="xs ? 'comfortable' : 'default'"
-        class="mx-1"
-      ></VBtn>
+      <VBadge
+        :model-value="false"
+        class="mr-2"
+        color="error"
+        offset-x="8"
+        offset-y="6"
+        dot
+      >
+        <VBtn v-bind="props" icon="mdi-bell-outline" density="comfortable" />
+      </VBadge>
     </template>
 
     <!--Content-->
-    <VSheet height="">
-      <p class="mx-4 my-2" style="font-weight: bold">Notifications</p>
-      <VDivider />
+    <VSheet>
+      <div class="pl-4 py-2 text-subtitle-2 border-b">Notifications</div>
 
-      <VInfiniteScroll height="300" @load="loadMoreNotifications" empty-text="">
+      <VInfiniteScroll height="320" @load="loadMoreNotifications" empty-text="">
       </VInfiniteScroll>
     </VSheet>
   </VMenu>

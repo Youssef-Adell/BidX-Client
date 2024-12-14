@@ -5,9 +5,9 @@ import { computed } from "vue";
 import { useRouter } from "vue-router";
 import { useDisplay, useTheme } from "vuetify";
 
-const authStore = useAuthStore();
-const router = useRouter();
 const { xs } = useDisplay();
+const router = useRouter();
+const authStore = useAuthStore();
 const theme = useTheme();
 
 const profilePicture = computed(() => {
@@ -30,14 +30,9 @@ const logout = async () => {
 </script>
 
 <template>
-  <VMenu width="300">
+  <VMenu :width="xs ? '100%' : '350'">
     <template #activator="{ props }">
-      <VBtn icon v-bind="props" :density="xs ? 'comfortable' : 'default'">
-        <VAvatar
-          :image="profilePicture"
-          :density="xs ? 'comfortable' : 'default'"
-        />
-      </VBtn>
+      <VAvatar v-bind:="props" :image="profilePicture" density="comfortable" />
     </template>
 
     <!--List of Options-->

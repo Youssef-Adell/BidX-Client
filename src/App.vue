@@ -7,8 +7,11 @@ import signalrClient from "./api/signalrClient";
 import { useTheme } from "vuetify";
 import { useAuthStore } from "./stores/AuthStore";
 import { onBeforeMount, onBeforeUnmount, ref } from "vue";
+import ChatBox from "./components/ChatBox.vue";
+import { useChatStore } from "./stores/ChatStore";
 
 const authStore = useAuthStore();
+const chatStore = useChatStore();
 const theme = useTheme();
 
 const appInitializing = ref(true);
@@ -56,6 +59,7 @@ onBeforeUnmount(() => {
         <RouterView />
       </VMain>
       <Footer />
+      <ChatBox v-if="chatStore.chatOpened" />
     </template>
   </VApp>
 </template>

@@ -14,3 +14,10 @@ export function formatDate(date) {
     minute: "numeric",
   });
 }
+
+export function getTime(date) {
+  return new Date(date).toLocaleString("en-us", {
+    hour: "numeric",
+    minute: "numeric",
+  });
+}

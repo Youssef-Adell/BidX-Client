@@ -3,6 +3,8 @@ import { useAuthStore } from "@/stores/AuthStore";
 import { useSignalrStateStore } from "@/stores/SignalrStateStore";
 import { useAuctionStore } from "@/stores/AuctionStore";
 import { singalrStates } from "./signalrStates";
+import { useChatStore } from "@/stores/ChatStore";
+import { useChatsStore } from "@/stores/ChatsStore";
 
 let connection = null;
 let isRestarting = false; // To track intentional restarts
@@ -23,6 +25,8 @@ function createConnection() {
 function registerHandlers() {
   const signalrStateStore = useSignalrStateStore();
   const auctionStore = useAuctionStore();
+  const chatStore = useChatStore();
+  const chatsStore = useChatsStore();
 
   connection?.onreconnecting(() => {
     signalrStateStore.setState(singalrStates.reconnecting);
@@ -31,6 +35,7 @@ function registerHandlers() {
   connection?.onreconnected(async () => {
     signalrStateStore.setState(singalrStates.connected);
     auctionStore.reload();
+    chatStore.reload();
   });
 
   connection?.onclose(() => {
@@ -40,6 +45,15 @@ function registerHandlers() {
 
   connection?.on("BidCreated", auctionStore.bidPlacedHandler);
   connection?.on("BidAccepted", auctionStore.bidAcceptedHandler);
+
+  connection?.on("MessageReceived", chatStore.messageReceivedHandler);
+  connection?.on("MessagesSeen", chatStore.messagesSeenHandler);
+  connection?.on("UserStatusChanged", chatStore.UserStatusChangedHandler);
+
+  connection?.on(
+    "MessageReceivedNotification",
+    chatsStore.newMessageAlertHandler
+  );
 }
 
 export default {
@@ -88,16 +102,23 @@ export default {
   async joinAuctionRoom(auctionId) {
     await connection?.invoke("JoinAuctionRoom", { auctionId });
   },
-
   async leaveAuctionRoom(auctionId) {
     await connection?.invoke("LeaveAuctionRoom", { auctionId });
   },
-
   async placeBid(auctionId, amount) {
     await connection?.invoke("BidUp", { auctionId, amount });
   },
-
   async acceptBid(bidId) {
     await connection?.invoke("AcceptBid", { bidId });
+  },
+
+  async joinChatRoom(chatId) {
+    await connection?.invoke("JoinChatRoom", { chatId });
+  },
+  async leaveChatRoom(chatId) {
+    await connection?.invoke("LeaveChatRoom", { chatId });
+  },
+  async sendMessage(chatId, message) {
+    await connection?.invoke("SendMessage", { chatId, message });
   },
 };

@@ -2,9 +2,9 @@
 import { useAuthStore } from "@/stores/AuthStore";
 import { useDisplay, useTheme } from "vuetify";
 import { computed } from "vue";
-import ChatsDropDown from "./ChatsDropDown.vue";
-import NotificationsDropDown from "./NotificationsDropDown.vue";
-import ProfileDropDown from "./ProfileDropDown.vue";
+import ChatsDropdown from "./ChatsDropdown.vue";
+import NotificationsDropdown from "./NotificationsDropdown.vue";
+import ProfileDropdown from "./ProfileDropdown.vue";
 import whiteLogo from "@/assets/bidx-logo-fill-white.svg";
 import blackLogo from "@/assets/bidx-logo-fill-black.svg";
 
@@ -30,9 +30,9 @@ const logo = computed(() => {
       />
 
       <template v-else-if="authStore.isLoggedIn">
-        <NotificationsDropDown />
-        <ChatsDropDown />
-        <ProfileDropDown />
+        <NotificationsDropdown />
+        <ChatsDropdown />
+        <ProfileDropdown />
       </template>
 
       <template v-else>
