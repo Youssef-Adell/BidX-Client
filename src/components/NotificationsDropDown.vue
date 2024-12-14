@@ -1,5 +1,7 @@
 <script setup>
-import ChatItem from "./ChatItem.vue";
+import { useDisplay } from "vuetify";
+
+const { xs } = useDisplay();
 
 const loadMoreNotifications = async ({ done }) => {
   done("empty");
@@ -7,7 +9,7 @@ const loadMoreNotifications = async ({ done }) => {
 </script>
 
 <template>
-  <VMenu min-width="300" width="350" min-height="300">
+  <VMenu min-width="300" :width="xs ? '100%' : '350'" min-height="300">
     <!--Activator-->
     <template #activator="{ props }">
       <VBadge

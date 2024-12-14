@@ -2,7 +2,9 @@
 import ChatItem from "./ChatItem.vue";
 import { onBeforeMount } from "vue";
 import { useChatsStore } from "@/stores/ChatsStore";
+import { useDisplay } from "vuetify";
 
+const { xs } = useDisplay();
 const chatsStore = useChatsStore();
 
 const loadMoreChats = async ({ done }) => {
@@ -26,7 +28,7 @@ onBeforeMount(async () => {
 <template>
   <VMenu
     min-width="300"
-    width="350"
+    :width="xs ? '100%' : '350'"
     min-height="300"
     @update:model-value="(isMenuOpen) => isMenuOpen && chatsStore.reload()"
   >
