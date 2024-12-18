@@ -73,6 +73,19 @@ const updatePage = (currentPage) => {
         </VRow>
       </template>
 
+      <!-- Loading State -->
+      <template #loader>
+        <VRow justify="center">
+          <VCol v-for="i in 12" :key="i" cols="12" sm="6" md="4" lg="3">
+            <VSkeletonLoader
+              type="image@2, heading, text"
+              elevation="2"
+              boilerplate
+            />
+          </VCol>
+        </VRow>
+      </template>
+
       <!-- Footer Pagination -->
       <template #footer="{ items }">
         <VPagination
@@ -93,11 +106,6 @@ const updatePage = (currentPage) => {
           <VIcon icon="mdi-robot-dead-outline" class="mb-1" size="40" />
           <span class="text-caption">No Auctions Found</span>
         </div>
-      </template>
-
-      <!-- Loading State -->
-      <template #loader>
-        <div>Loading...</div>
       </template>
     </VDataIterator>
   </section>
