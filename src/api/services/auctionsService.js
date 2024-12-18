@@ -18,4 +18,27 @@ export default {
 
     return response.data;
   },
+
+  async fetchAuctions(
+    page,
+    pageSize,
+    search,
+    activeOnly,
+    categoryId,
+    cityId,
+    productCondition
+  ) {
+    const response = await httpClient.get(`auctions`, {
+      params: {
+        page,
+        pageSize,
+        search,
+        activeOnly,
+        categoryId,
+        cityId,
+        productCondition,
+      },
+    });
+    return response.data;
+  },
 };
