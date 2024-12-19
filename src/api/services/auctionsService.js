@@ -19,25 +19,9 @@ export default {
     return response.data;
   },
 
-  async fetchAuctions(
-    page,
-    pageSize,
-    search,
-    activeOnly,
-    categoryId,
-    cityId,
-    productCondition
-  ) {
+  async fetchAuctions(page, pageSize) {
     const response = await httpClient.get(`auctions`, {
-      params: {
-        page,
-        pageSize,
-        search,
-        activeOnly,
-        categoryId,
-        cityId,
-        productCondition,
-      },
+      params: { page, pageSize },
     });
     return response.data;
   },
