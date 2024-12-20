@@ -8,10 +8,14 @@ export const useAuctionsStore = defineStore("auctions", {
   }),
 
   actions: {
-    async load(page, pageSize) {
+    async load(page, pageSize, filters) {
       try {
         this.loading = true;
-        this.auctions = await auctionsService.fetchAuctions(page, pageSize);
+        this.auctions = await auctionsService.fetchAuctions(
+          page,
+          pageSize,
+          filters
+        );
       } finally {
         this.loading = false;
       }

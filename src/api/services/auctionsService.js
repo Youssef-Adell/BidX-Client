@@ -19,9 +19,9 @@ export default {
     return response.data;
   },
 
-  async fetchAuctions(page, pageSize) {
+  async fetchAuctions(page, pageSize, filters) {
     const response = await httpClient.get(`auctions`, {
-      params: { page, pageSize },
+      params: { page, pageSize, ...filters },
     });
     return response.data;
   },
