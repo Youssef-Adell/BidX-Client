@@ -3,7 +3,7 @@ import AuctionFiltersDialog from "@/components/AuctionFiltersDialog.vue";
 import AuctionList from "@/components/AuctionList.vue";
 import CreateAuctionButton from "@/components/CreateAuctionButton.vue";
 import { useAuctionsStore } from "@/stores/AuctionsStore";
-import { computed, reactive, watch } from "vue";
+import { computed, onBeforeUnmount, reactive, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useDisplay } from "vuetify";
 
@@ -72,6 +72,8 @@ watch(
   },
   { immediate: true }
 );
+
+onBeforeUnmount(auctionsStore.unload);
 </script>
 
 <template>
