@@ -5,6 +5,7 @@ import { useAuctionStore } from "@/stores/AuctionStore";
 import { singalrStates } from "./signalrStates";
 import { useChatStore } from "@/stores/ChatStore";
 import { useChatsStore } from "@/stores/ChatsStore";
+import { useAuctionsStore } from "@/stores/AuctionsStore";
 
 let connection = null;
 let isRestarting = false; // To track intentional restarts
@@ -25,6 +26,7 @@ function createConnection() {
 function registerHandlers() {
   const signalrStateStore = useSignalrStateStore();
   const auctionStore = useAuctionStore();
+  const auctionsStore = useAuctionsStore();
   const chatStore = useChatStore();
   const chatsStore = useChatsStore();
 
@@ -35,6 +37,7 @@ function registerHandlers() {
   connection?.onreconnected(async () => {
     signalrStateStore.setState(singalrStates.connected);
     auctionStore.reload();
+    auctionsStore.reload();
     chatStore.reload();
   });
 
@@ -45,6 +48,14 @@ function registerHandlers() {
 
   connection?.on("BidCreated", auctionStore.bidPlacedHandler);
   connection?.on("BidAccepted", auctionStore.bidAcceptedHandler);
+
+  connection?.on("AuctionCreated", auctionsStore.auctionCreatedHandler);
+  connection?.on("AuctionDeleted", auctionsStore.auctionDeletedHandler);
+  connection?.on("AuctionEnded", auctionsStore.auctionEndedHandler);
+  connection?.on(
+    "AuctionPriceUpdated",
+    auctionsStore.auctionPriceUpdatedHandler
+  );
 
   connection?.on("MessageReceived", chatStore.messageReceivedHandler);
   connection?.on("MessagesSeen", chatStore.messagesSeenHandler);
@@ -120,5 +131,12 @@ export default {
   },
   async sendMessage(chatId, message) {
     await connection?.invoke("SendMessage", { chatId, message });
+  },
+
+  async joinFeedRoom() {
+    await connection?.invoke("JoinFeedRoom");
+  },
+  async leaveFeedRoom() {
+    await connection?.invoke("LeaveFeedRoom");
   },
 };
