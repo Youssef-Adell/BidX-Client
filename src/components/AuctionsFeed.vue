@@ -77,11 +77,10 @@ onBeforeUnmount(auctionsStore.unload);
 
 <template>
   <section>
-    <div class="d-flex align-center ga-2 my-4">
+    <div class="d-flex align-center ga-2 mb-3">
       <VIcon icon="mdi-star-four-points" :size="xs ? 'small' : 'default'" />
       <h2 :class="xs ? 'text-h6' : 'text-h5'">
-        <span class="font-weight-light">Latest</span>
-        <span class="font-weight-medium"> Auctions</span>
+        <span class="font-weight-light">Latest</span> Auctions
       </h2>
       <VSpacer />
       <AuctionFiltersDialog
