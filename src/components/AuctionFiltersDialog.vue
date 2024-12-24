@@ -1,7 +1,7 @@
 <script setup>
-import categoriesService from "@/api/services/categoriesService";
-import citiesService from "@/api/services/citiesService";
-import { onBeforeMount, reactive, ref } from "vue";
+import { useCategoriesStore } from "@/stores/CategoriesStore";
+import { useCitiesStore } from "@/stores/CitiesStore";
+import { computed, onBeforeMount, reactive, ref } from "vue";
 import { useDisplay } from "vuetify";
 
 const props = defineProps({
@@ -18,7 +18,8 @@ const props = defineProps({
 const emit = defineEmits(["apply-filters"]);
 
 const { xs } = useDisplay();
-
+const categoriesStore = useCategoriesStore();
+const citiesStore = useCitiesStore();
 const dialogOpened = ref(false);
 
 const form = reactive({
@@ -27,8 +28,8 @@ const form = reactive({
     { title: "Active", value: true },
   ],
   productConditions: ["New", "Used"],
-  categories: [],
-  cities: [],
+  categories: computed(() => categoriesStore.categories),
+  cities: computed(() => citiesStore.citi),
 });
 
 const selectedFilters = reactive({
@@ -50,10 +51,7 @@ const resetFilters = () => {
 };
 
 onBeforeMount(async () => {
-  [form.categories, form.cities] = await Promise.all([
-    categoriesService.fetchCategories(),
-    citiesService.fetchCities(),
-  ]);
+  await Promise.all([categoriesStore.load(), citiesStore.load()]);
 });
 </script>
 

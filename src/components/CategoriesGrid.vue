@@ -1,22 +1,14 @@
 <script setup>
 import CategoryItem from "./CategoryItem.vue";
-import categoriesService from "@/api/services/categoriesService";
-import { onBeforeMount, ref } from "vue";
+import { useCategoriesStore } from "@/stores/CategoriesStore";
+import { onBeforeMount } from "vue";
 import { useDisplay } from "vuetify";
 
 const { xs } = useDisplay();
-const categories = ref([]);
-const loading = ref(false);
+const categoriesStore = useCategoriesStore();
 
 onBeforeMount(async () => {
-  try {
-    loading.value = true;
-    categories.value = await categoriesService.fetchCategories();
-  } catch {
-    // Supress the error
-  } finally {
-    loading.value = false;
-  }
+  await categoriesStore.load();
 });
 </script>
 
@@ -29,7 +21,7 @@ onBeforeMount(async () => {
     </div>
 
     <!--Loading State-->
-    <VRow v-if="loading" justify="center" dense>
+    <VRow v-if="categoriesStore.loading" justify="center" dense>
       <VCol v-for="i in 12" :key="i" cols="3" sm="2">
         <VSkeletonLoader
           type="image"
@@ -41,7 +33,12 @@ onBeforeMount(async () => {
 
     <!--Categories Grid-->
     <VRow v-else justify="center" dense>
-      <VCol v-for="category in categories" :key="category.id" cols="3" sm="2">
+      <VCol
+        v-for="category in categoriesStore.categories"
+        :key="category.id"
+        cols="3"
+        sm="2"
+      >
         <CategoryItem :category="category" />
       </VCol>
     </VRow>
