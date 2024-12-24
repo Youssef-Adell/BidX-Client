@@ -1,17 +1,19 @@
 <script setup>
 import ErrorBox from "@/components/ErrorBox.vue";
 import ImagePicker from "@/components/ImagePicker.vue";
-import categoriesService from "@/api/services/categoriesService";
-import citiesService from "@/api/services/citiesService";
 import { durationToSeconds } from "@/utils/dateTimeUtils";
-import { onBeforeMount, ref } from "vue";
+import { computed, onBeforeMount, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useDisplay } from "vuetify";
 import { useAuctionStore } from "@/stores/AuctionStore";
+import { useCategoriesStore } from "@/stores/CategoriesStore";
+import { useCitiesStore } from "@/stores/CitiesStore";
 
 const { smAndDown, mdAndUp } = useDisplay();
 const router = useRouter();
 const auctionStore = useAuctionStore();
+const categoriesStore = useCategoriesStore();
+const citiesStore = useCitiesStore();
 
 const auction = ref({
   productImages: [],
@@ -34,8 +36,8 @@ const duration = ref({
 const form = ref({
   error: null,
   productConditions: ["New", "Used"],
-  categories: [],
-  cities: [],
+  categories: computed(() => categoriesStore.categories),
+  cities: computed(() => citiesStore.cities),
 });
 
 const inputRules = {
@@ -89,10 +91,7 @@ const createAuction = async (event) => {
 };
 
 onBeforeMount(async () => {
-  [form.value.categories, form.value.cities] = await Promise.all([
-    categoriesService.fetchCategories(),
-    citiesService.fetchCities(),
-  ]);
+  await Promise.all([categoriesStore.load(), citiesStore.load()]);
 });
 </script>
 

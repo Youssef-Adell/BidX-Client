@@ -1,12 +1,26 @@
 <script setup>
-import AuctionFiltersDialog from "@/components/AuctionFiltersDialog.vue";
-import { useAuctionsStore } from "@/stores/AuctionsStore";
 import { computed, onBeforeUnmount, reactive, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { useDisplay } from "vuetify";
-import AuctionsGrid from "./AuctionsGrid.vue";
+import { useAuctionsStore } from "@/stores/AuctionsStore";
+import AuctionFiltersDialog from "@/components/AuctionFiltersDialog.vue";
+import AuctionsGrid from "@/components/AuctionsGrid.vue";
 
-const { xs } = useDisplay();
+const props = defineProps({
+  initialFilters: {
+    type: Object,
+    default: () => ({
+      activeOnly: true,
+      productCondition: null,
+      categoryId: null,
+      cityId: null,
+    }),
+  },
+  disableCategoryFilter: {
+    type: Boolean,
+    default: false,
+  },
+});
+
 const route = useRoute();
 const router = useRouter();
 const auctionsStore = useAuctionsStore();
@@ -16,12 +30,7 @@ const pagination = reactive({
   pageSize: 12,
 });
 
-const filters = reactive({
-  activeOnly: true,
-  productCondition: null,
-  categoryId: null,
-  cityId: null,
-});
+const filters = reactive({ ...props.initialFilters });
 
 const totalPages = computed(() => {
   return auctionsStore.auctions.metadata?.totalPages ?? 1;
@@ -33,7 +42,7 @@ const changePage = (page) => {
 };
 
 const changeFilters = (newFilters) => {
-  pagination.page = 1; // Reset to first page
+  pagination.page = 1;
   Object.assign(filters, newFilters);
   updateURL();
 };
@@ -43,7 +52,10 @@ const updateURL = () => {
     ...pagination,
     ...Object.fromEntries(
       Object.entries(filters).filter(
-        ([_, value]) => value !== null && value !== ""
+        ([key, value]) =>
+          value !== null &&
+          value !== "" &&
+          (!props.disableCategoryFilter || key !== "categoryId")
       )
     ),
   };
@@ -59,8 +71,11 @@ const syncFromURL = () => {
 
   filters.activeOnly = query.activeOnly === "true" || query.activeOnly == null;
   filters.productCondition = query.productCondition || null;
-  filters.categoryId = Number(query.categoryId) || null;
   filters.cityId = Number(query.cityId) || null;
+
+  if (!props.disableCategoryFilter) {
+    filters.categoryId = Number(query.categoryId) || null;
+  }
 };
 
 watch(
@@ -78,13 +93,12 @@ onBeforeUnmount(auctionsStore.unload);
 <template>
   <section>
     <div class="d-flex align-center ga-2 mb-3">
-      <VIcon icon="mdi-star-four-points" :size="xs ? 'small' : 'default'" />
-      <h2 :class="xs ? 'text-h6' : 'text-h5'">
-        <span class="font-weight-light">Latest</span> Auctions
-      </h2>
+      <!-- Title slot for customizable header -->
+      <slot name="title" />
       <VSpacer />
       <AuctionFiltersDialog
         :initial-filters="filters"
+        :disable-category-filter="disableCategoryFilter"
         @apply-filters="changeFilters"
       />
     </div>
