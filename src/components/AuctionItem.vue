@@ -32,7 +32,7 @@ const formatProps = (props) => {
 </script>
 
 <template>
-  <RouterLink :to="`auctions/${auction.id}`" class="text-decoration-none">
+  <RouterLink :to="`/auctions/${auction.id}`" class="text-decoration-none">
     <VSheet
       class="d-flex flex-column justify-space-between overflow-hidden"
       elevation="2"
