@@ -4,8 +4,15 @@ import signalrClient from "@/api/signalrClient";
 
 export const useAuctionsStore = defineStore("auctions", {
   state: () => ({
-    auctions: { data: [], metadata: null },
-    currentParams: { page: 1, pageSize: 12, filters: null }, // Needed in reload()
+    auctions: {
+      data: [],
+      metadata: null,
+    },
+    currentParams: {
+      page: 1,
+      pageSize: 12,
+      filters: null,
+    },
     userInFeedPage: false,
     loading: true,
   }),
@@ -67,7 +74,14 @@ export const useAuctionsStore = defineStore("auctions", {
     },
 
     async auctionCreatedHandler(createdAuction) {
-      this.auctions.data.unshift(createdAuction);
+      if (matchesFilters(createdAuction, this.currentParams.filters)) {
+        this.auctions.data.unshift(createdAuction);
+
+        // Keep the data array length consistent with pageSize
+        if (this.auctions.data.length > this.currentParams.pageSize) {
+          this.auctions.data.pop();
+        }
+      }
     },
 
     async auctionDeletedHandler(deletedAuction) {
@@ -82,8 +96,15 @@ export const useAuctionsStore = defineStore("auctions", {
       );
 
       if (auctionToEnd) {
-        auctionToEnd.endTime = new Date().toISOString(); // Convert it to ISO to be able to parse it in the countdown
-        auctionToEnd.currentPrice = endedAuction.finalPrice;
+        // If activeOnly filter is enabled, remove ended auction otherwise mark it as ended
+        if (this.currentParams.filters?.activeOnly) {
+          this.auctions.data = this.auctions.data.filter(
+            (auction) => auction.id !== endedAuction.auctionId
+          );
+        } else {
+          auctionToEnd.endTime = new Date().toISOString(); // Convert it to ISO to be able to parse it in the countdown
+          auctionToEnd.currentPrice = endedAuction.finalPrice;
+        }
       }
     },
 
@@ -98,3 +119,24 @@ export const useAuctionsStore = defineStore("auctions", {
     },
   },
 });
+
+const matchesFilters = (auction, filters) => {
+  if (!filters) return true;
+
+  if (
+    filters.productCondition &&
+    auction.productCondition !== filters.productCondition
+  ) {
+    return false;
+  }
+
+  if (filters.categoryId && auction.categoryId !== filters.categoryId) {
+    return false;
+  }
+
+  if (filters.cityId && auction.cityId !== filters.cityId) {
+    return false;
+  }
+
+  return true;
+};
