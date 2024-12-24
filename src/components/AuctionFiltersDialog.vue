@@ -29,7 +29,7 @@ const form = reactive({
   ],
   productConditions: ["New", "Used"],
   categories: computed(() => categoriesStore.categories),
-  cities: computed(() => citiesStore.citi),
+  cities: computed(() => citiesStore.cities),
 });
 
 const selectedFilters = reactive({
