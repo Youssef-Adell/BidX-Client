@@ -31,6 +31,10 @@ const routes = [
     path: "/auctions/:id",
     component: () => import("../views/AuctionView.vue"),
   },
+  {
+    path: "/categories/:id",
+    component: () => import("../views/CategoryView.vue"),
+  },
 ];
 
 const router = createRouter({

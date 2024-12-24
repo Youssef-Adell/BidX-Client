@@ -6,7 +6,7 @@ import CreateAuctionButton from "@/components/CreateAuctionButton.vue";
 
 <template>
   <VContainer class="h-100">
-    <CategoriesGrid class="mt-6" />
+    <CategoriesGrid />
     <AuctionsFeed class="mt-6" />
 
     <CreateAuctionButton />
