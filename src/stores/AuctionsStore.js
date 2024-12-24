@@ -7,7 +7,7 @@ export const useAuctionsStore = defineStore("auctions", {
     auctions: { data: [], metadata: null },
     currentParams: { page: 1, pageSize: 12, filters: null }, // Needed in reload()
     userInFeedPage: false,
-    loading: false,
+    loading: true,
   }),
 
   actions: {

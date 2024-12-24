@@ -1,15 +1,22 @@
 <script setup>
+import categoriesService from "@/api/services/categoriesService";
 import AuctionFiltersDialog from "@/components/AuctionFiltersDialog.vue";
+import AuctionsGrid from "@/components/AuctionsGrid.vue";
 import { useAuctionsStore } from "@/stores/AuctionsStore";
-import { computed, onBeforeUnmount, reactive, watch } from "vue";
+import { computed, onBeforeMount, onBeforeUnmount, reactive, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useDisplay } from "vuetify";
-import AuctionsGrid from "./AuctionsGrid.vue";
 
 const { xs } = useDisplay();
 const route = useRoute();
 const router = useRouter();
 const auctionsStore = useAuctionsStore();
+
+const category = reactive({
+  id: Number(route.params.id),
+  name: null,
+  iconUrl: null,
+});
 
 const pagination = reactive({
   page: 1,
@@ -19,7 +26,7 @@ const pagination = reactive({
 const filters = reactive({
   activeOnly: true,
   productCondition: null,
-  categoryId: null,
+  categoryId: category.id,
   cityId: null,
 });
 
@@ -43,7 +50,7 @@ const updateURL = () => {
     ...pagination,
     ...Object.fromEntries(
       Object.entries(filters).filter(
-        ([_, value]) => value !== null && value !== ""
+        ([key, value]) => value !== null && value !== "" && key !== "categoryId"
       )
     ),
   };
@@ -56,10 +63,8 @@ const syncFromURL = () => {
 
   pagination.page = Number(query.page) || 1;
   pagination.pageSize = Number(query.pageSize) || 12;
-
   filters.activeOnly = query.activeOnly === "true" || query.activeOnly == null;
   filters.productCondition = query.productCondition || null;
-  filters.categoryId = Number(query.categoryId) || null;
   filters.cityId = Number(query.cityId) || null;
 };
 
@@ -72,22 +77,44 @@ watch(
   { immediate: true }
 );
 
+onBeforeMount(async () => {
+  const { name, iconUrl } = await categoriesService.fetchCategory(category.id);
+  category.name = name;
+  category.iconUrl = iconUrl;
+});
+
 onBeforeUnmount(auctionsStore.unload);
 </script>
 
 <template>
-  <section>
-    <div class="d-flex align-center ga-2 mb-3">
-      <VIcon icon="mdi-star-four-points" :size="xs ? 'small' : 'default'" />
-      <h2 :class="xs ? 'text-h6' : 'text-h5'">
-        <span class="font-weight-light">Latest</span> Auctions
-      </h2>
-      <VSpacer />
-      <AuctionFiltersDialog
-        :initial-filters="filters"
-        @apply-filters="changeFilters"
-      />
-    </div>
+  <VContainer>
+    <VSkeletonLoader
+      :loading="auctionsStore.loading"
+      type="subtitle"
+      class="bg-background"
+      width="250px"
+    >
+      <div class="d-flex align-center ga-2 mb-3 w-100">
+        <RouterLink to="/" class="text-text" replace>
+          <VIcon icon="mdi-chevron-left" size="large" />
+        </RouterLink>
+        <img
+          :src="category.iconUrl"
+          width="40px"
+          height="40px"
+          class="bg-surface pa-1 rounded"
+        />
+        <h2 :class="xs ? 'text-h6' : 'text-h5'">
+          {{ category.name }}
+        </h2>
+        <VSpacer />
+        <AuctionFiltersDialog
+          :initial-filters="filters"
+          @apply-filters="changeFilters"
+          disable-category-filter
+        />
+      </div>
+    </VSkeletonLoader>
 
     <AuctionsGrid
       :auctions="auctionsStore.auctions.data"
@@ -97,5 +124,5 @@ onBeforeUnmount(auctionsStore.unload);
       :total-pages="totalPages"
       @page-change="changePage"
     />
-  </section>
+  </VContainer>
 </template>

@@ -9,6 +9,10 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+  disableCategoryFilter: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const emit = defineEmits(["apply-filters"]);
@@ -108,6 +112,7 @@ onBeforeMount(async () => {
             hide-details
           />
           <VSelect
+            v-if="!disableCategoryFilter"
             v-model="selectedFilters.categoryId"
             label="Category"
             :items="form.categories"
