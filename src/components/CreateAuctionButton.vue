@@ -14,7 +14,7 @@ const spaceFromRight = computed(() => {
 <template>
   <VBtn
     v-if="authStore.isLoggedIn"
-    to="auctions/create"
+    to="/auctions/create"
     icon="mdi-plus"
     color="primary"
     :style="`z-index:999; position:fixed; bottom:40px; right:${spaceFromRight};`"
