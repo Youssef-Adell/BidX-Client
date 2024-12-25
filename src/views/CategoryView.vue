@@ -17,10 +17,7 @@ const category = reactive({
 const loading = ref(true);
 
 const initialFilters = {
-  activeOnly: true,
-  productCondition: null,
   categoryId: category.id,
-  cityId: null,
 };
 
 onBeforeMount(async () => {
