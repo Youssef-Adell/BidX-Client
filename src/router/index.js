@@ -35,6 +35,10 @@ const routes = [
     path: "/categories/:id",
     component: () => import("../views/CategoryView.vue"),
   },
+  {
+    path: "/search",
+    component: () => import("../views/SearchView.vue"),
+  },
 ];
 
 const router = createRouter({

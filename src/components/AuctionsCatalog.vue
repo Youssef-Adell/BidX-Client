@@ -9,6 +9,7 @@ const props = defineProps({
   initialFilters: {
     type: Object,
     default: () => ({
+      search: null,
       activeOnly: true,
       productCondition: null,
       categoryId: null,
@@ -69,6 +70,7 @@ const syncFromURL = () => {
   pagination.page = Number(query.page) || 1;
   pagination.pageSize = Number(query.pageSize) || 12;
 
+  filters.search = query.search || null;
   filters.activeOnly = query.activeOnly === "true" || query.activeOnly == null;
   filters.productCondition = query.productCondition || null;
   filters.cityId = Number(query.cityId) || null;
