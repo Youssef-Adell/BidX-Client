@@ -71,10 +71,10 @@ const formatProps = (props) => {
     <!--Auction has ended-->
     <div
       v-else
-      class="d-flex flex-column justify-center align-center text-caption font-weight-bold text-error"
+      class="d-flex flex-column justify-center align-center text-caption font-weight-medium text-error"
     >
-      <VIcon icon="mdi-timer-alert" size="20" />
-      <span>The Auction Has Ended</span>
+      <VIcon icon="mdi-timer-alert" size="35" />
+      <span>Auction Has Ended</span>
     </div>
   </div>
 </template>

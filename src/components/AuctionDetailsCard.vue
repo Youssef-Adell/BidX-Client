@@ -10,7 +10,7 @@ const auctionStore = useAuctionStore();
 </script>
 
 <template>
-  <VSheet class="w-100" elevation="4" rounded>
+  <VSheet class="w-100" elevation="1" rounded>
     <VRow no-gutters>
       <!--Auction Images-->
       <VCol cols="12" md="6">
@@ -19,6 +19,7 @@ const auctionStore = useAuctionStore();
           :height="xs ? 300 : 600"
           :class="['rounded', smAndDown ? 'rounded-b-0' : 'rounded-e-0']"
           hide-delimiter-background
+          cycle
         >
           <VCarouselItem
             v-for="(image, i) in auctionStore.auction?.images"

@@ -30,15 +30,15 @@ const resendConfirmationEmail = async () => {
 </script>
 
 <template>
-  <VSheet class="px-10 py-6 text-center" elevation="4" max-width="500" rounded>
+  <VSheet class="px-10 py-6 text-center" elevation="2" max-width="500" rounded>
     <!--Error Box-->
     <ErrorBox v-if="form.error" :error="form.error" centered="true" />
 
     <!--Title-->
     <VIcon icon="mdi-email-check-outline" size="100" color="primary" />
-    <span class="d-block text-h5 mb-3 text-high-emphasis font-weight-bold">
+    <h1 class="d-block text-h5 mb-3 text-high-emphasis font-weight-bold">
       Verify your email
-    </span>
+    </h1>
 
     <!--Paragraph-->
     We've sent an email to
