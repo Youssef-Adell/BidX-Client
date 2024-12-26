@@ -19,6 +19,7 @@ const auctionStore = useAuctionStore();
           :height="xs ? 300 : 600"
           :class="['rounded', smAndDown ? 'rounded-b-0' : 'rounded-e-0']"
           hide-delimiter-background
+          cycle
         >
           <VCarouselItem
             v-for="(image, i) in auctionStore.auction?.images"
