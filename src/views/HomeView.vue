@@ -28,9 +28,9 @@ const {
     <section class="mt-6">
       <div class="d-flex align-center ga-2 mb-3">
         <VIcon icon="mdi-star-four-points" :size="xs ? 'small' : 'default'" />
-        <h2 :class="xs ? 'text-h6' : 'text-h5'">
+        <h1 :class="xs ? 'text-h6' : 'text-h5'">
           <span class="font-weight-light">Latest</span> Auctions
-        </h2>
+        </h1>
         <VSpacer />
         <AuctionFiltersDialog
           :filters="filters"

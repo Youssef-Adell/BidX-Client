@@ -63,8 +63,8 @@ const register = async (event) => {
     rounded
   >
     <!--Title-->
-    <div class="text-h5 mb-3 text-high-emphasis font-weight-bold">
-      <span>Register</span>
+    <div class="mb-3 text-high-emphasis">
+      <h1 class="text-h5 font-weight-bold">Register</h1>
       <VDivider thickness="4" length="1.6rem" color="primary" opacity="0.5" />
     </div>
 
