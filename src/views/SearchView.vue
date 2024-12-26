@@ -1,55 +1,56 @@
 <script setup>
 import SearchBar from "@/components/SearchBar.vue";
-import AuctionsCatalog from "@/components/AuctionsCatalog.vue";
 import { useDisplay } from "vuetify";
-import { useRoute, useRouter } from "vue-router";
-import { reactive } from "vue";
+import AuctionFiltersDialog from "@/components/AuctionFiltersDialog.vue";
+import AuctionsGrid from "@/components/AuctionsGrid.vue";
+import useAuctionsManager from "@/composables/useAuctionsManager";
 
 const { xs } = useDisplay();
-const route = useRoute();
-const router = useRouter();
 
-const initialFilters = reactive({
-  search: route.query.search || null,
-});
-
-const applySearch = (searchTerm) => {
-  if (searchTerm == null || searchTerm.trim() === "") {
-    return;
-  }
-
-  initialFilters.search = searchTerm;
-
-  router.push({
-    query: {
-      ...route.query,
-      search: searchTerm,
-      page: 1,
-    },
-  });
-};
+const {
+  auctions,
+  loading,
+  page,
+  pageSize,
+  totalPages,
+  filters,
+  changePage,
+  changeFilters,
+} = useAuctionsManager();
 </script>
 
 <template>
   <VContainer class="h-100">
     <SearchBar
-      :intial-search-term="initialFilters.search"
-      @apply-search="applySearch"
+      :intial-search-term="filters.search"
+      @search="changeFilters"
       class="mb-4"
     />
 
-    <AuctionsCatalog
-      v-if="initialFilters.search"
-      :initial-filters="initialFilters"
-    >
-      <template #title>
+    <!--Search Results-->
+    <section v-if="filters.search">
+      <div class="d-flex align-center ga-2 mb-3">
         <VIcon icon="mdi-magnify" :size="xs ? 'small' : 'default'" />
-        <h2 :class="xs ? 'text-h6' : 'text-h5'">
+        <h1 :class="xs ? 'text-h6' : 'text-h5'">
           <span class="font-weight-light">Results for</span> '{{
-            initialFilters.search
+            filters.search
           }}'
-        </h2>
-      </template>
-    </AuctionsCatalog>
+        </h1>
+        <VSpacer />
+        <AuctionFiltersDialog
+          :filters="filters"
+          @apply-filters="changeFilters"
+        />
+      </div>
+
+      <AuctionsGrid
+        :auctions="auctions"
+        :loading="loading"
+        :current-page="page"
+        :page-size="pageSize"
+        :total-pages="totalPages"
+        @page-change="changePage"
+      />
+    </section>
   </VContainer>
 </template>

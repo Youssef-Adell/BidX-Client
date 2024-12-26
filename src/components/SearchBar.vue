@@ -7,12 +7,14 @@ const props = defineProps({
     required: false,
   },
 });
-const emit = defineEmits(["apply-search"]);
+const emit = defineEmits(["search"]);
 
 const searchTerm = ref(props.intialSearchTerm);
 
-const applySearch = () => {
-  emit("apply-search", searchTerm.value);
+const search = () => {
+  if (searchTerm.value?.trim()) {
+    emit("search", { search: searchTerm.value });
+  }
 };
 </script>
 
@@ -24,8 +26,8 @@ const applySearch = () => {
     placeholder="Search for auctions"
     variant="solo"
     class="border rounded"
-    @click:append-inner="applySearch"
-    @keyup.enter="applySearch"
+    @click:append-inner="search"
+    @keyup.enter="search"
     autofocus
     hide-details
     flat
