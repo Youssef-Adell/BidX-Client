@@ -2,8 +2,8 @@
 import whiteLogo from "@/assets/bidx-logo-fill-white.svg";
 import blackLogo from "@/assets/bidx-logo-fill-black.svg";
 import PulseLoader from "vue-spinner/src/PulseLoader.vue";
-import { useTheme } from "vuetify";
 import { computed } from "vue";
+import useAppTheme from "@/composables/useAppTheme";
 
 defineProps({
   failed: {
@@ -14,14 +14,14 @@ defineProps({
 
 const emit = defineEmits(["retry"]);
 
-const theme = useTheme();
+const appTheme = useAppTheme();
 
 const logo = computed(() => {
-  return theme.global.current.value.dark ? whiteLogo : blackLogo;
+  return appTheme.isDark.value ? whiteLogo : blackLogo;
 });
 
 const loaderColor = computed(() => {
-  return theme.global.current.value.dark ? "white" : "black";
+  return appTheme.isDark.value ? "white" : "black";
 });
 
 const retryInitialization = () => {

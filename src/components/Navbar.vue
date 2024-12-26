@@ -1,22 +1,22 @@
 <script setup>
 import { useAuthStore } from "@/stores/AuthStore";
-import { useDisplay, useTheme } from "vuetify";
+import { useDisplay } from "vuetify";
 import { computed } from "vue";
 import ChatsDropdown from "./ChatsDropdown.vue";
 import NotificationsDropdown from "./NotificationsDropdown.vue";
 import ProfileDropdown from "./ProfileDropdown.vue";
 import whiteLogo from "@/assets/bidx-logo-fill-white.svg";
 import blackLogo from "@/assets/bidx-logo-fill-black.svg";
+import useAppTheme from "@/composables/useAppTheme";
 
 const authStore = useAuthStore();
-const theme = useTheme();
+const appTheme = useAppTheme();
 const { xs, smAndUp } = useDisplay();
 
 const logo = computed(() => {
-  return theme.global.current.value.dark ? whiteLogo : blackLogo;
+  return appTheme.isDark.value ? whiteLogo : blackLogo;
 });
 </script>
-
 <template>
   <VAppBar class="pl-4 pl-sm-8 pr-3 pr-sm-6 pt-1" flat>
     <RouterLink to="/">
