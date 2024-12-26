@@ -30,7 +30,7 @@ onBeforeMount(async () => {
     min-width="300"
     :width="xs ? '100%' : '350'"
     min-height="300"
-    @update:model-value="(isMenuOpen) => isMenuOpen && chatsStore.reload()"
+    @update:model-value="(isMenuOpen) => isMenuOpen && chatsStore.load()"
   >
     <!--Activator-->
     <template #activator="{ props }">
@@ -51,8 +51,8 @@ onBeforeMount(async () => {
       <div class="pl-4 py-2 text-subtitle-2 border-b">Chats</div>
 
       <VInfiniteScroll height="320" @load="loadMoreChats" empty-text="">
-        <div v-if="chatsStore.loading" class="d-flex justify-center">
-          <VProgressCircular color="primary" indeterminate />
+        <div v-if="chatsStore.loading">
+          <VSkeletonLoader v-for="i in 4" type="list-item-avatar-two-line" />
         </div>
 
         <ChatItem
