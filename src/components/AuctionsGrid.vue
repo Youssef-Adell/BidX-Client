@@ -65,6 +65,7 @@ const changePage = (newPage) => {
 
     <!--Pagination-->
     <VPagination
+      v-if="totalPages > 1"
       :model-value="currentPage"
       :length="totalPages"
       @update:model-value="changePage"
@@ -76,8 +77,5 @@ const changePage = (newPage) => {
   </div>
 
   <!--No Auctions-->
-  <div v-else class="d-flex flex-column justify-center align-center h-75">
-    <VIcon icon="mdi-robot-dead-outline" size="40" />
-    <span class="text-caption mt-1">No Auctions Found</span>
-  </div>
+  <div v-else class="text-center text-caption pt-10">No Auctions Found</div>
 </template>
