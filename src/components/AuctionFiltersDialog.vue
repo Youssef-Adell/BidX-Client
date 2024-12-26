@@ -1,11 +1,11 @@
 <script setup>
 import { useCategoriesStore } from "@/stores/CategoriesStore";
 import { useCitiesStore } from "@/stores/CitiesStore";
-import { computed, onBeforeMount, reactive, ref } from "vue";
+import { computed, onBeforeMount, reactive, ref, watch } from "vue";
 import { useDisplay } from "vuetify";
 
 const props = defineProps({
-  initialFilters: {
+  filters: {
     type: Object,
     required: true,
   },
@@ -20,8 +20,9 @@ const emit = defineEmits(["apply-filters"]);
 const { xs } = useDisplay();
 const categoriesStore = useCategoriesStore();
 const citiesStore = useCitiesStore();
-const dialogOpened = ref(false);
 
+const selectedFilters = reactive({ ...props.filters });
+const dialogOpened = ref(false);
 const form = reactive({
   auctionState: [
     { title: "All", value: false },
@@ -30,13 +31,6 @@ const form = reactive({
   productConditions: ["New", "Used"],
   categories: computed(() => categoriesStore.categories),
   cities: computed(() => citiesStore.cities),
-});
-
-const selectedFilters = reactive({
-  activeOnly: props.initialFilters?.activeOnly,
-  productCondition: props.initialFilters?.productCondition,
-  categoryId: props.initialFilters?.categoryId,
-  cityId: props.initialFilters?.cityId,
 });
 
 const applyFilters = () => {
@@ -49,6 +43,14 @@ const resetFilters = () => {
     selectedFilters[key] = null;
   });
 };
+
+watch(
+  () => props.filters,
+  (newFilters) => {
+    Object.assign(selectedFilters, newFilters);
+  },
+  { deep: true }
+);
 
 onBeforeMount(async () => {
   await Promise.all([categoriesStore.load(), citiesStore.load()]);
@@ -69,14 +71,11 @@ onBeforeMount(async () => {
 
     <template #default>
       <VSheet class="pa-4 h-100" rounded>
-        <!--Dialog Header-->
         <div class="d-flex ga-1 align-center mb-6">
-          <!--Title-->
           <VIcon icon="mdi-filter" size="small" class="text-high-emphasis" />
           <span class="text-subtitle-1 text-high-emphasis font-weight-bold">
             Filter Auctions
           </span>
-          <!--Close button-->
           <VSpacer />
           <VBtn
             icon="mdi-close"
@@ -87,7 +86,6 @@ onBeforeMount(async () => {
           />
         </div>
 
-        <!--Criteria Form-->
         <VForm @submit.prevent="applyFilters">
           <VSelect
             v-model="selectedFilters.activeOnly"
@@ -133,7 +131,6 @@ onBeforeMount(async () => {
             hide-details
           />
 
-          <!--Action Buttons-->
           <div class="d-flex justify-end align-center">
             <VBtn
               text="Reset"

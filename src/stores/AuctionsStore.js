@@ -17,6 +17,12 @@ export const useAuctionsStore = defineStore("auctions", {
     loading: true,
   }),
 
+  getters: {
+    totalPages() {
+      return this.auctions.metadata?.totalPages ?? 0;
+    },
+  },
+
   actions: {
     async load(page, pageSize, filters) {
       try {
