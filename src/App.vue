@@ -4,15 +4,15 @@ import Navbar from "./components/Navbar.vue";
 import LoadingScreen from "./components/LoadingScreen.vue";
 import Footer from "./components/Footer.vue";
 import signalrClient from "./api/signalrClient";
-import { useTheme } from "vuetify";
+import ChatBox from "./components/ChatBox.vue";
+import useAppTheme from "./composables/useAppTheme";
 import { useAuthStore } from "./stores/AuthStore";
 import { onBeforeMount, onBeforeUnmount, ref } from "vue";
-import ChatBox from "./components/ChatBox.vue";
 import { useChatStore } from "./stores/ChatStore";
 
 const authStore = useAuthStore();
 const chatStore = useChatStore();
-const theme = useTheme();
+const appTheme = useAppTheme();
 
 const appInitializing = ref(true);
 const appInitializationFailed = ref(false);
@@ -31,10 +31,7 @@ const initializeApp = async () => {
 };
 
 onBeforeMount(async () => {
-  const savedTheme = localStorage.getItem("selectedTheme");
-  if (savedTheme) {
-    theme.global.name.value = savedTheme;
-  }
+  appTheme.restoreSavedTheme();
 
   await initializeApp();
 });

@@ -1,27 +1,19 @@
 <script setup>
 import defaultProfilePicture from "@/assets/default-profile-sm.png";
+import useAppTheme from "@/composables/useAppTheme";
 import { useAuthStore } from "@/stores/AuthStore";
 import { computed } from "vue";
 import { useRouter } from "vue-router";
-import { useDisplay, useTheme } from "vuetify";
+import { useDisplay } from "vuetify";
 
 const { xs } = useDisplay();
 const router = useRouter();
 const authStore = useAuthStore();
-const theme = useTheme();
+const appTheme = useAppTheme();
 
 const profilePicture = computed(() => {
   return authStore.user.profilePictureUrl ?? defaultProfilePicture;
 });
-
-const isDarkThemeEnabled = computed(() => {
-  return theme.global.current.value.dark;
-});
-
-const toggleTheme = () => {
-  theme.global.name.value = isDarkThemeEnabled.value ? "light" : "dark";
-  localStorage.setItem("selectedTheme", theme.global.name.value);
-};
 
 const logout = async () => {
   await authStore.logout();
@@ -47,11 +39,11 @@ const logout = async () => {
       />
       <VDivider class="mb-2" />
 
-      <VListItem @click="toggleTheme">
+      <VListItem @click="appTheme.toggle">
         <v-switch
+          v-model="appTheme.isDark.value"
           true-icon="mdi-weather-night"
           false-icon="mdi-white-balance-sunny"
-          v-model="isDarkThemeEnabled"
           color="primary"
           label="Dark Mode"
           hide-spin-buttons
