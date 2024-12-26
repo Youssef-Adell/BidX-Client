@@ -1,25 +1,53 @@
 <script setup>
-import AuctionsCatalog from "@/components/AuctionsCatalog.vue";
+import AuctionFiltersDialog from "@/components/AuctionFiltersDialog.vue";
+import AuctionsGrid from "@/components/AuctionsGrid.vue";
 import CategoriesGrid from "@/components/CategoriesGrid.vue";
 import CreateAuctionButton from "@/components/CreateAuctionButton.vue";
+import useAuctionsManager from "@/composables/useAuctionsManager";
 import { useDisplay } from "vuetify";
 
 const { xs } = useDisplay();
+
+const {
+  auctions,
+  loading,
+  page,
+  pageSize,
+  totalPages,
+  filters,
+  changePage,
+  changeFilters,
+} = useAuctionsManager();
 </script>
 
 <template>
   <VContainer class="h-100">
     <CategoriesGrid />
 
-    <AuctionsCatalog class="mt-6">
-      <template #title>
+    <!--Latest Auctions-->
+    <section class="mt-6">
+      <div class="d-flex align-center ga-2 mb-3">
         <VIcon icon="mdi-star-four-points" :size="xs ? 'small' : 'default'" />
         <h2 :class="xs ? 'text-h6' : 'text-h5'">
           <span class="font-weight-light">Latest</span> Auctions
         </h2>
-      </template>
-    </AuctionsCatalog>
+        <VSpacer />
+        <AuctionFiltersDialog
+          :filters="filters"
+          @apply-filters="changeFilters"
+        />
+      </div>
 
-    <CreateAuctionButton />
+      <AuctionsGrid
+        :auctions="auctions"
+        :loading="loading"
+        :current-page="page"
+        :page-size="pageSize"
+        :total-pages="totalPages"
+        @page-change="changePage"
+      />
+    </section>
   </VContainer>
+
+  <CreateAuctionButton />
 </template>
