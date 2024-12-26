@@ -63,6 +63,7 @@ const logo = computed(() => {
           append-icon="mdi-login"
           text="Login"
           to="/login"
+          :active="false"
         />
       </template>
     </template>

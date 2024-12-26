@@ -16,6 +16,13 @@ const loadMoreChats = async ({ done }) => {
   }
 };
 
+const handleMenuUpdate = (isMenuOpen) => {
+  if (isMenuOpen) {
+    chatsStore.gotNewMessage = false; // To hide the badge
+    chatsStore.load();
+  }
+};
+
 onBeforeMount(async () => {
   try {
     await chatsStore.load();
@@ -30,7 +37,7 @@ onBeforeMount(async () => {
     min-width="300"
     :width="xs ? '100%' : '350'"
     min-height="300"
-    @update:model-value="(isMenuOpen) => isMenuOpen && chatsStore.load()"
+    @update:model-value="handleMenuUpdate"
   >
     <!--Activator-->
     <template #activator="{ props }">
