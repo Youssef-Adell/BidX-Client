@@ -13,7 +13,6 @@ export const useChatsStore = defineStore("chatsStore", {
       try {
         this.loading = true;
         this.chats = await chatsService.fetchMyChats();
-        this.gotNewMessage = false;
       } finally {
         this.loading = false;
       }
