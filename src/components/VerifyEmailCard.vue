@@ -30,7 +30,7 @@ const resendConfirmationEmail = async () => {
 </script>
 
 <template>
-  <VSheet class="px-10 py-6 text-center" elevation="4" max-width="500" rounded>
+  <VSheet class="px-10 py-6 text-center" elevation="2" max-width="500" rounded>
     <!--Error Box-->
     <ErrorBox v-if="form.error" :error="form.error" centered="true" />
 

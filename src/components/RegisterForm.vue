@@ -58,7 +58,7 @@ const register = async (event) => {
 <template>
   <VSheet
     class="px-7 pt-6 pb-4 flex-grow-1"
-    elevation="4"
+    elevation="2"
     max-width="400"
     rounded
   >

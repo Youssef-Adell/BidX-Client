@@ -10,7 +10,7 @@ const auctionStore = useAuctionStore();
 </script>
 
 <template>
-  <VSheet class="w-100" elevation="4" rounded>
+  <VSheet class="w-100" elevation="1" rounded>
     <VRow no-gutters>
       <!--Auction Images-->
       <VCol cols="12" md="6">

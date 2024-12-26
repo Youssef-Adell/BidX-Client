@@ -44,7 +44,7 @@ const forgotPassword = async (event) => {
   <VContainer class="d-flex justify-center align-center h-100">
     <VSheet
       class="px-7 pt-6 pb-4 flex-grow-1"
-      elevation="4"
+      elevation="2"
       max-width="400"
       rounded
     >

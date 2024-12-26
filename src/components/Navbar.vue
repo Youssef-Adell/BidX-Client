@@ -2,9 +2,9 @@
 import { useAuthStore } from "@/stores/AuthStore";
 import { useDisplay, useTheme } from "vuetify";
 import { computed } from "vue";
-import NotificationsDropdown from "./NotificationsDropDown.vue";
-import ChatsDropdown from "./ChatsDropDown.vue";
-import ProfileDropdown from "./ProfileDropDown.vue";
+import ChatsDropdown from "./ChatsDropdown.vue";
+import NotificationsDropdown from "./NotificationsDropdown.vue";
+import ProfileDropdown from "./ProfileDropdown.vue";
 import whiteLogo from "@/assets/bidx-logo-fill-white.svg";
 import blackLogo from "@/assets/bidx-logo-fill-black.svg";
 

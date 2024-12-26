@@ -74,7 +74,7 @@ const placeBid = async (event) => {
       { 'mb-12 mb-md-0': !auctionStore.amIAuctioneer }, // To leave a space for the fixed PLACE-BID button in small screens
     ]"
   >
-    <VSheet class="w-100 w-md-50 pa-5" elevation="4" rounded>
+    <VSheet class="w-100 w-md-50 pa-5" elevation="1" rounded>
       <section>
         <h2 class="text-subtitle-2 text-high-emphasis mb-2">Bids</h2>
 

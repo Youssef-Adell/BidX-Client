@@ -97,7 +97,7 @@ onBeforeMount(async () => {
 
 <template>
   <VForm @submit.prevent="createAuction" class="w-100">
-    <VSheet class="pa-4 pb-3 pa-md-8 pb-md-6" elevation="4" rounded>
+    <VSheet class="pa-4 pb-3 pa-md-8 pb-md-6" elevation="1" rounded>
       <!--Title-->
       <div class="d-flex flex-column align-center align-md-start mb-4">
         <h1 class="text-h6 text-sm-h5 text-high-emphasis font-weight-bold">
