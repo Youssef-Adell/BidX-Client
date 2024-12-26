@@ -17,6 +17,7 @@ const logo = computed(() => {
   return appTheme.isDark.value ? whiteLogo : blackLogo;
 });
 </script>
+
 <template>
   <VAppBar class="pl-4 pl-sm-8 pr-3 pr-sm-6 pt-1" flat>
     <RouterLink to="/">
@@ -28,7 +29,7 @@ const logo = computed(() => {
         icon="mdi-magnify"
         to="/search"
         density="comfortable"
-        :class="authStore.isLoggedIn ? 'mr-2' : 'mr-4'"
+        class="mr-1"
         :active="false"
       />
 
@@ -43,6 +44,18 @@ const logo = computed(() => {
       </template>
 
       <template v-else>
+        <VBtn
+          :icon="
+            appTheme.isDark.value
+              ? 'mdi-weather-night'
+              : 'mdi-white-balance-sunny'
+          "
+          @click="appTheme.toggle"
+          density="comfortable"
+          class="mr-3"
+          :active="false"
+        />
+
         <VBtn
           color="primary"
           variant="flat"
