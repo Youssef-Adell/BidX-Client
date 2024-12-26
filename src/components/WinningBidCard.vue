@@ -68,7 +68,9 @@ const contact = async () => {
         <!--There is no Winner-->
         <div v-else class="d-flex flex-column align-center pb-5">
           <VIcon icon="mdi-emoticon-sad-outline" size="45" />
-          <div class="text-body-2 text-center">Nobody Won!</div>
+          <div class="text-caption font-weight-medium text-center">
+            Nobody Won!
+          </div>
         </div>
       </section>
     </VSheet>

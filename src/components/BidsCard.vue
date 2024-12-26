@@ -97,7 +97,7 @@ const placeBid = async (event) => {
           <template #empty>
             <span
               v-if="auctionStore.bids.data.length === 0"
-              class="text-body-2"
+              class="text-caption"
             >
               No Bids Placed Yet
             </span>
