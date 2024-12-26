@@ -13,19 +13,9 @@ export const useChatsStore = defineStore("chatsStore", {
       try {
         this.loading = true;
         this.chats = await chatsService.fetchMyChats();
+        this.gotNewMessage = false;
       } finally {
         this.loading = false;
-      }
-    },
-
-    async reload() {
-      try {
-        if (this.gotNewMessage) {
-          await this.load();
-          this.gotNewMessage = false;
-        }
-      } catch {
-        // Supress the error
       }
     },
 

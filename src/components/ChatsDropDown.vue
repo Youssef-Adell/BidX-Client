@@ -30,7 +30,7 @@ onBeforeMount(async () => {
     min-width="300"
     :width="xs ? '100%' : '350'"
     min-height="300"
-    @update:model-value="(isMenuOpen) => isMenuOpen && chatsStore.reload()"
+    @update:model-value="(isMenuOpen) => isMenuOpen && chatsStore.load()"
   >
     <!--Activator-->
     <template #activator="{ props }">
