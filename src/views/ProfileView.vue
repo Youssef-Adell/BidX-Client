@@ -3,7 +3,7 @@ import UserInfo from "@/components/UserInfo.vue";
 import UserAuctionsSubview from "@/components/UserAuctionsSubview.vue";
 import UserBiddingsSubview from "@/components/UserBiddingsSubview.vue";
 import UserReviewsSubview from "@/components/UserReviewsSubview.vue";
-import { onBeforeMount, ref } from "vue";
+import { onBeforeMount, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import usersService from "@/api/services/usersService";
 
@@ -11,9 +11,9 @@ const route = useRoute();
 const tab = ref("auctions");
 const loading = ref(false);
 const user = ref({});
-const userId = Number(route.params.id);
+let userId = Number(route.params.id);
 
-onBeforeMount(async () => {
+const fetchUserProfile = async () => {
   try {
     loading.value = true;
     user.value = await usersService.fetchUserProfile(userId);
@@ -22,6 +22,18 @@ onBeforeMount(async () => {
   } finally {
     loading.value = false;
   }
+};
+
+watch(
+  () => route.params.id,
+  async (newId) => {
+    userId = Number(newId);
+    await fetchUserProfile();
+  }
+);
+
+onBeforeMount(async () => {
+  await fetchUserProfile();
 });
 </script>
 
