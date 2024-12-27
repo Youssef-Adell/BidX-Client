@@ -1,4 +1,5 @@
 <script setup>
+import UserAuctionsSubview from "@/components/UserAuctionsSubview.vue";
 import UserInfo from "@/components/UserInfo.vue";
 import { ref } from "vue";
 import { useRoute } from "vue-router";
@@ -33,7 +34,9 @@ const tab = ref("auctions");
 
     <!-- Content Section -->
     <VTabsWindow v-model="tab">
-      <VTabsWindowItem value="auctions"> </VTabsWindowItem>
+      <VTabsWindowItem value="auctions">
+        <UserAuctionsSubview :user-id="userId" />
+      </VTabsWindowItem>
       <VTabsWindowItem value="biddings"> </VTabsWindowItem>
       <VTabsWindowItem value="reviews"> </VTabsWindowItem>
     </VTabsWindow>

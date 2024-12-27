@@ -22,6 +22,14 @@ const props = defineProps({
     type: Number,
     required: true,
   },
+  noAuctionsText: {
+    type: String,
+    default: "No Auctions Found.",
+  },
+  itemsElevated: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const emit = defineEmits(["page-change"]);
@@ -34,16 +42,12 @@ const changePage = (newPage) => {
 <template>
   <!--Loading State-->
   <VRow v-if="loading" justify="center" dense>
-    <VCol
-      v-for="i in pageSize"
-      :key="i"
-      cols="12"
-      sm="6"
-      md="4"
-      lg="3 "
-      class="mb-2"
-    >
-      <VSkeletonLoader type="image@2, heading, text" boilerplate />
+    <VCol v-for="i in pageSize" :key="i" cols="12" sm="4" lg="3 " class="mb-2">
+      <VSkeletonLoader
+        type="image@2, heading"
+        :elevation="itemsElevated ? 1 : 0"
+        boilerplate
+      />
     </VCol>
   </VRow>
 
@@ -54,12 +58,11 @@ const changePage = (newPage) => {
         v-for="auction in auctions"
         :key="auction.id"
         cols="12"
-        sm="6"
-        md="4"
+        sm="4"
         lg="3"
         class="mb-2"
       >
-        <AuctionItem :auction="auction" />
+        <AuctionItem :auction="auction" :elevated="itemsElevated" />
       </VCol>
     </VRow>
 
@@ -69,13 +72,14 @@ const changePage = (newPage) => {
       :model-value="currentPage"
       :length="totalPages"
       @update:model-value="changePage"
-      class="mt-4"
+      class="mt-2"
       size="small"
       total-visible="1"
-      rounded
     />
   </div>
 
   <!--No Auctions-->
-  <div v-else class="text-center text-caption pt-10">No Auctions Found</div>
+  <div v-else class="text-center text-caption pt-10">
+    {{ noAuctionsText }}
+  </div>
 </template>
