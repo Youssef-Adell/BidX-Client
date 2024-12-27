@@ -1,42 +1,18 @@
 <script setup>
-import { onBeforeMount, ref } from "vue";
 import defaultProfilePicture from "@/assets/default-profile-sm.png";
-import usersService from "@/api/services/usersService";
 
 const props = defineProps({
-  userId: {
-    type: Number,
+  user: {
+    type: Object,
     required: true,
   },
-});
-
-const loading = ref(false);
-const user = ref({
-  firstName: null,
-  lastName: null,
-  profilePictureUrl: null,
-  rating: null,
-});
-
-onBeforeMount(async () => {
-  try {
-    loading.value = true;
-    user.value = await usersService.fetchUserProfile(props.userId);
-
-    if (!user.value.profilePictureUrl)
-      user.value.profilePictureUrl = defaultProfilePicture;
-  } catch {
-    // Supress the error
-  } finally {
-    loading.value = false;
-  }
 });
 </script>
 
 <template>
   <section class="d-flex flex-column align-center">
     <VImg
-      :src="user.profilePictureUrl"
+      :src="user.profilePictureUrl ?? defaultProfilePicture"
       class="border-md rounded-circle"
       width="130px"
       height="130px"
