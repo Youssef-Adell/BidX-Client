@@ -1,4 +1,5 @@
 <script setup>
+import UserBiddingsSubview from "@/components/UserBiddingsSubview.vue";
 import UserAuctionsSubview from "@/components/UserAuctionsSubview.vue";
 import UserInfo from "@/components/UserInfo.vue";
 import { ref } from "vue";
@@ -37,7 +38,9 @@ const tab = ref("auctions");
       <VTabsWindowItem value="auctions">
         <UserAuctionsSubview :user-id="userId" />
       </VTabsWindowItem>
-      <VTabsWindowItem value="biddings"> </VTabsWindowItem>
+      <VTabsWindowItem value="biddings">
+        <UserBiddingsSubview :user-id="userId" />
+      </VTabsWindowItem>
       <VTabsWindowItem value="reviews"> </VTabsWindowItem>
     </VTabsWindow>
   </VContainer>
