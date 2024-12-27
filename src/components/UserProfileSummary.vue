@@ -13,7 +13,7 @@ defineProps({
   <div class="my-2 d-flex align-center">
     <!--Profile Picture-->
     <div class="mr-2">
-      <RouterLink :to="`profile/${profile?.id}`">
+      <RouterLink :to="`/profile/${profile?.id}`">
         <VAvatar :image="profile?.profilePictureUrl ?? defaultProfilePicture" />
       </RouterLink>
     </div>
@@ -22,7 +22,7 @@ defineProps({
     <div class="d-flex flex-column">
       <RouterLink
         class="text-caption text-high-emphasis font-weight-bold text-decoration-none"
-        :to="`profile/${profile?.id}`"
+        :to="`/profile/${profile?.id}`"
       >
         {{ profile?.name }}
       </RouterLink>
