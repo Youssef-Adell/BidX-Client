@@ -38,16 +38,20 @@ onBeforeUnmount(() => {
     <template v-else>
       <AuctionDetailsCard />
 
-      <BidsCard v-if="auctionStore.isActive" />
-      <template v-else>
-        <WinningBidCard />
-        <ReviewCard
-          v-if="
-            auctionStore.amIWinner ||
-            (auctionStore.amIAuctioneer && auctionStore.hasWinner)
-          "
-        />
-      </template>
+      <VScrollYTransition hide-on-leave leave-absolute>
+        <BidsCard v-if="auctionStore.isActive" />
+        <template v-else>
+          <div>
+            <WinningBidCard />
+            <ReviewCard
+              v-if="
+                auctionStore.amIWinner ||
+                (auctionStore.amIAuctioneer && auctionStore.hasWinner)
+              "
+            />
+          </div>
+        </template>
+      </VScrollYTransition>
     </template>
   </VContainer>
 </template>
