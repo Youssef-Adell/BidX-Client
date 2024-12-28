@@ -7,6 +7,10 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+  elevated: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const remainingTimeInMs = computed(() => {
@@ -37,11 +41,11 @@ const formatProps = (props) => {
       class="d-flex flex-column justify-space-between overflow-hidden"
       border
       rounded
+      :elevation="elevated ? 1 : 0"
     >
       <!--Thumbnail-->
       <VImg
         :src="auction.thumbnailUrl"
-        :draggable="false"
         alt="Product Image"
         aspect-ratio="1"
         color="#f0f0f0"
@@ -58,7 +62,7 @@ const formatProps = (props) => {
         </div>
 
         <div class="d-flex justify-space-between align-center mt-1">
-          <!--Remaning Time-->
+          <!--Status-->
           <div v-if="isAuctionActive" class="d-flex flex-column">
             <VueCountdown
               class="text-caption text-high-emphasis font-weight-medium"
@@ -72,8 +76,20 @@ const formatProps = (props) => {
             <span class="text-caption">Remaining Time</span>
           </div>
 
-          <div v-else class="text-error text-body-2 font-weight-medium">
-            <span class="letter-spacing-2">ENDED</span>
+          <div v-else class="text-caption font-weight-medium">
+            <span
+              v-if="auction.isUserWon"
+              class="bg-success py-1 px-2 rounded letter-spacing-2"
+            >
+              WON
+            </span>
+            <span
+              v-else-if="auction.isUserWon === false"
+              class="bg-error py-1 px-2 rounded letter-spacing-2"
+            >
+              LOST
+            </span>
+            <span v-else class="text-error letter-spacing-2"> ENDED </span>
           </div>
 
           <!--Current Price-->

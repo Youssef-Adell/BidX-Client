@@ -11,6 +11,14 @@ export default {
     return response.data;
   },
 
+  async fetchUserReviews(userId, page, pageSize) {
+    const response = await httpClient.get(`/users/${userId}/reviews`, {
+      params: { page, pageSize },
+    });
+
+    return response.data;
+  },
+
   async fetchMyReview(revieweeId) {
     const response = await httpClient.get(
       `/users/${revieweeId}/reviews/my-review`,

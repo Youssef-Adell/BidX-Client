@@ -39,6 +39,14 @@ const routes = [
     path: "/search",
     component: () => import("../views/SearchView.vue"),
   },
+  {
+    path: "/search",
+    component: () => import("../views/SearchView.vue"),
+  },
+  {
+    path: "/profile/:id",
+    component: () => import("../views/ProfileView.vue"),
+  },
 ];
 
 const router = createRouter({

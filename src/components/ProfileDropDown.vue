@@ -31,9 +31,11 @@ const logout = async () => {
     <VList>
       <VListItem
         @click=""
+        :to="`/profile/${authStore.user?.id}`"
         :prepend-avatar="profilePicture"
         :title="`${authStore.user.firstName} ${authStore.user.lastName}`"
         :subtitle="authStore.user.email"
+        :active="false"
         append-icon="mdi-open-in-new"
         class="py-3"
       />
