@@ -131,16 +131,16 @@ const matchesFilters = (auction, filters) => {
 
   if (
     filters.productCondition &&
-    auction.productCondition !== filters.productCondition
+    auction.productCondition != filters.productCondition
   ) {
     return false;
   }
 
-  if (filters.categoryId && auction.categoryId !== filters.categoryId) {
+  if (filters.categoryId && auction.categoryId != filters.categoryId) {
     return false;
   }
 
-  if (filters.cityId && auction.cityId !== filters.cityId) {
+  if (filters.cityId && auction.cityId != filters.cityId) {
     return false;
   }
 
