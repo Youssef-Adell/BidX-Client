@@ -23,14 +23,17 @@ export default {
   },
 
   async updateMyProfilePicture(profilePicture) {
-    await httpClient.put(
-      `/users/${current}/profile/picture`,
-      {
-        newProfilePicture: profilePicture,
-      },
+    const form = new FormData();
+    form.append("newProfilePicture", profilePicture);
+
+    const updatedProfilePicture = await httpClient.put(
+      `/users/current/profile/picture`,
+      form,
       {
         requiresAuth: true,
       }
     );
+
+    return updatedProfilePicture.data;
   },
 };
