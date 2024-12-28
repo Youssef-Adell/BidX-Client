@@ -1,4 +1,5 @@
 <script setup>
+import { VFadeTransition } from "vuetify/components";
 import AuctionItem from "./AuctionItem.vue";
 
 const props = defineProps({
@@ -54,16 +55,18 @@ const changePage = (newPage) => {
   <!--Auctions Grid-->
   <div v-else-if="auctions.length">
     <VRow justify="center" dense>
-      <VCol
-        v-for="auction in auctions"
-        :key="auction.id"
-        cols="12"
-        sm="4"
-        lg="3"
-        class="mb-2"
-      >
-        <AuctionItem :auction="auction" :elevated="itemsElevated" />
-      </VCol>
+      <VScrollYReverseTransition group leave-absolute>
+        <VCol
+          v-for="auction in auctions"
+          :key="auction.id"
+          cols="12"
+          sm="4"
+          lg="3"
+          class="mb-2"
+        >
+          <AuctionItem :auction="auction" :elevated="itemsElevated" />
+        </VCol>
+      </VScrollYReverseTransition>
     </VRow>
 
     <!--Pagination-->

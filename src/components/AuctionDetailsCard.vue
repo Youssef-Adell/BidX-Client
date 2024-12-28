@@ -42,7 +42,12 @@ const auctionStore = useAuctionStore();
             <div
               class="px-2 py-1 rounded border bg-primary text-caption font-weight-bold"
             >
-              {{ `${auctionStore.auction?.currentPrice} EGP` }}
+              <VScrollYTransition leave-absolute>
+                <span :key="auctionStore.auction?.currentPrice">
+                  {{ auctionStore.auction?.currentPrice }}
+                </span>
+              </VScrollYTransition>
+              EGP
             </div>
           </section>
 

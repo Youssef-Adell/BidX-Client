@@ -75,7 +75,6 @@ const formatProps = (props) => {
             </VueCountdown>
             <span class="text-caption">Remaining Time</span>
           </div>
-
           <div v-else class="text-caption font-weight-medium">
             <span
               v-if="auction.isUserWon"
@@ -94,12 +93,17 @@ const formatProps = (props) => {
 
           <!--Current Price-->
           <div class="d-flex flex-column align-end">
-            <span class="text-body-2 text-high-emphasis font-weight-bold">
-              {{ auction.currentPrice }} EGP
+            <div class="text-body-2 text-high-emphasis font-weight-bold">
+              <VSlideYTransition leave-absolute>
+                <span :key="auction.currentPrice">
+                  {{ auction.currentPrice }}
+                </span>
+              </VSlideYTransition>
+              EGP
+            </div>
+            <span class="text-caption">
+              {{ isAuctionActive ? "Current Price" : "Final Price" }}
             </span>
-            <span class="text-caption">{{
-              isAuctionActive ? "Current Price" : "Final Price"
-            }}</span>
           </div>
         </div>
       </div>
