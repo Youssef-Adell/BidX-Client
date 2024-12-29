@@ -3,7 +3,7 @@ import signalrClient from "@/api/signalrClient";
 import { defineStore } from "pinia";
 import { useAuthStore } from "./AuthStore";
 
-export const useChatStore = defineStore("chatStore", {
+export const useChatStore = defineStore("chat", {
   state: () => ({
     chat: null,
     messages: { data: [], metadata: null },

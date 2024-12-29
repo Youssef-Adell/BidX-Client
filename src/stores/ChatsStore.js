@@ -1,7 +1,7 @@
 import chatsService from "@/api/services/chatsService";
 import { defineStore } from "pinia";
 
-export const useChatsStore = defineStore("chatsStore", {
+export const useChatsStore = defineStore("chats", {
   state: () => ({
     chats: { data: [], metadata: null },
     gotNewMessage: false,
