@@ -1,4 +1,5 @@
 <script setup>
+import { useAuctionsStore } from "@/stores/AuctionsStore";
 import VueCountdown from "@chenfengyuan/vue-countdown";
 import { computed } from "vue";
 
@@ -13,6 +14,8 @@ const props = defineProps({
   },
 });
 
+const auctionsStore = useAuctionsStore();
+
 const remainingTimeInMs = computed(() => {
   return Date.parse(props.auction?.endTime) - Date.now();
 });
@@ -21,8 +24,9 @@ const isAuctionActive = computed(() => {
   return remainingTimeInMs.value > 0;
 });
 
-const endAuction = () => {
-  props.auction.endTime = Date.now();
+const onAuctionEnded = () => {
+  const auctionEnded = { auctionId: props.auction.id }; // it expect this object structure as an argument
+  auctionsStore.auctionEndedHandler(auctionEnded); //
 };
 
 const formatProps = (props) => {
@@ -68,7 +72,7 @@ const formatProps = (props) => {
               class="text-caption text-high-emphasis font-weight-medium"
               :time="remainingTimeInMs"
               :transform="formatProps"
-              @end="endAuction"
+              @end="onAuctionEnded"
               #default="{ days, hours, minutes, seconds }"
             >
               {{ days }}d : {{ hours }}h : {{ minutes }}m : {{ seconds }}s
