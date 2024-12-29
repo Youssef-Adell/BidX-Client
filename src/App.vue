@@ -53,9 +53,13 @@ onBeforeUnmount(() => {
       <ConnectionStateBar />
       <Navbar />
       <VMain>
-        <VSlideXTransition mode="out-in" hide-on-leave leave-absolute>
-          <RouterView />
-        </VSlideXTransition>
+        <RouterView #="{ Component, route }">
+          <VSlideXTransition mode="out-in" hide-on-leave leave-absolute>
+            <div class="h-100" :key="route.path">
+              <component :is="Component" />
+            </div>
+          </VSlideXTransition>
+        </RouterView>
       </VMain>
       <Footer />
       <ChatBox v-if="chatStore.chatOpened" />
