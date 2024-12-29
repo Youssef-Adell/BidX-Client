@@ -71,11 +71,12 @@ export const useAuctionsStore = defineStore("auctions", {
 
     async unload() {
       try {
+        this.$reset();
+
         await signalrClient.leaveFeedRoom();
       } catch {
         // Supress the error
       } finally {
-        this.$reset();
       }
     },
 
