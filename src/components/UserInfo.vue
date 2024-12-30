@@ -2,6 +2,7 @@
 import usersService from "@/api/services/usersService";
 import defaultProfilePicture from "@/assets/default-profile-sm.png";
 import { useAuthStore } from "@/stores/AuthStore";
+import { compressImage } from "@/utils/imageUtils";
 import { computed, ref, useTemplateRef } from "vue";
 
 const props = defineProps({
@@ -27,8 +28,10 @@ const updateProfilePicture = async (event) => {
     loading.value = true;
     const pickedImage = event.target.files[0];
 
+    const compressedImage = await compressImage(pickedImage);
+
     const { profilePictureUrl } = await usersService.updateMyProfilePicture(
-      pickedImage
+      compressedImage
     );
 
     user.value.profilePictureUrl = profilePictureUrl;
