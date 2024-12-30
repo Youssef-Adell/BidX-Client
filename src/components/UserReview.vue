@@ -21,6 +21,7 @@ const { xs } = useDisplay();
         color="yellow-darken-2"
         density="compact"
         :size="xs ? 'small' : 'default'"
+        half-increments
         readonly
       />
     </div>
