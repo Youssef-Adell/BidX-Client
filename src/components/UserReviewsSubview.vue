@@ -1,6 +1,6 @@
 <script setup>
 import reviewsService from "@/api/services/reviewsService";
-import { onBeforeMount, ref } from "vue";
+import { computed, onBeforeMount, ref } from "vue";
 import { useDisplay } from "vuetify";
 import { VSheet } from "vuetify/components";
 import UserReview from "./UserReview.vue";
@@ -10,7 +10,7 @@ const props = defineProps({
     type: Number,
     required: true,
   },
-  overallRating: {
+  totalRating: {
     type: Number,
     default: 0,
     required: true,
@@ -41,6 +41,10 @@ const fetchUserReviews = async () => {
   }
 };
 
+const totalRatingFormatted = computed(() => {
+  return props.totalRating.toPrecision(2);
+});
+
 onBeforeMount(async () => {
   await fetchUserReviews();
 });
@@ -56,14 +60,14 @@ onBeforeMount(async () => {
       >
         <span class="text-subtitle-1">Overall Rating</span>
         <span class="text-h2 font-weight-bold text-high-emphasis">
-          {{ overallRating }}.0
+          {{ totalRatingFormatted }}
         </span>
         <VRating
-          :model-value="overallRating"
+          :model-value="totalRating"
           color="yellow-darken-2"
           density="compact"
+          half-increments
           readonly
-          disabled
         />
         <span class="text-caption mt-1">
           Based on {{ totalReviews }} reviews
@@ -74,10 +78,15 @@ onBeforeMount(async () => {
     <!--Reviews-->
     <VCol cols="12" md="8">
       <VSheet class="pt-4 pb-2 px-6" elevation="1" min-height="350px" rounded>
-        <h1 class="text-subtitle-2 text-high-emphasis mb-2">Reviews</h1>
+        <span class="text-subtitle-2 text-high-emphasis mb-2">Reviews</span>
 
         <template v-if="reviews.length">
-          <UserReview v-for="review in reviews" :review="review" class="mb-2" />
+          <UserReview
+            v-for="review in reviews"
+            :review="review"
+            :key="review.id"
+            class="mb-2"
+          />
           <VPagination
             v-if="totalPages > 1"
             v-model="page"
