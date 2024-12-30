@@ -12,13 +12,14 @@ let isRestarting = false; // To track intentional restarts
 
 function createConnection() {
   connection = new signalR.HubConnectionBuilder()
-    .withUrl("http://localhost:5203/appHub", {
+    .withUrl("https://bidx.runasp.net/appHub", {
       accessTokenFactory: () => useAuthStore().accessToken,
       transport: signalR.HttpTransportType.WebSockets,
       skipNegotiation: true, // Improves the performance by skipping the negotiate request and establish the WS connection directly
     })
     .configureLogging(signalR.LogLevel.Information)
     .withServerTimeout(10000) // 2X the KeepAliveInterval value configured by the server
+    .withKeepAliveInterval(5000)
     .withAutomaticReconnect()
     .build();
 }
