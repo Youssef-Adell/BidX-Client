@@ -95,8 +95,9 @@ onBeforeMount(async () => {
             v-model="review.rating"
             length="5"
             color="yellow-darken-3"
-            hover
             :readonly="form.submitted"
+            half-increments
+            hover
           />
 
           <VTextarea
