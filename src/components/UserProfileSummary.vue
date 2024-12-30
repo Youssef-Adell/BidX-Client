@@ -1,12 +1,33 @@
 <script setup>
 import defaultProfilePicture from "@/assets/default-profile-sm.png";
 
-defineProps({
+const props = defineProps({
   profile: {
     type: Object,
     required: true,
   },
 });
+
+const getStarIcon = (position) => {
+  // If the current position is less than or equal to the floor of the rating,
+  // show a full star
+
+  if (position <= Math.floor(props.profile.totalRating)) {
+    return "mdi-star";
+  }
+
+  // If we're at the position right after the floor and there's a decimal,
+  // show a half star
+  if (
+    position === Math.ceil(props.profile.totalRating) &&
+    props.profile.totalRating % 1 >= 0.5
+  ) {
+    return "mdi-star-half-full";
+  }
+
+  // Otherwise show an empty star
+  return "mdi-star-outline";
+};
 </script>
 
 <template>
@@ -28,8 +49,8 @@ defineProps({
       </RouterLink>
       <div class="d-flex">
         <VIcon
-          v-for="star in 5"
-          :icon="star <= profile?.rating ? 'mdi-star' : 'mdi-star-outline'"
+          v-for="n in 5"
+          :icon="getStarIcon(n)"
           color="yellow-darken-3"
           size="12"
         />
