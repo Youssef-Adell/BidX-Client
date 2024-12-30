@@ -24,7 +24,7 @@ export default {
 
   async updateMyProfilePicture(profilePicture) {
     const form = new FormData();
-    form.append("newProfilePicture", profilePicture);
+    form.append("profilePicture", profilePicture);
 
     const updatedProfilePicture = await httpClient.put(
       `/users/current/profile/picture`,
