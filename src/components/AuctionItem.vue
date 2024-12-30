@@ -25,7 +25,11 @@ const isAuctionActive = computed(() => {
 });
 
 const onAuctionEnded = () => {
-  const auctionEnded = { auctionId: props.auction.id }; // it expect this object structure as an argument
+  const auctionEnded = {
+    auctionId: props.auction.id,
+    finalPrice: props.auction.currentPrice,
+  }; // it expect this object structure as an argument
+
   auctionsStore.auctionEndedHandler(auctionEnded); //
 };
 
