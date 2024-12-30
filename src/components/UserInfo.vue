@@ -77,10 +77,11 @@ const updateProfilePicture = async (event) => {
       {{ user.firstName }} {{ user.lastName }}
     </h1>
     <VRating
-      :model-value="user.rating"
+      :model-value="user.totalRating"
       density="compact"
       size="small"
       color="yellow-darken-3"
+      half-increments
       readonly
     />
   </section>
