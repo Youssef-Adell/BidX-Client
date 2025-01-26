@@ -1,7 +1,6 @@
 import chatsService from "@/api/services/chatsService";
 import signalrClient from "@/api/signalrClient";
 import { defineStore } from "pinia";
-import { useAuthStore } from "./AuthStore";
 
 export const useChatStore = defineStore("chat", {
   state: () => ({
@@ -18,7 +17,7 @@ export const useChatStore = defineStore("chat", {
 
   actions: {
     async create(receiverId) {
-      this.chat = await chatsService.intiateChat(receiverId);
+      this.chat = await chatsService.createChat(receiverId);
       await this.load(this.chat);
     },
 
@@ -78,21 +77,33 @@ export const useChatStore = defineStore("chat", {
       return false;
     },
 
-    messageReceivedHandler(message) {
+    async messageReceivedHandler(message) {
       if (message.chatId === this.chat?.id) {
         this.messages.data.push(message);
         ++this.messages.metadata.pageSize; // To avoid refetching it when fetching more messages in loadMoreMessages()
+        
+        if(message.senderId === this.chat.participantId)
+          await signalrClient.markMessageAsRead(message.id);
       }
     },
 
-    messagesSeenHandler() {
-      const myId = useAuthStore().user?.id;
+    allMessagesReadHandler(response) {
+      const readerId = response.readerId;
 
       this.messages.data?.forEach((message) => {
-        if (message.senderId === myId) {
-          message.seen = true;
+        if (message.recipientId === readerId) {
+          message.isRead = true;
         }
       });
+    },
+    
+    messageReadHandler(response) {
+      const messageId = response.messageId;
+
+      const message = this.messages.data?.find((message) => message.id === messageId);
+      
+      if(message)
+        message.isRead = true;
     },
 
     UserStatusChangedHandler(status) {

@@ -10,7 +10,7 @@ const props = defineProps({
     type: Number,
     required: true,
   },
-  totalRating: {
+  averageRating: {
     type: Number,
     default: 0,
     required: true,
@@ -41,8 +41,8 @@ const fetchUserReviews = async () => {
   }
 };
 
-const totalRatingFormatted = computed(() => {
-  return props.totalRating.toPrecision(2);
+const averageRatingFormatted = computed(() => {
+  return props.averageRating.toPrecision(2);
 });
 
 onBeforeMount(async () => {
@@ -60,10 +60,10 @@ onBeforeMount(async () => {
       >
         <span class="text-subtitle-1">Overall Rating</span>
         <span class="text-h2 font-weight-bold text-high-emphasis">
-          {{ totalRatingFormatted }}
+          {{ averageRatingFormatted }}
         </span>
         <VRating
-          :model-value="totalRating"
+          :model-value="averageRating"
           color="yellow-darken-2"
           density="compact"
           half-increments

@@ -1,10 +1,10 @@
 import httpClient from "../httpClient";
 
 export default {
-  async intiateChat(receiverId) {
+  async createChat(participantId) {
     const response = await httpClient.post(
-      `/chats/initiate/${receiverId}`,
-      null,
+      `/chats/`,
+      { participantId },
       {
         requiresAuth: true,
       }

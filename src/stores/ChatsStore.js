@@ -4,15 +4,21 @@ import { defineStore } from "pinia";
 export const useChatsStore = defineStore("chats", {
   state: () => ({
     chats: { data: [], metadata: null },
-    gotNewMessage: false,
+    unreadChatsCount: 0,
     loading: false,
   }),
+
+  getters:{
+    hasUnreadChats(){
+      return this.unreadChatsCount > 0;
+    }
+  },
 
   actions: {
     async load() {
       try {
         this.loading = true;
-        this.chats = await chatsService.fetchMyChats();
+        this.chats = await chatsService.fetchMyChats(1, 10);
       } finally {
         this.loading = false;
       }
@@ -32,8 +38,8 @@ export const useChatsStore = defineStore("chats", {
       return false;
     },
 
-    newMessageAlertHandler() {
-      this.gotNewMessage = true;
+    unreadChatsCountChangedHandler(response) {
+      this.unreadChatsCount = response.unreadChatsCount;
     },
   },
 });

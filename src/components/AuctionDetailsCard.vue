@@ -22,7 +22,7 @@ const auctionStore = useAuctionStore();
           cycle
         >
           <VCarouselItem
-            v-for="(image, i) in auctionStore.auction?.images"
+            v-for="(image, i) in auctionStore.auction?.productImages"
             :key="i"
             :src="image"
           />

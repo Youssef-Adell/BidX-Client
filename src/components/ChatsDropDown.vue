@@ -42,12 +42,12 @@ onBeforeMount(async () => {
     <!--Activator-->
     <template #activator="{ props }">
       <VBadge
-        :model-value="chatsStore.gotNewMessage"
+        :model-value="chatsStore.hasUnreadChats"
+        :content="chatsStore.unreadChatsCount"
         class="mr-4"
         color="error"
         offset-x="5"
         offset-y="6"
-        dot
       >
         <VBtn v-bind="props" icon="mdi-forum-outline" density="comfortable" />
       </VBadge>

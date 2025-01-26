@@ -12,7 +12,7 @@ let isRestarting = false; // To track intentional restarts
 
 function createConnection() {
   connection = new signalR.HubConnectionBuilder()
-    .withUrl("https://bidx.runasp.net/appHub", {
+    .withUrl("http://localhost:5203/hub", {
       accessTokenFactory: () => useAuthStore().accessToken,
       transport: signalR.HttpTransportType.WebSockets,
       skipNegotiation: true, // Improves the performance by skipping the negotiate request and establish the WS connection directly
@@ -47,7 +47,7 @@ function registerHandlers() {
     if (!isRestarting) signalrStateStore.setState(singalrStates.disconnected);
   });
 
-  connection?.on("BidCreated", auctionStore.bidPlacedHandler);
+  connection?.on("BidPlaced", auctionStore.bidPlacedHandler);
   connection?.on("BidAccepted", auctionStore.bidAcceptedHandler);
 
   connection?.on("AuctionCreated", auctionsStore.auctionCreatedHandler);
@@ -59,12 +59,13 @@ function registerHandlers() {
   );
 
   connection?.on("MessageReceived", chatStore.messageReceivedHandler);
-  connection?.on("MessagesSeen", chatStore.messagesSeenHandler);
+  connection?.on("AllMessagesRead", chatStore.allMessagesReadHandler);
+  connection?.on("MessageRead", chatStore.messageReadHandler);
   connection?.on("UserStatusChanged", chatStore.UserStatusChangedHandler);
 
   connection?.on(
-    "MessageReceivedNotification",
-    chatsStore.newMessageAlertHandler
+    "UnreadChatsCountChanged",
+    chatsStore.unreadChatsCountChangedHandler
   );
 }
 
@@ -118,7 +119,7 @@ export default {
     await connection?.invoke("LeaveAuctionRoom", { auctionId });
   },
   async placeBid(auctionId, amount) {
-    await connection?.invoke("BidUp", { auctionId, amount });
+    await connection?.invoke("PlaceBid", { auctionId, amount });
   },
   async acceptBid(bidId) {
     await connection?.invoke("AcceptBid", { bidId });
@@ -132,6 +133,9 @@ export default {
   },
   async sendMessage(chatId, message) {
     await connection?.invoke("SendMessage", { chatId, message });
+  },
+  async markMessageAsRead(messageId) {
+    await connection?.invoke("MarkMessageAsRead", { messageId });
   },
 
   async joinFeedRoom() {

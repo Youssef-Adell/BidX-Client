@@ -149,6 +149,7 @@ onBeforeMount(async () => {
             class="mb-1"
             maxlength="400"
             counter
+            :rules="[inputRules.required, inputRules.minLength]"
           />
 
           <div class="text-caption text-medium-emphasis">Condition</div>
