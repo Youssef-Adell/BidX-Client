@@ -74,7 +74,7 @@ onBeforeMount(async () => {
         <VTabsWindowItem value="reviews">
           <UserReviewsSubview
             :user-id="userId"
-            :total-rating="user.totalRating"
+            :total-rating="user.averageRating"
           />
         </VTabsWindowItem>
       </VTabsWindow>

@@ -12,15 +12,15 @@ const getStarIcon = (position) => {
   // If the current position is less than or equal to the floor of the rating,
   // show a full star
 
-  if (position <= Math.floor(props.profile.totalRating)) {
+  if (position <= Math.floor(props.profile.averageRating)) {
     return "mdi-star";
   }
 
   // If we're at the position right after the floor and there's a decimal,
   // show a half star
   if (
-    position === Math.ceil(props.profile.totalRating) &&
-    props.profile.totalRating % 1 >= 0.5
+    position === Math.ceil(props.profile.averageRating) &&
+    props.profile.averageRating % 1 >= 0.5
   ) {
     return "mdi-star-half-full";
   }
@@ -45,7 +45,7 @@ const getStarIcon = (position) => {
         class="text-caption text-high-emphasis font-weight-bold text-decoration-none"
         :to="`/profile/${profile?.id}`"
       >
-        {{ profile?.name }}
+        {{ profile?.fullName }}
       </RouterLink>
       <div class="d-flex">
         <VIcon

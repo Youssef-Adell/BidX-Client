@@ -29,12 +29,12 @@ const isMyMessage = computed(() => {
         {{ getTime(message.sentAt) }}
       </span>
 
-      <!--Is Seen-->
+      <!--Is isRead-->
       <VIcon
         v-if="isMyMessage"
         icon="mdi-check-all"
         size="12"
-        :color="message.seen ? 'success' : ''"
+        :color="message.isRead ? 'success' : ''"
       />
     </div>
   </div>
