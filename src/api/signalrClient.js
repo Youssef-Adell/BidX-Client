@@ -6,6 +6,7 @@ import { singalrStates } from "./signalrStates";
 import { useChatStore } from "@/stores/ChatStore";
 import { useChatsStore } from "@/stores/ChatsStore";
 import { useAuctionsStore } from "@/stores/AuctionsStore";
+import { useNotificationsStore } from "@/stores/NotificationsStore";
 
 let connection = null;
 let isRestarting = false; // To track intentional restarts
@@ -30,6 +31,7 @@ function registerHandlers() {
   const auctionsStore = useAuctionsStore();
   const chatStore = useChatStore();
   const chatsStore = useChatsStore();
+  const notificationsStore = useNotificationsStore();
 
   connection?.onreconnecting(() => {
     signalrStateStore.setState(singalrStates.reconnecting);
@@ -64,8 +66,13 @@ function registerHandlers() {
   connection?.on("UserStatusChanged", chatStore.UserStatusChangedHandler);
 
   connection?.on(
-    "UnreadChatsCountChanged",
-    chatsStore.unreadChatsCountChangedHandler
+    "UnreadChatsCountUpdated",
+    chatsStore.unreadChatsCountUpdatedHandler
+  );
+
+  connection?.on(
+    "UnreadNotificationsCountUpdated",
+    notificationsStore.unreadNotificationsCountUpdatedHandler
   );
 }
 
@@ -136,6 +143,10 @@ export default {
   },
   async markMessageAsRead(messageId) {
     await connection?.invoke("MarkMessageAsRead", { messageId });
+  },
+  
+  async markNotificationAsRead(notificationId) {
+    await connection?.invoke("MarkNotificationAsRead", { notificationId });
   },
 
   async joinFeedRoom() {

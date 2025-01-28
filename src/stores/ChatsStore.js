@@ -38,7 +38,7 @@ export const useChatsStore = defineStore("chats", {
       return false;
     },
 
-    unreadChatsCountChangedHandler(response) {
+    unreadChatsCountUpdatedHandler(response) {
       this.unreadChatsCount = response.unreadChatsCount;
     },
   },
