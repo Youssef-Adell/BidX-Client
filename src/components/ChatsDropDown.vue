@@ -18,7 +18,6 @@ const loadMoreChats = async ({ done }) => {
 
 const handleMenuUpdate = (isMenuOpen) => {
   if (isMenuOpen) {
-    chatsStore.gotNewMessage = false; // To hide the badge
     chatsStore.load();
   }
 };
@@ -33,22 +32,11 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <VMenu
-    min-width="300"
-    :width="xs ? '100%' : '350'"
-    min-height="300"
-    @update:model-value="handleMenuUpdate"
-  >
+  <VMenu min-width="300" :width="xs ? '100%' : '350'" min-height="300" @update:model-value="handleMenuUpdate">
     <!--Activator-->
     <template #activator="{ props }">
-      <VBadge
-        :model-value="chatsStore.hasUnreadChats"
-        :content="chatsStore.unreadChatsCount"
-        class="mr-4"
-        color="error"
-        offset-x="5"
-        offset-y="6"
-      >
+      <VBadge :model-value="chatsStore.hasUnreadChats" :content="chatsStore.unreadChatsCount" class="mr-4" color="error"
+        offset-x="5" offset-y="6">
         <VBtn v-bind="props" icon="mdi-forum-outline" density="comfortable" />
       </VBadge>
     </template>
@@ -62,12 +50,7 @@ onBeforeMount(async () => {
           <VSkeletonLoader v-for="i in 4" type="list-item-avatar-two-line" />
         </div>
 
-        <ChatItem
-          v-else
-          v-for="chat in chatsStore.chats.data"
-          :key="chat.id"
-          :chat="chat"
-        />
+        <ChatItem v-else v-for="chat in chatsStore.chats.data" :key="chat.id" :chat="chat" />
       </VInfiniteScroll>
     </VSheet>
   </VMenu>
