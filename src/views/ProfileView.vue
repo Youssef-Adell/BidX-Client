@@ -47,11 +47,7 @@ onBeforeMount(async () => {
 
     <template v-else>
       <!-- Profile Header -->
-      <VSheet
-        class="d-flex flex-column align-center mt-16 mb-4"
-        elevation="1"
-        rounded
-      >
+      <VSheet class="d-flex flex-column align-center mt-16 mb-4" elevation="1" rounded>
         <UserInfo :user="user" class="mt-n16 mb-4" />
 
         <VTabs v-model="tab" class="w-100" color="primary" fixed-tabs>
@@ -72,10 +68,7 @@ onBeforeMount(async () => {
         </VTabsWindowItem>
 
         <VTabsWindowItem value="reviews">
-          <UserReviewsSubview
-            :user-id="userId"
-            :total-rating="user.averageRating"
-          />
+          <UserReviewsSubview :user-id="userId" :average-rating="user.averageRating" />
         </VTabsWindowItem>
       </VTabsWindow>
     </template>
