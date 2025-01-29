@@ -1,4 +1,5 @@
 import notificationsService from "@/api/services/notificationsService";
+import signalrClient from "@/api/signalrClient";
 import { defineStore } from "pinia";
 
 export const useNotificationsStore = defineStore("notifications", {
@@ -37,6 +38,15 @@ export const useNotificationsStore = defineStore("notifications", {
 
       return false;
     },
+
+    async markAllAsRead(){
+      if(this.unreadNotificationsCount > 0){
+        await signalrClient.markAllNotificationsAsRead();
+        this.unreadNotificationsCount = 0;
+        this.notifications.data.forEach(n => n.isRead = true);
+      }
+    },
+
 
     unreadNotificationsCountUpdatedHandler(response) {
       this.unreadNotificationsCount = response.unreadNotificationsCount;

@@ -148,6 +148,9 @@ export default {
   async markNotificationAsRead(notificationId) {
     await connection?.invoke("MarkNotificationAsRead", { notificationId });
   },
+  async markAllNotificationsAsRead() {
+    await connection?.invoke("MarkAllNotificationsAsRead");
+  },
 
   async joinFeedRoom() {
     await connection?.invoke("JoinFeedRoom");
