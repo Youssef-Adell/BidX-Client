@@ -42,6 +42,13 @@ export const useChatsStore = defineStore("chats", {
     },
 
     unreadChatsCountUpdatedHandler(response) {
+      if (response.unreadChatsCount != this.unreadChatsCount) {
+        const sound = new Audio("/message.mp3");
+        sound
+          .play()
+          .catch((err) => console.warn("Audio playback blocked:", err));
+      }
+
       this.unreadChatsCount = response.unreadChatsCount;
     },
   },

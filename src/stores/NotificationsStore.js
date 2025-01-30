@@ -60,6 +60,7 @@ export const useNotificationsStore = defineStore("notifications", {
           .play()
           .catch((err) => console.warn("Audio playback blocked:", err));
       }
+
       this.unreadNotificationsCount = response.unreadNotificationsCount;
     },
   },
