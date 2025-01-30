@@ -3,7 +3,7 @@ import { addAuthHeader, normalizeErrorResponse } from "@/utils/apiUtils";
 import axios from "axios";
 
 const httpClient = axios.create({
-  baseURL: "http://localhost:5203/api",
+  baseURL: "http://192.168.1.10:9090/api",
 });
 
 // Optionally add the Authorization header based on whether the request requires authentication
