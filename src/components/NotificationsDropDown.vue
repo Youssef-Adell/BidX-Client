@@ -1,39 +1,28 @@
 <script setup>
 import NotificationItem from "./NotificationItem.vue";
-import { onBeforeMount } from "vue";
+import { useTemplateRef } from "vue";
 import { useNotificationsStore } from "@/stores/NotificationsStore";
-import { useDisplay } from "vuetify";
+import { useInfiniteScroll } from "@vueuse/core";
 
-const { xs } = useDisplay();
 const notificationsStore = useNotificationsStore();
-
-const loadMoreNotifications = async ({ done }) => {
-  try {
-    const isLoaded = await notificationsStore.loadMoreNotifications();
-    done(isLoaded ? "ok" : "empty");
-  } catch {
-    done("error");
+const el = useTemplateRef("infinite-scroll-container")
+useInfiniteScroll(
+  el,
+  notificationsStore.loadMoreNotifications,
+  {
+    canLoadMore: notificationsStore.hasMoreNotifications
   }
-};
+)
 
 const handleMenuUpdate = (isMenuOpen) => {
   if (isMenuOpen) {
-    notificationsStore.gotNewMessage = false; // To hide the badge
     notificationsStore.load();
   }
 };
-
-onBeforeMount(async () => {
-  try {
-    await notificationsStore.load();
-  } catch {
-    // Supress the error
-  }
-});
 </script>
 
 <template>
-  <VMenu min-width="300" :width="xs ? '100%' : '350'" min-height="300" @update:model-value="handleMenuUpdate">
+  <VMenu @update:model-value="handleMenuUpdate">
     <!--Activator-->
     <template #activator="{ props }">
       <VBadge :model-value="notificationsStore.hasUnreadNotifications"
@@ -43,21 +32,28 @@ onBeforeMount(async () => {
     </template>
 
     <!--Content-->
-    <VSheet>
-      <div class="d-flex justify-space-between align-center pl-4 pr-2 py-2 border-b">
-        <div class="text-subtitle-2">Notifications</div>
-        <VBtn @click="notificationsStore.markAllAsRead" :disabled="!notificationsStore.hasUnreadNotifications"
-          prepend-icon="mdi-check-all" text="Read All" size="small" variant="text" />
-      </div>
-
-      <VInfiniteScroll height="320" @load="loadMoreNotifications" empty-text="">
-        <div v-if="notificationsStore.loading">
-          <VSkeletonLoader v-for="index in 4" :key="index" type="list-item-avatar-two-line" />
+    <template #default>
+      <VSheet min-height="350" width="350">
+        <div class="d-flex justify-space-between align-center pl-4 pr-2 py-2 border-b">
+          <div class="text-subtitle-2">Notifications</div>
+          <VBtn @click="notificationsStore.markAllAsRead" :disabled="!notificationsStore.hasUnreadNotifications"
+            prepend-icon="mdi-check-all" text="Read All" size="small" variant="text" />
         </div>
 
-        <NotificationItem v-else v-for="notification in notificationsStore.notifications.data" :key="notification.id"
-          :notification="notification" />
-      </VInfiniteScroll>
-    </VSheet>
+        <!--Notifications List-->
+        <div ref="infinite-scroll-container" class="h-310px overflow-y-auto">
+          <VSkeletonLoader v-if="notificationsStore.loading" v-for="index in 4" :key="index"
+            type="list-item-avatar-two-line" />
+          <NotificationItem v-else v-for="notification in notificationsStore.notifications.data" :key="notification.id"
+            :notification="notification" />
+        </div>
+      </VSheet>
+    </template>
   </VMenu>
 </template>
+
+<style scoped>
+.h-310px {
+  height: 310px;
+}
+</style>

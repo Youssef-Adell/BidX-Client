@@ -12,6 +12,9 @@ export const useNotificationsStore = defineStore("notifications", {
   getters:{
     hasUnreadNotifications(){
       return this.unreadNotificationsCount > 0;
+    },
+    hasMoreNotifications(){
+      return this.notifications.metadata?.hasNext;
     }
   },
 

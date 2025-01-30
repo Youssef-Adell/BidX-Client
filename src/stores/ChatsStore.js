@@ -11,6 +11,9 @@ export const useChatsStore = defineStore("chats", {
   getters:{
     hasUnreadChats(){
       return this.unreadChatsCount > 0;
+    },
+    hasMoreChats(){
+      return this.chats.metadata?.hasNext;
     }
   },
 

@@ -1,38 +1,28 @@
 <script setup>
 import ChatItem from "./ChatItem.vue";
-import { onBeforeMount } from "vue";
 import { useChatsStore } from "@/stores/ChatsStore";
-import { useDisplay } from "vuetify";
+import { useInfiniteScroll } from "@vueuse/core";
+import { useTemplateRef } from "vue";
 
-const { xs } = useDisplay();
 const chatsStore = useChatsStore();
-
-const loadMoreChats = async ({ done }) => {
-  try {
-    const isLoaded = await chatsStore.loadMoreChats();
-    done(isLoaded ? "ok" : "empty");
-  } catch {
-    done("error");
+const el = useTemplateRef("infinite-scroll-container")
+useInfiniteScroll(
+  el,
+  chatsStore.loadMoreChats,
+  {
+    canLoadMore: chatsStore.hasMoreChats
   }
-};
+)
 
 const handleMenuUpdate = (isMenuOpen) => {
   if (isMenuOpen) {
     chatsStore.load();
   }
 };
-
-onBeforeMount(async () => {
-  try {
-    await chatsStore.load();
-  } catch {
-    // Supress the error
-  }
-});
 </script>
 
 <template>
-  <VMenu min-width="300" :width="xs ? '100%' : '350'" min-height="300" @update:model-value="handleMenuUpdate">
+  <VMenu @update:model-value="handleMenuUpdate">
     <!--Activator-->
     <template #activator="{ props }">
       <VBadge :model-value="chatsStore.hasUnreadChats" :content="chatsStore.unreadChatsCount" class="mr-4" color="error"
@@ -42,16 +32,22 @@ onBeforeMount(async () => {
     </template>
 
     <!--Content-->
-    <VSheet>
-      <div class="pl-4 py-2 text-subtitle-2 border-b">Chats</div>
+    <template #default>
+      <VSheet min-height="350" width="350">
+        <div class="pl-4 py-2 text-subtitle-2 border-b">Chats</div>
 
-      <VInfiniteScroll height="320" @load="loadMoreChats" empty-text="">
-        <div v-if="chatsStore.loading">
-          <VSkeletonLoader v-for="i in 4" type="list-item-avatar-two-line" />
+        <!--Notifications List-->
+        <div ref="infinite-scroll-container" class="h-310px overflow-y-auto">
+          <VSkeletonLoader v-if="chatsStore.loading" v-for="i in 4" type="list-item-avatar-two-line" />
+          <ChatItem v-else v-for="chat in chatsStore.chats.data" :key="chat.id" :chat="chat" />
         </div>
-
-        <ChatItem v-else v-for="chat in chatsStore.chats.data" :key="chat.id" :chat="chat" />
-      </VInfiniteScroll>
-    </VSheet>
+      </VSheet>
+    </template>
   </VMenu>
 </template>
+
+<style scoped>
+.h-310px {
+  height: 310px;
+}
+</style>
