@@ -4,21 +4,27 @@ import UserAuctionsSubview from "@/components/ProfileView/UserAuctionsSubView.vu
 import UserBiddingsSubview from "@/components/ProfileView/UserBiddingsSubview.vue";
 import UserReviewsSubview from "@/components/ProfileView/UserReviewsSubview.vue";
 import { onBeforeMount, ref, watch } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import usersService from "@/api/services/usersService";
+import { ErrorCode } from "@/api/errorCodes";
 
 const route = useRoute();
+const router = useRouter();
 const tab = ref("auctions");
 const loading = ref(false);
 const user = ref({});
+
 let userId = Number(route.params.id);
 
 const fetchUserProfile = async () => {
   try {
     loading.value = true;
     user.value = await usersService.fetchUserProfile(userId);
-  } catch (error) {
-    console.error(error);
+  } catch (errorResponse) {
+    if (errorResponse.errorCode === ErrorCode.RESOURCE_NOT_FOUND) {
+      router.replace({ name: "NotFound" });
+      return;
+    }
   } finally {
     loading.value = false;
   }
