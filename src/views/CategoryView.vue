@@ -1,14 +1,16 @@
 <script setup>
 import { onBeforeMount, ref } from "vue";
 import { useDisplay } from "vuetify";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import categoriesService from "@/api/services/categoriesService";
 import useAuctionsManager from "@/composables/useAuctionsManager";
 import AuctionFiltersDialog from "@/components/Shared/AuctionFiltersDialog.vue";
 import AuctionsGrid from "@/components/Shared/AuctionsGrid.vue";
+import { ErrorCode } from "@/api/errorCodes";
 
 const { xs } = useDisplay();
 const route = useRoute();
+const router = useRouter();
 
 const category = ref({
   name: null,
@@ -29,8 +31,11 @@ const {
 onBeforeMount(async () => {
   try {
     category.value = await categoriesService.fetchCategory(route.params.id);
-  } catch (error) {
-    console.error(error);
+  } catch (errorResponse) {
+    if (errorResponse.errorCode === ErrorCode.RESOURCE_NOT_FOUND) {
+      router.replace({ name: "NotFound" });
+      return;
+    }
   }
 });
 </script>

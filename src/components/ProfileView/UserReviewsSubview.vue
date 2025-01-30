@@ -57,7 +57,7 @@ onBeforeMount(async () => {
       <VSheet
         class="d-flex flex-column justify-center align-center rounded"
         elevation="1"
-        min-height="350px"
+        :min-height="smAndDown ? '175px' : '350px'"
       >
         <span class="text-subtitle-1">Average Rating</span>
         <span class="text-h2 font-weight-bold text-high-emphasis">

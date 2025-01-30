@@ -47,6 +47,11 @@ const routes = [
     path: "/settings",
     component: () => import("../views/SettingsView.vue"),
   },
+  {
+    path: "/:pathMatch(.*)*",
+    component: () => import("../views/NotFoundView.vue"),
+    name: "NotFound",
+  },
 ];
 
 const router = createRouter({
