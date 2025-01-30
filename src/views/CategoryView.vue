@@ -29,8 +29,8 @@ const {
 onBeforeMount(async () => {
   try {
     category.value = await categoriesService.fetchCategory(route.params.id);
-  } catch {
-    // Supress the error
+  } catch (error) {
+    console.error(error);
   }
 });
 </script>

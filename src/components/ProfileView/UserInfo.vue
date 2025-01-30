@@ -36,8 +36,8 @@ const updateProfilePicture = async (event) => {
 
     user.value.profilePictureUrl = profilePictureUrl;
     authStore.user.profilePictureUrl = profilePictureUrl;
-  } catch {
-    // Supress the error
+  } catch (error) {
+    console.error(error);
   } finally {
     loading.value = false;
   }

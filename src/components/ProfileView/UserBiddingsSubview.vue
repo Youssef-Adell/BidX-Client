@@ -42,8 +42,8 @@ const fetchUserBiddings = async () => {
     auctions.value = data;
     page.value = metadata.page;
     totalPages.value = metadata.totalPages;
-  } catch {
-    // Supress the error
+  } catch (error) {
+    console.error(error);
   } finally {
     loading.value = false;
   }
