@@ -13,7 +13,7 @@ let isRestarting = false; // To track intentional restarts
 
 function createConnection() {
   connection = new signalR.HubConnectionBuilder()
-    .withUrl("http://192.168.1.10:9090/hub", {
+    .withUrl("http://localhost:5203/hub", {
       accessTokenFactory: () => useAuthStore().accessToken,
       transport: signalR.HttpTransportType.WebSockets,
       skipNegotiation: true, // Improves the performance by skipping the negotiate request and establish the WS connection directly

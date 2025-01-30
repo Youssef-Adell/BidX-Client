@@ -55,8 +55,9 @@ onBeforeMount(async () => {
     <!--Overall Rating-->
     <VCol cols="12" md="4">
       <VSheet
-        class="d-flex flex-column align-center rounded py-4 py-md-16"
+        class="d-flex flex-column justify-center align-center rounded"
         elevation="1"
+        min-height="350px"
       >
         <span class="text-subtitle-1">Average Rating</span>
         <span class="text-h2 font-weight-bold text-high-emphasis">

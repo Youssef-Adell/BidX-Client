@@ -4,9 +4,7 @@ import useAppTheme from "@/composables/useAppTheme";
 import { useAuthStore } from "@/stores/AuthStore";
 import { computed } from "vue";
 import { useRouter } from "vue-router";
-import { useDisplay } from "vuetify";
 
-const { xs } = useDisplay();
 const router = useRouter();
 const authStore = useAuthStore();
 const appTheme = useAppTheme();
@@ -22,7 +20,7 @@ const logout = async () => {
 </script>
 
 <template>
-  <VMenu :width="xs ? '100%' : '350'">
+  <VMenu width="350">
     <template #activator="{ props }">
       <VAvatar v-bind:="props" :image="profilePicture" density="comfortable" />
     </template>
@@ -30,7 +28,6 @@ const logout = async () => {
     <!--List of Options-->
     <VList>
       <VListItem
-        @click=""
         :to="`/profile/${authStore.user?.id}`"
         :prepend-avatar="profilePicture"
         :title="`${authStore.user.firstName} ${authStore.user.lastName}`"
@@ -52,7 +49,7 @@ const logout = async () => {
           hide-details
         />
       </VListItem>
-      <VListItem @click="" prepend-icon="mdi-cog" title="Settings" />
+      <VListItem to="/settings" prepend-icon="mdi-cog" title="Settings" />
       <VListItem @click="logout" prepend-icon="mdi-logout" title="Logout" />
     </VList>
   </VMenu>
