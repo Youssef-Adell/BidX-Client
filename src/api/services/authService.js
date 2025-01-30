@@ -27,6 +27,17 @@ export default {
     });
   },
 
+  async updateMyPassword(currentPassword, newPassword) {
+    await httpClient.post(
+      "/auth/change-password",
+      {
+        currentPassword,
+        newPassword,
+      },
+      { requiresAuth: true }
+    );
+  },
+
   async refreshToken() {
     const response = await httpClient.post("/auth/refresh", null, {
       withCredentials: true,

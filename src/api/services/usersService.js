@@ -36,4 +36,17 @@ export default {
 
     return updatedProfilePicture.data;
   },
+
+  async updateMyProfileName(firstname, lastname) {
+    await httpClient.put(
+      `/users/current/profile`,
+      {
+        firstname,
+        lastname,
+      },
+      {
+        requiresAuth: true,
+      }
+    );
+  },
 };

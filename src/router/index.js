@@ -40,12 +40,12 @@ const routes = [
     component: () => import("../views/SearchView.vue"),
   },
   {
-    path: "/search",
-    component: () => import("../views/SearchView.vue"),
-  },
-  {
     path: "/profile/:id",
     component: () => import("../views/ProfileView.vue"),
+  },
+  {
+    path: "/settings",
+    component: () => import("../views/SettingsView.vue"),
   },
 ];
 
