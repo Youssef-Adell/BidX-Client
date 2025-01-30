@@ -34,8 +34,8 @@ const loadPickedImages = async (event) => {
     imagesToEmit.push(...compressedImages);
 
     emit("pickedImagesChanged", imagesToEmit);
-  } catch {
-    // Supress the error
+  } catch (error) {
+    console.error(error);
   }
 };
 

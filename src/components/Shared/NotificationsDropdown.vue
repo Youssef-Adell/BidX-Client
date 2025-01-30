@@ -45,6 +45,9 @@ const handleMenuUpdate = (isMenuOpen) => {
             :disabled="!notificationsStore.hasUnreadNotifications"
             prepend-icon="mdi-check-all"
             text="Read All"
+            :color="
+              notificationsStore.hasUnreadNotifications ? 'primary' : 'default'
+            "
             size="small"
             variant="text"
           />

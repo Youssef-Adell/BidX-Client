@@ -16,7 +16,7 @@ onBeforeMount(async () => {
     await auctionStore.load(route.params.id);
   } catch (errorResponse) {
     if (errorResponse.errorCode === ErrorCode.RESOURCE_NOT_FOUND)
-      console.log(errorResponse); // redirect to 404 not found page
+      console.log(errorResponse); // TODO: redirect to 404 not found page
   }
 });
 

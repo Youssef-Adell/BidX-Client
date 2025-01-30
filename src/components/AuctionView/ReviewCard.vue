@@ -37,8 +37,8 @@ const handleSubmit = async () => {
 
     form.value.submitted = true;
     form.value.isEditing = false;
-  } catch {
-    // Supress the error
+  } catch (error) {
+    console.error(error);
   } finally {
     form.value.btnLoading = false;
   }
@@ -56,8 +56,8 @@ const deleteReview = async () => {
     review.value.comment = "";
     review.value.rating = 1;
     form.value.submitted = false;
-  } catch {
-    // Supress the error
+  } catch (error) {
+    console.error(error);
   } finally {
     form.value.btnLoading = false;
   }
@@ -68,8 +68,8 @@ onBeforeMount(async () => {
     form.value.loading = true;
     review.value = await reviewsService.fetchMyReview(revieweeId);
     form.value.submitted = true;
-  } catch {
-    // Supress the error
+  } catch (error) {
+    console.error(error);
   } finally {
     form.value.loading = false;
   }

@@ -54,6 +54,13 @@ export const useNotificationsStore = defineStore("notifications", {
     },
 
     unreadNotificationsCountUpdatedHandler(response) {
+      if (response.unreadNotificationsCount != this.unreadNotificationsCount) {
+        const sound = new Audio("/notification.mp3");
+        sound
+          .play()
+          .catch((err) => console.warn("Audio playback blocked:", err));
+      }
+
       this.unreadNotificationsCount = response.unreadNotificationsCount;
     },
   },

@@ -17,8 +17,8 @@ const fetchUserProfile = async () => {
   try {
     loading.value = true;
     user.value = await usersService.fetchUserProfile(userId);
-  } catch {
-    // Supress the error
+  } catch (error) {
+    console.error(error);
   } finally {
     loading.value = false;
   }

@@ -42,8 +42,8 @@ const openNotification = async () => {
       props.notification.isRead = true;
       notificationsStore.unreadNotificationsCount -= 1;
     }
-  } catch {
-    // Supress the error
+  } catch (error) {
+    console.error(error);
   }
 };
 </script>

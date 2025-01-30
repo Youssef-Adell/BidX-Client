@@ -35,8 +35,8 @@ const openChat = async () => {
     await chatStore.load(props.chat);
     props.chat.hasUnseenMessages = 0;
     chatsStore.unreadChatsCount -= 1;
-  } catch {
-    // Supress the error
+  } catch (error) {
+    console.error(error);
   }
 };
 </script>

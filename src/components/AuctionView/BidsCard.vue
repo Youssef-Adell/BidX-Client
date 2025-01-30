@@ -59,8 +59,8 @@ const placeBid = async (event) => {
     form.value.loading = true;
     await signalrClient.placeBid(auctionStore.auction.id, form.value.bidAmount);
     form.value.bidAmount = minBidAmountAllowed.value;
-  } catch {
-    // Supress the error
+  } catch (error) {
+    console.error(error);
   } finally {
     form.value.loading = false;
   }

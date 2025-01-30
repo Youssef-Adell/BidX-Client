@@ -21,8 +21,8 @@ const contact = async () => {
       : auctionStore.auction.auctioneer.id;
 
     await chatStore.create(receiverId);
-  } catch {
-    // Supress the error
+  } catch (error) {
+    console.error(error);
   } finally {
     loading.value = false;
   }

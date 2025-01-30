@@ -36,8 +36,8 @@ const fetchUserReviews = async () => {
     page.value = metadata.page;
     totalPages.value = metadata.totalPages;
     totalReviews.value = metadata.totalItems;
-  } catch {
-    // Supress the error
+  } catch (error) {
+    console.error(error);
   }
 };
 

@@ -27,8 +27,8 @@ const acceptTheBid = async () => {
   try {
     loading.value = true;
     await signalrClient.acceptBid(props.bid.id);
-  } catch {
-    // Supress the error
+  } catch (error) {
+    console.error(error);
   } finally {
     loading.value = false;
   }
