@@ -1,10 +1,10 @@
 <script setup>
-import ConnectionStateBar from "./components/ConnectionStateBar.vue";
-import Navbar from "./components/Navbar.vue";
-import LoadingScreen from "./components/LoadingScreen.vue";
-import Footer from "./components/Footer.vue";
+import ConnectionStateBar from "./components/Shared/ConnectionStateBar.vue";
+import Navbar from "./components/Shared/Navbar.vue";
+import LoadingScreen from "./components/Shared/LoadingScreen.vue";
+import Footer from "./components/Shared/Footer.vue";
 import signalrClient from "./api/signalrClient";
-import ChatBox from "./components/ChatBox.vue";
+import ChatBox from "./components/Shared/ChatBox.vue";
 import useAppTheme from "./composables/useAppTheme";
 import { useAuthStore } from "./stores/AuthStore";
 import { onBeforeMount, onBeforeUnmount, ref } from "vue";

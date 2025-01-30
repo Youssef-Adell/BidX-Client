@@ -1,5 +1,4 @@
 <script setup>
-import { VFadeTransition } from "vuetify/components";
 import AuctionItem from "./AuctionItem.vue";
 
 const props = defineProps({

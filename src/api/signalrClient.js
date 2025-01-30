@@ -144,7 +144,7 @@ export default {
   async markMessageAsRead(messageId) {
     await connection?.invoke("MarkMessageAsRead", { messageId });
   },
-  
+
   async markNotificationAsRead(notificationId) {
     await connection?.invoke("MarkNotificationAsRead", { notificationId });
   },

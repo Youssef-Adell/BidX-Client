@@ -1,8 +1,8 @@
 <script setup>
 import signalrClient from "@/api/signalrClient";
-import UserProfileSummary from "./UserProfileSummary.vue";
 import { useSignalrStateStore } from "@/stores/SignalrStateStore";
 import { ref } from "vue";
+import UserProfileSummary from "../Shared/UserProfileSummary.vue";
 
 const props = defineProps({
   bid: {

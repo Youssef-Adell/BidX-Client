@@ -1,5 +1,5 @@
 <script setup>
-import ErrorBox from "@/components/ErrorBox.vue";
+import ErrorBox from "@/components/Shared/ErrorBox.vue";
 import { useAuthStore } from "@/stores/AuthStore";
 import { ref } from "vue";
 

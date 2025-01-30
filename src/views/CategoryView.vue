@@ -3,9 +3,9 @@ import { onBeforeMount, ref } from "vue";
 import { useDisplay } from "vuetify";
 import { useRoute } from "vue-router";
 import categoriesService from "@/api/services/categoriesService";
-import AuctionsGrid from "@/components/AuctionsGrid.vue";
-import AuctionFiltersDialog from "@/components/AuctionFiltersDialog.vue";
 import useAuctionsManager from "@/composables/useAuctionsManager";
+import AuctionFiltersDialog from "@/components/Shared/AuctionFiltersDialog.vue";
+import AuctionsGrid from "@/components/Shared/AuctionsGrid.vue";
 
 const { xs } = useDisplay();
 const route = useRoute();

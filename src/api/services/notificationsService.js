@@ -1,8 +1,7 @@
 import httpClient from "../httpClient";
 
 export default {
-
-async fetchMyNotifications(page, pageSize) {
+  async fetchMyNotifications(page, pageSize) {
     const response = await httpClient.get(`/Notifications`, {
       requiresAuth: true,
       params: {
@@ -12,5 +11,5 @@ async fetchMyNotifications(page, pageSize) {
     });
 
     return response.data;
-  }
-}
+  },
+};

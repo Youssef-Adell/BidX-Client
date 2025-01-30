@@ -5,14 +5,10 @@ import { useInfiniteScroll } from "@vueuse/core";
 import { useTemplateRef } from "vue";
 
 const chatsStore = useChatsStore();
-const el = useTemplateRef("infinite-scroll-container")
-useInfiniteScroll(
-  el,
-  chatsStore.loadMoreChats,
-  {
-    canLoadMore: chatsStore.hasMoreChats
-  }
-)
+const el = useTemplateRef("infinite-scroll-container");
+useInfiniteScroll(el, chatsStore.loadMoreChats, {
+  canLoadMore: chatsStore.hasMoreChats,
+});
 
 const handleMenuUpdate = (isMenuOpen) => {
   if (isMenuOpen) {
@@ -25,8 +21,14 @@ const handleMenuUpdate = (isMenuOpen) => {
   <VMenu @update:model-value="handleMenuUpdate">
     <!--Activator-->
     <template #activator="{ props }">
-      <VBadge :model-value="chatsStore.hasUnreadChats" :content="chatsStore.unreadChatsCount" class="mr-4" color="error"
-        offset-x="5" offset-y="6">
+      <VBadge
+        :model-value="chatsStore.hasUnreadChats"
+        :content="chatsStore.unreadChatsCount"
+        class="mr-4"
+        color="error"
+        offset-x="5"
+        offset-y="6"
+      >
         <VBtn v-bind="props" icon="mdi-forum-outline" density="comfortable" />
       </VBadge>
     </template>
@@ -38,8 +40,17 @@ const handleMenuUpdate = (isMenuOpen) => {
 
         <!--Notifications List-->
         <div ref="infinite-scroll-container" class="h-310px overflow-y-auto">
-          <VSkeletonLoader v-if="chatsStore.loading" v-for="i in 4" type="list-item-avatar-two-line" />
-          <ChatItem v-else v-for="chat in chatsStore.chats.data" :key="chat.id" :chat="chat" />
+          <VSkeletonLoader
+            v-if="chatsStore.loading"
+            v-for="i in 4"
+            type="list-item-avatar-two-line"
+          />
+          <ChatItem
+            v-else
+            v-for="chat in chatsStore.chats.data"
+            :key="chat.id"
+            :chat="chat"
+          />
         </div>
       </VSheet>
     </template>

@@ -1,6 +1,6 @@
 <script setup>
-import CreateAuctionForm from "@/components/CreateAuctionForm.vue";
-import UploadProgressOverlay from "@/components/UploadProgressOverlay.vue";
+import CreateAuctionForm from "@/components/CreateAuctionView/CreateAuctionForm.vue";
+import UploadProgressOverlay from "@/components/Shared/UploadProgressOverlay.vue";
 import { useAuctionStore } from "@/stores/AuctionStore";
 
 const auctionStore = useAuctionStore();

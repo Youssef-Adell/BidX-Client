@@ -1,6 +1,6 @@
 <script setup>
-import RegisterForm from "@/components/RegisterForm.vue";
-import VerifyEmailCard from "@/components/VerifyEmailCard.vue";
+import RegisterForm from "@/components/RegisterView/RegisterForm.vue";
+import VerifyEmailCard from "@/components/Shared/VerifyEmailCard.vue";
 import { ref } from "vue";
 
 const registerDone = ref(false);

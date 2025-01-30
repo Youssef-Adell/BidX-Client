@@ -8,13 +8,13 @@ export const useChatsStore = defineStore("chats", {
     loading: false,
   }),
 
-  getters:{
-    hasUnreadChats(){
+  getters: {
+    hasUnreadChats() {
       return this.unreadChatsCount > 0;
     },
-    hasMoreChats(){
+    hasMoreChats() {
       return this.chats.metadata?.hasNext;
-    }
+    },
   },
 
   actions: {

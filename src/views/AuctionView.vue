@@ -1,12 +1,12 @@
 <script setup>
-import AuctionDetailsCard from "@/components/AuctionDetailsCard.vue";
-import BidsCard from "@/components/BidsCard.vue";
-import ReviewCard from "@/components/ReviewCard.vue";
-import WinningBidCard from "@/components/WinningBidCard.vue";
+import AuctionDetailsCard from "@/components/AuctionView/AuctionDetailsCard.vue";
+import ReviewCard from "@/components/AuctionView/ReviewCard.vue";
+import WinningBidCard from "@/components/AuctionView/WinningBidCard.vue";
 import { ErrorCode } from "@/api/errorCodes";
 import { useAuctionStore } from "@/stores/AuctionStore";
 import { onBeforeMount, onBeforeUnmount } from "vue";
 import { useRoute } from "vue-router";
+import BidsCard from "@/components/AuctionView/BidsCard.vue";
 
 const route = useRoute();
 const auctionStore = useAuctionStore();

@@ -2,8 +2,8 @@
 import { computed, onBeforeMount, ref } from "vue";
 import { useAuthStore } from "@/stores/AuthStore";
 import usersService from "@/api/services/usersService";
-import AuctionsGrid from "./AuctionsGrid.vue";
-import UserAuctionsFiltersMenu from "./UserAuctionsFiltersMenu.vue";
+import UserBiddingsFiltersMenu from "./UserBiddingsFiltersMenu.vue";
+import AuctionsGrid from "../Shared/AuctionsGrid.vue";
 
 const props = defineProps({
   userId: {
@@ -25,14 +25,14 @@ const noAuctionsText = computed(() => {
   const amIProfileOwner = authStore.user && authStore.user?.id === props.userId;
 
   return amIProfileOwner
-    ? "You don't have auctions."
-    : "The user has no auctions.";
+    ? "You don't have biddings."
+    : "The user has no biddings.";
 });
 
-const fetchUserAuctions = async () => {
+const fetchUserBiddings = async () => {
   try {
     loading.value = true;
-    const { data, metadata } = await usersService.fetchUserAuctions(
+    const { data, metadata } = await usersService.fetchUserBiddings(
       props.userId,
       page.value,
       pageSize.value,
@@ -51,23 +51,23 @@ const fetchUserAuctions = async () => {
 
 const changePage = async (newPage) => {
   page.value = newPage;
-  await fetchUserAuctions();
+  await fetchUserBiddings();
 };
 
 const changeFilters = async (newFilters) => {
   page.value = 1; // Rest page when filter
   filters.value = newFilters;
-  await fetchUserAuctions();
+  await fetchUserBiddings();
 };
 
 onBeforeMount(async () => {
-  await fetchUserAuctions();
+  await fetchUserBiddings();
 });
 </script>
 
 <template>
   <div class="d-flex justify-end mb-2">
-    <UserAuctionsFiltersMenu @change-filters="changeFilters" />
+    <UserBiddingsFiltersMenu @change-filters="changeFilters" />
   </div>
   <AuctionsGrid
     :auctions="auctions"

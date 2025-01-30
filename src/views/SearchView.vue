@@ -1,9 +1,9 @@
 <script setup>
-import SearchBar from "@/components/SearchBar.vue";
 import { useDisplay } from "vuetify";
-import AuctionFiltersDialog from "@/components/AuctionFiltersDialog.vue";
-import AuctionsGrid from "@/components/AuctionsGrid.vue";
 import useAuctionsManager from "@/composables/useAuctionsManager";
+import SearchBar from "@/components/SearchView/SearchBar.vue";
+import AuctionFiltersDialog from "@/components/Shared/AuctionFiltersDialog.vue";
+import AuctionsGrid from "@/components/Shared/AuctionsGrid.vue";
 
 const { xs } = useDisplay();
 
