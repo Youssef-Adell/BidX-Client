@@ -1,6 +1,5 @@
 <script setup>
-import ErrorBox from "@/components/ErrorBox.vue";
-import ImagePicker from "@/components/ImagePicker.vue";
+import ErrorBox from "@/components/Shared/ErrorBox.vue";
 import { durationToSeconds } from "@/utils/dateTimeUtils";
 import { computed, onBeforeMount, ref } from "vue";
 import { useRouter } from "vue-router";
@@ -8,6 +7,7 @@ import { useDisplay } from "vuetify";
 import { useAuctionStore } from "@/stores/AuctionStore";
 import { useCategoriesStore } from "@/stores/CategoriesStore";
 import { useCitiesStore } from "@/stores/CitiesStore";
+import ImagePicker from "./ImagePicker.vue";
 
 const { smAndDown, mdAndUp } = useDisplay();
 const router = useRouter();

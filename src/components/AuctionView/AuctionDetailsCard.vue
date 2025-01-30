@@ -1,9 +1,9 @@
 <script setup>
-import AuctionCountdown from "@/components/AuctionCountdown.vue";
-import UserProfileSummary from "@/components/UserProfileSummary.vue";
+import UserProfileSummary from "@/components/Shared/UserProfileSummary.vue";
 import { useAuctionStore } from "@/stores/AuctionStore";
 import { formatDate } from "@/utils/dateTimeUtils";
 import { useDisplay } from "vuetify";
+import AuctionCountdown from "./AuctionCountdown.vue";
 
 const { smAndDown, xs } = useDisplay();
 const auctionStore = useAuctionStore();

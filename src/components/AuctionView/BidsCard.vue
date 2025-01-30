@@ -1,12 +1,12 @@
 <script setup>
 import signalrClient from "@/api/signalrClient";
-import Bid from "./Bid.vue";
 import { useAuctionStore } from "@/stores/AuctionStore";
 import { useAuthStore } from "@/stores/AuthStore";
 import { useSignalrStateStore } from "@/stores/SignalrStateStore";
 import { computed, nextTick, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import { useDisplay, useGoTo } from "vuetify";
+import Bid from "./Bid.vue";
 
 const { smAndDown } = useDisplay();
 const router = useRouter();

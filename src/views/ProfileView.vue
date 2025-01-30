@@ -1,8 +1,8 @@
 <script setup>
-import UserInfo from "@/components/UserInfo.vue";
-import UserAuctionsSubview from "@/components/UserAuctionsSubview.vue";
-import UserBiddingsSubview from "@/components/UserBiddingsSubview.vue";
-import UserReviewsSubview from "@/components/UserReviewsSubview.vue";
+import UserInfo from "@/components/ProfileView/UserInfo.vue";
+import UserAuctionsSubview from "@/components/ProfileView/UserAuctionsSubView.vue";
+import UserBiddingsSubview from "@/components/ProfileView/UserBiddingsSubview.vue";
+import UserReviewsSubview from "@/components/ProfileView/UserReviewsSubview.vue";
 import { onBeforeMount, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import usersService from "@/api/services/usersService";
@@ -47,7 +47,11 @@ onBeforeMount(async () => {
 
     <template v-else>
       <!-- Profile Header -->
-      <VSheet class="d-flex flex-column align-center mt-16 mb-4" elevation="1" rounded>
+      <VSheet
+        class="d-flex flex-column align-center mt-16 mb-4"
+        elevation="1"
+        rounded
+      >
         <UserInfo :user="user" class="mt-n16 mb-4" />
 
         <VTabs v-model="tab" class="w-100" color="primary" fixed-tabs>
@@ -68,7 +72,10 @@ onBeforeMount(async () => {
         </VTabsWindowItem>
 
         <VTabsWindowItem value="reviews">
-          <UserReviewsSubview :user-id="userId" :average-rating="user.averageRating" />
+          <UserReviewsSubview
+            :user-id="userId"
+            :average-rating="user.averageRating"
+          />
         </VTabsWindowItem>
       </VTabsWindow>
     </template>

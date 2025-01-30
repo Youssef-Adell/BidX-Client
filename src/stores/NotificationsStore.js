@@ -9,20 +9,23 @@ export const useNotificationsStore = defineStore("notifications", {
     loading: false,
   }),
 
-  getters:{
-    hasUnreadNotifications(){
+  getters: {
+    hasUnreadNotifications() {
       return this.unreadNotificationsCount > 0;
     },
-    hasMoreNotifications(){
+    hasMoreNotifications() {
       return this.notifications.metadata?.hasNext;
-    }
+    },
   },
 
   actions: {
     async load() {
       try {
         this.loading = true;
-        this.notifications = await notificationsService.fetchMyNotifications(1, 10);
+        this.notifications = await notificationsService.fetchMyNotifications(
+          1,
+          10
+        );
       } finally {
         this.loading = false;
       }
@@ -42,14 +45,13 @@ export const useNotificationsStore = defineStore("notifications", {
       return false;
     },
 
-    async markAllAsRead(){
-      if(this.unreadNotificationsCount > 0){
+    async markAllAsRead() {
+      if (this.unreadNotificationsCount > 0) {
         await signalrClient.markAllNotificationsAsRead();
         this.unreadNotificationsCount = 0;
-        this.notifications.data.forEach(n => n.isRead = true);
+        this.notifications.data.forEach((n) => (n.isRead = true));
       }
     },
-
 
     unreadNotificationsCountUpdatedHandler(response) {
       this.unreadNotificationsCount = response.unreadNotificationsCount;

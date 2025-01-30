@@ -27,7 +27,6 @@ const notificationMessage = computed(() => {
     : formatBold(props.notification?.message);
 });
 
-
 const openNotification = async () => {
   try {
     switch (props.notification.redirectTo) {
@@ -58,20 +57,31 @@ const openNotification = async () => {
     <template #default>
       <div class="d-flex flex-column">
         <div class="d-flex justify-space-between align-center">
-          <p v-html="notificationMessage" :class="`text-13 ${!notification.isRead ? 'text-high-emphasis' : ''}`">
-          </p>
-          <VIcon v-if="!notification.isRead" icon="mdi-circle-medium" color="primary" class="opacity-100" />
+          <p
+            v-html="notificationMessage"
+            :class="`text-13 ${
+              !notification.isRead ? 'text-high-emphasis' : ''
+            }`"
+          ></p>
+          <VIcon
+            v-if="!notification.isRead"
+            icon="mdi-circle-medium"
+            color="primary"
+            class="opacity-100"
+          />
         </div>
         <span
-          :class="`text-caption  ${!notification.isRead ? 'text-high-emphasis font-weight-medium text-primary' : ''}`">{{
-            getDateDifference(notification.createdAt) }}</span>
+          :class="`text-caption  ${
+            !notification.isRead
+              ? 'text-high-emphasis font-weight-medium text-primary'
+              : ''
+          }`"
+          >{{ getDateDifference(notification.createdAt) }}</span
+        >
       </div>
-
     </template>
   </VListItem>
-
 </template>
-
 
 <style scoped>
 .text-13 {

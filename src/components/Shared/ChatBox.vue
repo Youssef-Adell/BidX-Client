@@ -60,7 +60,12 @@ const send = async () => {
 </script>
 
 <template>
-  <VSheet :class="['chatbox', { 'chatbox-mobile': smAndDown }]" elevation="4" rounded border>
+  <VSheet
+    :class="['chatbox', { 'chatbox-mobile': smAndDown }]"
+    elevation="4"
+    rounded
+    border
+  >
     <!--Chat Header-->
     <div class="chatbox-header">
       <!--Receiver Data-->
@@ -68,13 +73,18 @@ const send = async () => {
         <VAvatar :image="receiverProfilePicture" />
 
         <div class="d-flex flex-column justify-start">
-          <RouterLink class="ma-0 text-body-2 text-text" :to="`/profile/${chatStore.chat?.participantId}`">
+          <RouterLink
+            class="ma-0 text-body-2 text-text"
+            :to="`/profile/${chatStore.chat?.participantId}`"
+          >
             {{ chatStore.chat?.participantName }}
           </RouterLink>
-          <div :class="[
-            'd-flex align-center ga-1 text-caption',
-            isReceiverOnline ? 'text-success' : 'text-secondary',
-          ]">
+          <div
+            :class="[
+              'd-flex align-center ga-1 text-caption',
+              isReceiverOnline ? 'text-success' : 'text-secondary',
+            ]"
+          >
             <VIcon icon="mdi-circle" size="8" />
             {{ isReceiverOnline ? "online" : "offline" }}
           </div>
@@ -82,27 +92,56 @@ const send = async () => {
       </div>
 
       <!--Close Button-->
-      <VBtn icon="mdi-close" size="sm" variant="plain" :ripple="false" @click="chatStore.unload" />
+      <VBtn
+        icon="mdi-close"
+        size="sm"
+        variant="plain"
+        :ripple="false"
+        @click="chatStore.unload"
+      />
     </div>
 
     <!--Chat Body-->
     <div class="chatbox-body border-t border-b">
-      <VInfiniteScroll id="messages-container" side="start" class="px-2" empty-text="" @load="loadMoreMessages">
+      <VInfiniteScroll
+        id="messages-container"
+        side="start"
+        class="px-2"
+        empty-text=""
+        @load="loadMoreMessages"
+      >
         <div v-if="chatStore.loading" class="d-flex justify-center">
           <VProgressCircular color="primary" indeterminate />
         </div>
 
-        <Message v-else v-for="(message, idx) in chatStore.messages.data" :key="message.id"
-          :id="idx === chatStore.messages.data.length - 1 ? 'last-message' : ''" :message="message" />
+        <Message
+          v-else
+          v-for="(message, idx) in chatStore.messages.data"
+          :key="message.id"
+          :id="idx === chatStore.messages.data.length - 1 ? 'last-message' : ''"
+          :message="message"
+        />
       </VInfiniteScroll>
     </div>
 
     <!--Chat footer-->
     <VForm class="chatbox-footer" @submit.prevent="send">
-      <input v-model="inputMessage" type="text" placeholder="Type your message here.." class="w-100 h-100 outline-none"
-        :disabled="!SignalrStateStore.isConnected" />
-      <VBtn icon="mdi-send" type="submit" variant="text" density="comfortable" color="primary" :ripple="false"
-        :disabled="!SignalrStateStore.isConnected" />
+      <input
+        v-model="inputMessage"
+        type="text"
+        placeholder="Type your message here.."
+        class="w-100 h-100 outline-none"
+        :disabled="!SignalrStateStore.isConnected"
+      />
+      <VBtn
+        icon="mdi-send"
+        type="submit"
+        variant="text"
+        density="comfortable"
+        color="primary"
+        :ripple="false"
+        :disabled="!SignalrStateStore.isConnected"
+      />
     </VForm>
   </VSheet>
 </template>

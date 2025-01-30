@@ -81,8 +81,8 @@ export const useChatStore = defineStore("chat", {
       if (message.chatId === this.chat?.id) {
         this.messages.data.push(message);
         ++this.messages.metadata.pageSize; // To avoid refetching it when fetching more messages in loadMoreMessages()
-        
-        if(message.senderId === this.chat.participantId)
+
+        if (message.senderId === this.chat.participantId)
           await signalrClient.markMessageAsRead(message.id);
       }
     },
@@ -96,14 +96,15 @@ export const useChatStore = defineStore("chat", {
         }
       });
     },
-    
+
     messageReadHandler(response) {
       const messageId = response.messageId;
 
-      const message = this.messages.data?.find((message) => message.id === messageId);
-      
-      if(message)
-        message.isRead = true;
+      const message = this.messages.data?.find(
+        (message) => message.id === messageId
+      );
+
+      if (message) message.isRead = true;
     },
 
     UserStatusChangedHandler(status) {

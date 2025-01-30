@@ -1,7 +1,7 @@
 <script setup>
 import { useDisplay } from "vuetify";
-import UserProfileSummary from "./UserProfileSummary.vue";
 import { formatDate } from "@/utils/dateTimeUtils";
+import UserProfileSummary from "../Shared/UserProfileSummary.vue";
 
 const props = defineProps({
   review: {

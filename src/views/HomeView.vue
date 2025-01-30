@@ -1,8 +1,8 @@
 <script setup>
-import AuctionFiltersDialog from "@/components/AuctionFiltersDialog.vue";
-import AuctionsGrid from "@/components/AuctionsGrid.vue";
-import CategoriesGrid from "@/components/CategoriesGrid.vue";
-import CreateAuctionButton from "@/components/CreateAuctionButton.vue";
+import CategoriesGrid from "@/components/HomeView/CategoriesGrid.vue";
+import CreateAuctionButton from "@/components/HomeView/CreateAuctionButton.vue";
+import AuctionFiltersDialog from "@/components/Shared/AuctionFiltersDialog.vue";
+import AuctionsGrid from "@/components/Shared/AuctionsGrid.vue";
 import useAuctionsManager from "@/composables/useAuctionsManager";
 import { useDisplay } from "vuetify";
 

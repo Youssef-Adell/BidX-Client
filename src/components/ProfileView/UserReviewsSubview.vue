@@ -54,12 +54,21 @@ onBeforeMount(async () => {
   <VRow class="py-1" :dense="smAndDown">
     <!--Overall Rating-->
     <VCol cols="12" md="4">
-      <VSheet class="d-flex flex-column align-center rounded py-4 py-md-16" elevation="1">
+      <VSheet
+        class="d-flex flex-column align-center rounded py-4 py-md-16"
+        elevation="1"
+      >
         <span class="text-subtitle-1">Average Rating</span>
         <span class="text-h2 font-weight-bold text-high-emphasis">
           {{ averageRatingFormatted }}
         </span>
-        <VRating :model-value="averageRating" color="yellow-darken-2" density="compact" half-increments readonly />
+        <VRating
+          :model-value="averageRating"
+          color="yellow-darken-2"
+          density="compact"
+          half-increments
+          readonly
+        />
         <span class="text-caption mt-1">
           Based on {{ totalReviews }} reviews
         </span>
@@ -72,9 +81,20 @@ onBeforeMount(async () => {
         <span class="text-subtitle-2 text-high-emphasis mb-2">Reviews</span>
 
         <template v-if="reviews.length">
-          <UserReview v-for="review in reviews" :review="review" :key="review.id" class="mb-2" />
-          <VPagination v-if="totalPages > 1" v-model="page" :length="totalPages" @update:model-value="fetchUserReviews"
-            class="mt-4" size="small" />
+          <UserReview
+            v-for="review in reviews"
+            :review="review"
+            :key="review.id"
+            class="mb-2"
+          />
+          <VPagination
+            v-if="totalPages > 1"
+            v-model="page"
+            :length="totalPages"
+            @update:model-value="fetchUserReviews"
+            class="mt-4"
+            size="small"
+          />
         </template>
 
         <template v-else>

@@ -1,18 +1,19 @@
 <script setup>
+import { ErrorCode } from "@/api/errorCodes";
 import { useAuthStore } from "@/stores/AuthStore";
 import { ref } from "vue";
-import ErrorBox from "./ErrorBox.vue";
+import { useRoute, useRouter } from "vue-router";
+import ErrorBox from "../Shared/ErrorBox.vue";
 
-const emit = defineEmits(["registerDone"]);
+const emit = defineEmits(["emailNotConfirmed"]);
 
 const authStore = useAuthStore();
+const router = useRouter();
+const route = useRoute();
 
-const user = ref({
-  firstname: "",
-  lastname: "",
+const credentials = ref({
   email: "",
   password: "",
-  confirmPassword: "",
 });
 
 const form = ref({
@@ -30,14 +31,12 @@ const inputRules = {
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return pattern.test(value) || "Invalid E-mail.";
   },
-  password: (value) => {
-    if (value.length < 8) return "Password must be at least 8 characters.";
-    else if (value !== user.value.password) return "Passwords don't match.";
-    else return true;
+  passwordLength: (value) => {
+    return value.length >= 8 || "Password must be at least 8 characters.";
   },
 };
 
-const register = async (event) => {
+const login = async (event) => {
   // ensure that the input satisfies the rules
   const { valid } = await event;
   if (!valid) return;
@@ -45,10 +44,14 @@ const register = async (event) => {
   try {
     form.value.loading = true;
     form.value.error = null;
-    await authStore.register(user.value);
-    emit("registerDone", user.value.email);
+
+    await authStore.login(credentials.value.email, credentials.value.password);
+
+    router.replace(route.query.redirect);
   } catch (errorResponse) {
-    form.value.error = errorResponse;
+    errorResponse.errorCode === ErrorCode.AUTH_EMAIL_NOT_CONFIRMED
+      ? emit("emailNotConfirmed", credentials.value.email)
+      : (form.value.error = errorResponse);
   } finally {
     form.value.loading = false;
   }
@@ -64,33 +67,17 @@ const register = async (event) => {
   >
     <!--Title-->
     <div class="mb-3 text-high-emphasis">
-      <h1 class="text-h5 font-weight-bold">Register</h1>
+      <h1 class="text-h5 font-weight-bold">Login</h1>
       <VDivider thickness="4" length="1.6rem" color="primary" opacity="0.5" />
     </div>
 
     <!--Error Box-->
     <ErrorBox v-if="form.error" :error="form.error" />
 
-    <!--Register Form-->
-    <VForm @submit.prevent="register">
+    <!--Login Form-->
+    <VForm @submit.prevent="login">
       <VTextField
-        v-model="user.firstname"
-        placeholder="First Name"
-        prepend-inner-icon="mdi-account-outline"
-        variant="underlined"
-        :rules="[inputRules.required]"
-      />
-
-      <VTextField
-        v-model="user.lastname"
-        placeholder="Last Name"
-        prepend-inner-icon="mdi-account-outline"
-        variant="underlined"
-        :rules="[inputRules.required]"
-      />
-
-      <VTextField
-        v-model="user.email"
+        v-model="credentials.email"
         placeholder="Email Address"
         prepend-inner-icon="mdi-email-outline"
         variant="underlined"
@@ -98,29 +85,25 @@ const register = async (event) => {
       />
 
       <VTextField
-        v-model="user.password"
+        v-model="credentials.password"
         placeholder="Password"
         prepend-inner-icon="mdi-lock-outline"
         variant="underlined"
         @click:append-inner="form.passwordVisible = !form.passwordVisible"
         :append-inner-icon="form.passwordVisible ? 'mdi-eye-off' : 'mdi-eye'"
         :type="form.passwordVisible ? 'text' : 'password'"
-        :rules="[inputRules.required, inputRules.password]"
+        :rules="[inputRules.required, inputRules.passwordLength]"
       />
 
-      <VTextField
-        v-model="user.confirmPassword"
-        placeholder="Confirm Password"
-        prepend-inner-icon="mdi-lock-outline"
-        variant="underlined"
-        @click:append-inner="form.passwordVisible = !form.passwordVisible"
-        :append-inner-icon="form.passwordVisible ? 'mdi-eye-off' : 'mdi-eye'"
-        :type="form.passwordVisible ? 'text' : 'password'"
-        :rules="[inputRules.required, inputRules.password]"
-      />
+      <RouterLink
+        to="forgot-password"
+        class="text-caption text-decoration-none text-primary"
+      >
+        Forgot Password?
+      </RouterLink>
 
       <VBtn
-        text="Register"
+        text="Login"
         class="mt-8 mb-6"
         color="primary"
         size="large"
@@ -131,11 +114,11 @@ const register = async (event) => {
       />
     </VForm>
 
-    <!--Login Link-->
+    <!--Register Link-->
     <div class="text-center text-caption">
-      Already have an account?
-      <RouterLink class="text-primary text-decoration-none" to="/login">
-        Login
+      Don't have an account?
+      <RouterLink class="text-primary text-decoration-none" to="/register">
+        Register
       </RouterLink>
     </div>
   </VSheet>

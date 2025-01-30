@@ -1,6 +1,6 @@
 <script setup>
-import LoginForm from "@/components/LoginForm.vue";
-import VerifyEmailCard from "@/components/VerifyEmailCard.vue";
+import LoginForm from "@/components/LoginView/LoginForm.vue";
+import VerifyEmailCard from "@/components/Shared/VerifyEmailCard.vue";
 import { ref } from "vue";
 
 const emailNotConfirmed = ref(false);

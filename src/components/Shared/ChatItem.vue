@@ -24,9 +24,11 @@ const lastMessage = computed(() => {
     : props.chat?.lastMessage ?? "";
 });
 
-const unreadMessagesCountIcon = computed(()=>{
-  return props.chat.unreadMessagesCount > 9 ? 'mdi-numeric-9-plus-circle' : `mdi-numeric-${props.chat.unreadMessagesCount}-circle`;
-})
+const unreadMessagesCountIcon = computed(() => {
+  return props.chat.unreadMessagesCount > 9
+    ? "mdi-numeric-9-plus-circle"
+    : `mdi-numeric-${props.chat.unreadMessagesCount}-circle`;
+});
 
 const openChat = async () => {
   try {
@@ -40,14 +42,18 @@ const openChat = async () => {
 </script>
 
 <template>
-  <VListItem
-    @click="openChat"
-    class="pa-2 mx-1 mb-1"
-    rounded
-  >
+  <VListItem @click="openChat" class="pa-2 mx-1 mb-1" rounded>
     <template #prepend>
-      <VBadge :model-value="chat.isParticipantOnline" color="success" location="bottom right" offset-x="5" offset-y="5"  dot bordered >
-        <VAvatar :image="senderProfilePicture" size="x-large"/>
+      <VBadge
+        :model-value="chat.isParticipantOnline"
+        color="success"
+        location="bottom right"
+        offset-x="5"
+        offset-y="5"
+        dot
+        bordered
+      >
+        <VAvatar :image="senderProfilePicture" size="x-large" />
       </VBadge>
     </template>
 
@@ -62,7 +68,12 @@ const openChat = async () => {
     </template>
 
     <template #append v-if="chat.unreadMessagesCount">
-      <VIcon :icon="unreadMessagesCountIcon" color="error" size="small" class="opacity-100" />
+      <VIcon
+        :icon="unreadMessagesCountIcon"
+        color="error"
+        size="small"
+        class="opacity-100"
+      />
     </template>
   </VListItem>
 </template>

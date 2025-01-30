@@ -81,7 +81,7 @@ onBeforeMount(async () => {
             icon="mdi-close"
             @click="dialogOpened = false"
             variant="plain"
-            density="compact"
+            :density="xs ? 'compact' : 'comfortable'"
             :ripple="false"
           />
         </div>
@@ -91,7 +91,7 @@ onBeforeMount(async () => {
             v-model="selectedFilters.activeOnly"
             label="Auction State"
             :items="form.auctionState"
-            density="compact"
+            :density="xs ? 'compact' : 'comfortable'"
             variant="outlined"
             class="mb-4"
             hide-details
@@ -102,7 +102,7 @@ onBeforeMount(async () => {
             :items="form.productConditions"
             item-title="title"
             item-value="value"
-            density="compact"
+            :density="xs ? 'compact' : 'comfortable'"
             variant="outlined"
             class="mb-4"
             hide-details
@@ -114,7 +114,7 @@ onBeforeMount(async () => {
             :items="form.categories"
             item-title="name"
             item-value="id"
-            density="compact"
+            :density="xs ? 'compact' : 'comfortable'"
             variant="outlined"
             class="mb-4"
             hide-details
@@ -124,8 +124,8 @@ onBeforeMount(async () => {
             label="City"
             :items="form.cities"
             item-title="name"
+            :density="xs ? 'compact' : 'comfortable'"
             item-value="id"
-            density="compact"
             variant="outlined"
             class="mb-6"
             hide-details
