@@ -13,8 +13,7 @@ import { createApp } from "vue";
 const app = createApp(App);
 
 app.use(vue3GoogleLogin, {
-  clientId:
-    "163040209740-tu1mqt4d5anad2l9uco7pf27ghn1rul6.apps.googleusercontent.com",
+  clientId:import.meta.env.VITE_GOOGLE_CLIENT_ID,
   idConfiguration: {
     use_fedcm_for_prompt: true, //https://developers.google.com/identity/gsi/web/guides/overview#federated_credential_manager_fedcm
   },
