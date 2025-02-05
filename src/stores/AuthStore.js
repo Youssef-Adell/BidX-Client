@@ -45,6 +45,15 @@ export const useAuthStore = defineStore("auth", {
       this.user = user; // Must be set here to avoid showing the profile picture in the navbar before restarting the connection
     },
 
+    async loginWithGoogle(idToken) {
+      const { user, accessToken } = await authService.loginWithGoogle(idToken);
+      localStorage.setItem("hasLoggedIn", true);
+
+      this.accessToken = accessToken; // Must be set here because restartConnection() depends on it
+      await signalrClient.restartConnection();
+      this.user = user; // Must be set here to avoid showing the profile picture in the navbar before restarting the connection
+    },
+
     async register(user) {
       await authService.register(user);
     },

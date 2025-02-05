@@ -4,6 +4,7 @@ import { useAuthStore } from "@/stores/AuthStore";
 import { ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import ErrorBox from "../Shared/ErrorBox.vue";
+import ContinueWithGoogleButton from "../Shared/ContinueWithGoogleButton.vue";
 
 const emit = defineEmits(["emailNotConfirmed"]);
 
@@ -104,7 +105,7 @@ const login = async (event) => {
 
       <VBtn
         text="Login"
-        class="mt-8 mb-6"
+        class="mt-8"
         color="primary"
         size="large"
         variant="flat"
@@ -114,8 +115,11 @@ const login = async (event) => {
       />
     </VForm>
 
+    <VDivider opacity="0.3" class="my-5">OR</VDivider>
+    <ContinueWithGoogleButton @error="(error) => (form.error = error)" />
+
     <!--Register Link-->
-    <div class="text-center text-caption">
+    <div class="text-center text-caption mt-2">
       Don't have an account?
       <RouterLink class="text-primary text-decoration-none" to="/register">
         Register
