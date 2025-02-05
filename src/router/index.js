@@ -48,6 +48,10 @@ const routes = [
     component: () => import("../views/SettingsView.vue"),
   },
   {
+    path: "/confirm-email",
+    component: () => import("../views/ConfirmEmailView.vue"),
+  },
+  {
     path: "/:pathMatch(.*)*",
     component: () => import("../views/NotFoundView.vue"),
     name: "NotFound",

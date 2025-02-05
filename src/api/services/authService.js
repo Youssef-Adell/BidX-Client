@@ -14,7 +14,7 @@ export default {
   async loginWithGoogle(idToken) {
     const response = await httpClient.post(
       "/auth/google-login",
-      {idToken: idToken},
+      { idToken: idToken },
       { withCredentials: true }
     );
 
@@ -29,6 +29,19 @@ export default {
     await httpClient.post("/auth/resend-confirmation-email", {
       email: email,
     });
+  },
+
+  async confirmEmail(userId, token) {
+    const response = await httpClient.post(
+      "/auth/confirm-email",
+      {
+        userId,
+        token,
+      },
+      { withCredentials: true }
+    );
+
+    return response.data;
   },
 
   async forgotPassword(email) {

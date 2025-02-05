@@ -3,6 +3,8 @@ import signalrClient from "@/api/signalrClient";
 import { defineStore } from "pinia";
 import { watch } from "vue";
 import { useChatStore } from "./ChatStore";
+import { useChatsStore } from "./ChatsStore";
+import { useNotificationsStore } from "./NotificationsStore";
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
@@ -62,6 +64,15 @@ export const useAuthStore = defineStore("auth", {
       await authService.resendConfirmationEmail(email);
     },
 
+    async confirmEmail(userId, token) {
+      const { user, accessToken } =  await authService.confirmEmail(userId, token)
+      localStorage.setItem("hasLoggedIn", true); // Needed for deciding to refresh or not in refreshToken()
+
+      this.accessToken = accessToken; // Must be set here because restartConnection() depends on it
+      await signalrClient.restartConnection();
+      this.user = user; // Must be set here to avoid showing the profile picture in the navbar before restarting the connection
+    },
+
     async forgotPassword(email) {
       await authService.forgotPassword(email);
     },
@@ -104,7 +115,9 @@ export const useAuthStore = defineStore("auth", {
         // Suppress the error
       } finally {
         localStorage.removeItem("hasLoggedIn");
-        useChatStore().$reset();
+        useChatStore().$reset(); // To close the opened chat box
+        useChatsStore().$reset(); // To clear the unread chats count
+        useNotificationsStore().$reset(); // To clear the unread notifications count
         this.user = null; // Must be setted here to avoid flashy DOM changes in the current page just before redirecting to the home page
         this.loading = false;
       }
