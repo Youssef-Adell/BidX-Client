@@ -23,8 +23,23 @@ const routes = [
     meta: { requiresUnAuth: true },
   },
   {
+    path: "/confirm-email",
+    component: () => import("../views/ConfirmEmailView.vue"),
+    meta: { requiresUnAuth: true },
+  },
+  {
+    path: "/reset-password",
+    component: () => import("../views/ResetPasswordView.vue"),
+    meta: { requiresUnAuth: true },
+  },
+  {
     path: "/auctions/create",
     component: () => import("../views/CreateAuctionView.vue"),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/settings",
+    component: () => import("../views/SettingsView.vue"),
     meta: { requiresAuth: true },
   },
   {
@@ -42,18 +57,6 @@ const routes = [
   {
     path: "/profile/:id",
     component: () => import("../views/ProfileView.vue"),
-  },
-  {
-    path: "/settings",
-    component: () => import("../views/SettingsView.vue"),
-  },
-  {
-    path: "/confirm-email",
-    component: () => import("../views/ConfirmEmailView.vue"),
-  },
-  {
-    path: "/reset-password",
-    component: () => import("../views/ResetPasswordView.vue"),
   },
   {
     path: "/:pathMatch(.*)*",
