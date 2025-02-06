@@ -13,7 +13,7 @@ const authStore = useAuthStore();
 const googleLogin = async (response) => {
   try {
     await authStore.loginWithGoogle(response.credential);
-    router.replace(route.query.redirect);
+    router.replace(route.query.redirect ?? "/");
   } catch (errorResponse) {
     emitError(errorResponse);
   }
