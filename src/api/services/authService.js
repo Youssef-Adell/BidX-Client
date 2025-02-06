@@ -61,6 +61,14 @@ export default {
     );
   },
 
+  async resetPassword(userId, token, newPassword) {
+    await httpClient.post("/auth/reset-password", {
+      userId,
+      token,
+      newPassword,
+    });
+  },
+
   async refreshToken() {
     const response = await httpClient.post("/auth/refresh", null, {
       withCredentials: true,
