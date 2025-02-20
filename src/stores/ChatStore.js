@@ -33,6 +33,8 @@ export const useChatStore = defineStore("chat", {
         ]);
 
         this.messages.data.reverse(); // to make the latest message at the end
+
+        await signalrClient.markAllMessagesAsRead(this.chat.id)
       } finally {
         this.loading = false;
       }
