@@ -144,6 +144,9 @@ export default {
   async markMessageAsRead(messageId) {
     await connection?.invoke("MarkMessageAsRead", { messageId });
   },
+  async markAllMessagesAsRead(chatId) {
+    await connection?.invoke("MarkAllMessagesAsRead", { chatId });
+  },
 
   async markNotificationAsRead(notificationId) {
     await connection?.invoke("MarkNotificationAsRead", { notificationId });
