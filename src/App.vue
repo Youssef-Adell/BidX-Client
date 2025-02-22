@@ -9,6 +9,8 @@ import useAppTheme from "./composables/useAppTheme";
 import { useAuthStore } from "./stores/AuthStore";
 import { onBeforeMount, onBeforeUnmount, ref } from "vue";
 import { useChatStore } from "./stores/ChatStore";
+import { Analytics } from "@vercel/analytics/vue";
+import { SpeedInsights } from "@vercel/speed-insights/vue";
 
 const authStore = useAuthStore();
 const chatStore = useChatStore();
@@ -42,6 +44,8 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
+  <Analytics />
+  <SpeedInsights />
   <VApp>
     <!-- Loading screen while initializing -->
     <template v-if="appInitializing">
