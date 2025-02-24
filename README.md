@@ -98,4 +98,4 @@ cd BidX-Client
 
 > [!NOTE]
 > - Before running the frontend, ensure the backend API is set up and running.
-> - Follow the [API Setup & Run instructions](https://github.com/Youssef-Adell/BidX-API/setup--run-instructions) for details.  
+> - Follow the [API Setup & Run instructions](https://github.com/Youssef-Adell/BidX-API/?tab=readme-ov-file#%EF%B8%8F-setup--run) for details.  
